@@ -24,12 +24,12 @@ class CategoryDao extends DatabaseAccessor<AppDatabase>
   Future<bool> updateCategory(Insertable<Category> category) =>
       update(categories).replace(category);
 
-  Future deleteCategoryWithId(int id) {
+  Future<int> deleteCategoryWithId(int id) {
     final query = delete(categories)..where((c) => c.id.equals(id));
     return query.go();
   }
 
-  Future<Category> getCategoryWithId(int id) {
+  Future<Category> getCategoryById(int id) {
     final query = select(categories)..where((c) => c.id.equals(id));
     return query.getSingle();
   }

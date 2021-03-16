@@ -1,8 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:infrastructure/infrastructure.dart';
-import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class FixtureCategory {
   final category1 = CategoriesCompanion(

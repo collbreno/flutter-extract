@@ -5,6 +5,5 @@ class Tags extends Table {
 
   TextColumn get name => text().withLength(min: 1, max: 24)();
 
-  IntColumn get iconId =>
-      integer().nullable().customConstraint('NULL REFERENCES icons(id)')();
+  IntColumn get iconId => integer().nullable().customConstraint('NULL REFERENCES icons(id)')();
 }

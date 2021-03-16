@@ -183,11 +183,8 @@ class $CategoriesTable extends Categories
   @override
   GeneratedIntColumn get iconId => _iconId ??= _constructIconId();
   GeneratedIntColumn _constructIconId() {
-    return GeneratedIntColumn(
-      'icon_id',
-      $tableName,
-      false,
-    );
+    return GeneratedIntColumn('icon_id', $tableName, false,
+        $customConstraints: 'REFERENCES icons(id)');
   }
 
   @override
@@ -241,6 +238,8 @@ class Expense extends DataClass implements Insertable<Expense> {
   final int paymentMethodId;
   final int subcategoryId;
   final int storeId;
+  final DateTime createdAt;
+  final DateTime updatedAt;
   Expense(
       {@required this.id,
       @required this.description,
@@ -248,7 +247,9 @@ class Expense extends DataClass implements Insertable<Expense> {
       @required this.date,
       @required this.paymentMethodId,
       @required this.subcategoryId,
-      this.storeId});
+      this.storeId,
+      @required this.createdAt,
+      @required this.updatedAt});
   factory Expense.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -268,6 +269,10 @@ class Expense extends DataClass implements Insertable<Expense> {
           .mapFromDatabaseResponse(data['${effectivePrefix}subcategory_id']),
       storeId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}store_id']),
+      createdAt: dateTimeType
+          .mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
+      updatedAt: dateTimeType
+          .mapFromDatabaseResponse(data['${effectivePrefix}updated_at']),
     );
   }
   @override
@@ -294,6 +299,12 @@ class Expense extends DataClass implements Insertable<Expense> {
     if (!nullToAbsent || storeId != null) {
       map['store_id'] = Variable<int>(storeId);
     }
+    if (!nullToAbsent || createdAt != null) {
+      map['created_at'] = Variable<DateTime>(createdAt);
+    }
+    if (!nullToAbsent || updatedAt != null) {
+      map['updated_at'] = Variable<DateTime>(updatedAt);
+    }
     return map;
   }
 
@@ -315,6 +326,12 @@ class Expense extends DataClass implements Insertable<Expense> {
       storeId: storeId == null && nullToAbsent
           ? const Value.absent()
           : Value(storeId),
+      createdAt: createdAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdAt),
+      updatedAt: updatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedAt),
     );
   }
 
@@ -329,6 +346,8 @@ class Expense extends DataClass implements Insertable<Expense> {
       paymentMethodId: serializer.fromJson<int>(json['paymentMethodId']),
       subcategoryId: serializer.fromJson<int>(json['subcategoryId']),
       storeId: serializer.fromJson<int>(json['storeId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
     );
   }
   @override
@@ -342,6 +361,8 @@ class Expense extends DataClass implements Insertable<Expense> {
       'paymentMethodId': serializer.toJson<int>(paymentMethodId),
       'subcategoryId': serializer.toJson<int>(subcategoryId),
       'storeId': serializer.toJson<int>(storeId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
     };
   }
 
@@ -352,7 +373,9 @@ class Expense extends DataClass implements Insertable<Expense> {
           DateTime date,
           int paymentMethodId,
           int subcategoryId,
-          int storeId}) =>
+          int storeId,
+          DateTime createdAt,
+          DateTime updatedAt}) =>
       Expense(
         id: id ?? this.id,
         description: description ?? this.description,
@@ -361,6 +384,8 @@ class Expense extends DataClass implements Insertable<Expense> {
         paymentMethodId: paymentMethodId ?? this.paymentMethodId,
         subcategoryId: subcategoryId ?? this.subcategoryId,
         storeId: storeId ?? this.storeId,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
       );
   @override
   String toString() {
@@ -371,7 +396,9 @@ class Expense extends DataClass implements Insertable<Expense> {
           ..write('date: $date, ')
           ..write('paymentMethodId: $paymentMethodId, ')
           ..write('subcategoryId: $subcategoryId, ')
-          ..write('storeId: $storeId')
+          ..write('storeId: $storeId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
   }
@@ -385,8 +412,14 @@ class Expense extends DataClass implements Insertable<Expense> {
               value.hashCode,
               $mrjc(
                   date.hashCode,
-                  $mrjc(paymentMethodId.hashCode,
-                      $mrjc(subcategoryId.hashCode, storeId.hashCode)))))));
+                  $mrjc(
+                      paymentMethodId.hashCode,
+                      $mrjc(
+                          subcategoryId.hashCode,
+                          $mrjc(
+                              storeId.hashCode,
+                              $mrjc(createdAt.hashCode,
+                                  updatedAt.hashCode)))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -397,7 +430,9 @@ class Expense extends DataClass implements Insertable<Expense> {
           other.date == this.date &&
           other.paymentMethodId == this.paymentMethodId &&
           other.subcategoryId == this.subcategoryId &&
-          other.storeId == this.storeId);
+          other.storeId == this.storeId &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
 }
 
 class ExpensesCompanion extends UpdateCompanion<Expense> {
@@ -408,6 +443,8 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
   final Value<int> paymentMethodId;
   final Value<int> subcategoryId;
   final Value<int> storeId;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
   const ExpensesCompanion({
     this.id = const Value.absent(),
     this.description = const Value.absent(),
@@ -416,6 +453,8 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
     this.paymentMethodId = const Value.absent(),
     this.subcategoryId = const Value.absent(),
     this.storeId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
   });
   ExpensesCompanion.insert({
     this.id = const Value.absent(),
@@ -425,11 +464,15 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
     @required int paymentMethodId,
     @required int subcategoryId,
     this.storeId = const Value.absent(),
+    @required DateTime createdAt,
+    @required DateTime updatedAt,
   })  : description = Value(description),
         value = Value(value),
         date = Value(date),
         paymentMethodId = Value(paymentMethodId),
-        subcategoryId = Value(subcategoryId);
+        subcategoryId = Value(subcategoryId),
+        createdAt = Value(createdAt),
+        updatedAt = Value(updatedAt);
   static Insertable<Expense> custom({
     Expression<int> id,
     Expression<String> description,
@@ -438,6 +481,8 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
     Expression<int> paymentMethodId,
     Expression<int> subcategoryId,
     Expression<int> storeId,
+    Expression<DateTime> createdAt,
+    Expression<DateTime> updatedAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -447,6 +492,8 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
       if (paymentMethodId != null) 'payment_method_id': paymentMethodId,
       if (subcategoryId != null) 'subcategory_id': subcategoryId,
       if (storeId != null) 'store_id': storeId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
     });
   }
 
@@ -457,7 +504,9 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
       Value<DateTime> date,
       Value<int> paymentMethodId,
       Value<int> subcategoryId,
-      Value<int> storeId}) {
+      Value<int> storeId,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt}) {
     return ExpensesCompanion(
       id: id ?? this.id,
       description: description ?? this.description,
@@ -466,6 +515,8 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
       paymentMethodId: paymentMethodId ?? this.paymentMethodId,
       subcategoryId: subcategoryId ?? this.subcategoryId,
       storeId: storeId ?? this.storeId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
@@ -493,6 +544,12 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
     if (storeId.present) {
       map['store_id'] = Variable<int>(storeId.value);
     }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
     return map;
   }
 
@@ -505,7 +562,9 @@ class ExpensesCompanion extends UpdateCompanion<Expense> {
           ..write('date: $date, ')
           ..write('paymentMethodId: $paymentMethodId, ')
           ..write('subcategoryId: $subcategoryId, ')
-          ..write('storeId: $storeId')
+          ..write('storeId: $storeId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
   }
@@ -590,9 +649,42 @@ class $ExpensesTable extends Expenses with TableInfo<$ExpensesTable, Expense> {
         $customConstraints: 'NULL REFERENCES stores(id)');
   }
 
+  final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
+  GeneratedDateTimeColumn _createdAt;
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, description, value, date, paymentMethodId, subcategoryId, storeId];
+  GeneratedDateTimeColumn get createdAt => _createdAt ??= _constructCreatedAt();
+  GeneratedDateTimeColumn _constructCreatedAt() {
+    return GeneratedDateTimeColumn(
+      'created_at',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _updatedAtMeta = const VerificationMeta('updatedAt');
+  GeneratedDateTimeColumn _updatedAt;
+  @override
+  GeneratedDateTimeColumn get updatedAt => _updatedAt ??= _constructUpdatedAt();
+  GeneratedDateTimeColumn _constructUpdatedAt() {
+    return GeneratedDateTimeColumn(
+      'updated_at',
+      $tableName,
+      false,
+    );
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        description,
+        value,
+        date,
+        paymentMethodId,
+        subcategoryId,
+        storeId,
+        createdAt,
+        updatedAt
+      ];
   @override
   $ExpensesTable get asDslTable => this;
   @override
@@ -646,6 +738,18 @@ class $ExpensesTable extends Expenses with TableInfo<$ExpensesTable, Expense> {
     if (data.containsKey('store_id')) {
       context.handle(_storeIdMeta,
           storeId.isAcceptableOrUnknown(data['store_id'], _storeIdMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at'], _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at'], _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
     }
     return context;
   }
@@ -1553,11 +1657,8 @@ class $SubcategoriesTable extends Subcategories
   @override
   GeneratedIntColumn get iconId => _iconId ??= _constructIconId();
   GeneratedIntColumn _constructIconId() {
-    return GeneratedIntColumn(
-      'icon_id',
-      $tableName,
-      true,
-    );
+    return GeneratedIntColumn('icon_id', $tableName, true,
+        $customConstraints: 'REFERENCES icons(id)');
   }
 
   final VerificationMeta _parentIdMeta = const VerificationMeta('parentId');
@@ -1565,11 +1666,8 @@ class $SubcategoriesTable extends Subcategories
   @override
   GeneratedIntColumn get parentId => _parentId ??= _constructParentId();
   GeneratedIntColumn _constructParentId() {
-    return GeneratedIntColumn(
-      'parent_id',
-      $tableName,
-      false,
-    );
+    return GeneratedIntColumn('parent_id', $tableName, false,
+        $customConstraints: 'REFERENCES categories(id)');
   }
 
   @override
@@ -1846,15 +1944,22 @@ class $TagsTable extends Tags with TableInfo<$TagsTable, Tag> {
 class ExpenseTag extends DataClass implements Insertable<ExpenseTag> {
   final int expenseId;
   final int tagId;
-  ExpenseTag({@required this.expenseId, @required this.tagId});
+  final DateTime createdAt;
+  ExpenseTag(
+      {@required this.expenseId,
+      @required this.tagId,
+      @required this.createdAt});
   factory ExpenseTag.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
+    final dateTimeType = db.typeSystem.forDartType<DateTime>();
     return ExpenseTag(
       expenseId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}expense_id']),
       tagId: intType.mapFromDatabaseResponse(data['${effectivePrefix}tag_id']),
+      createdAt: dateTimeType
+          .mapFromDatabaseResponse(data['${effectivePrefix}created_at']),
     );
   }
   @override
@@ -1866,6 +1971,9 @@ class ExpenseTag extends DataClass implements Insertable<ExpenseTag> {
     if (!nullToAbsent || tagId != null) {
       map['tag_id'] = Variable<int>(tagId);
     }
+    if (!nullToAbsent || createdAt != null) {
+      map['created_at'] = Variable<DateTime>(createdAt);
+    }
     return map;
   }
 
@@ -1876,6 +1984,9 @@ class ExpenseTag extends DataClass implements Insertable<ExpenseTag> {
           : Value(expenseId),
       tagId:
           tagId == null && nullToAbsent ? const Value.absent() : Value(tagId),
+      createdAt: createdAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdAt),
     );
   }
 
@@ -1885,6 +1996,7 @@ class ExpenseTag extends DataClass implements Insertable<ExpenseTag> {
     return ExpenseTag(
       expenseId: serializer.fromJson<int>(json['expenseId']),
       tagId: serializer.fromJson<int>(json['tagId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
   @override
@@ -1893,58 +2005,72 @@ class ExpenseTag extends DataClass implements Insertable<ExpenseTag> {
     return <String, dynamic>{
       'expenseId': serializer.toJson<int>(expenseId),
       'tagId': serializer.toJson<int>(tagId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
 
-  ExpenseTag copyWith({int expenseId, int tagId}) => ExpenseTag(
+  ExpenseTag copyWith({int expenseId, int tagId, DateTime createdAt}) =>
+      ExpenseTag(
         expenseId: expenseId ?? this.expenseId,
         tagId: tagId ?? this.tagId,
+        createdAt: createdAt ?? this.createdAt,
       );
   @override
   String toString() {
     return (StringBuffer('ExpenseTag(')
           ..write('expenseId: $expenseId, ')
-          ..write('tagId: $tagId')
+          ..write('tagId: $tagId, ')
+          ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(expenseId.hashCode, tagId.hashCode));
+  int get hashCode => $mrjf(
+      $mrjc(expenseId.hashCode, $mrjc(tagId.hashCode, createdAt.hashCode)));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is ExpenseTag &&
           other.expenseId == this.expenseId &&
-          other.tagId == this.tagId);
+          other.tagId == this.tagId &&
+          other.createdAt == this.createdAt);
 }
 
 class ExpenseTagsCompanion extends UpdateCompanion<ExpenseTag> {
   final Value<int> expenseId;
   final Value<int> tagId;
+  final Value<DateTime> createdAt;
   const ExpenseTagsCompanion({
     this.expenseId = const Value.absent(),
     this.tagId = const Value.absent(),
+    this.createdAt = const Value.absent(),
   });
   ExpenseTagsCompanion.insert({
     @required int expenseId,
     @required int tagId,
+    @required DateTime createdAt,
   })  : expenseId = Value(expenseId),
-        tagId = Value(tagId);
+        tagId = Value(tagId),
+        createdAt = Value(createdAt);
   static Insertable<ExpenseTag> custom({
     Expression<int> expenseId,
     Expression<int> tagId,
+    Expression<DateTime> createdAt,
   }) {
     return RawValuesInsertable({
       if (expenseId != null) 'expense_id': expenseId,
       if (tagId != null) 'tag_id': tagId,
+      if (createdAt != null) 'created_at': createdAt,
     });
   }
 
-  ExpenseTagsCompanion copyWith({Value<int> expenseId, Value<int> tagId}) {
+  ExpenseTagsCompanion copyWith(
+      {Value<int> expenseId, Value<int> tagId, Value<DateTime> createdAt}) {
     return ExpenseTagsCompanion(
       expenseId: expenseId ?? this.expenseId,
       tagId: tagId ?? this.tagId,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 
@@ -1957,6 +2083,9 @@ class ExpenseTagsCompanion extends UpdateCompanion<ExpenseTag> {
     if (tagId.present) {
       map['tag_id'] = Variable<int>(tagId.value);
     }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
     return map;
   }
 
@@ -1964,7 +2093,8 @@ class ExpenseTagsCompanion extends UpdateCompanion<ExpenseTag> {
   String toString() {
     return (StringBuffer('ExpenseTagsCompanion(')
           ..write('expenseId: $expenseId, ')
-          ..write('tagId: $tagId')
+          ..write('tagId: $tagId, ')
+          ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
@@ -1993,8 +2123,20 @@ class $ExpenseTagsTable extends ExpenseTags
         $customConstraints: 'REFERENCES tags(id)');
   }
 
+  final VerificationMeta _createdAtMeta = const VerificationMeta('createdAt');
+  GeneratedDateTimeColumn _createdAt;
   @override
-  List<GeneratedColumn> get $columns => [expenseId, tagId];
+  GeneratedDateTimeColumn get createdAt => _createdAt ??= _constructCreatedAt();
+  GeneratedDateTimeColumn _constructCreatedAt() {
+    return GeneratedDateTimeColumn(
+      'created_at',
+      $tableName,
+      false,
+    );
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [expenseId, tagId, createdAt];
   @override
   $ExpenseTagsTable get asDslTable => this;
   @override
@@ -2017,6 +2159,12 @@ class $ExpenseTagsTable extends ExpenseTags
           _tagIdMeta, tagId.isAcceptableOrUnknown(data['tag_id'], _tagIdMeta));
     } else if (isInserting) {
       context.missing(_tagIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at'], _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
     }
     return context;
   }
@@ -2058,6 +2206,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   CategoryDao _categoryDao;
   CategoryDao get categoryDao =>
       _categoryDao ??= CategoryDao(this as AppDatabase);
+  ExpenseDao _expenseDao;
+  ExpenseDao get expenseDao => _expenseDao ??= ExpenseDao(this as AppDatabase);
+  IconDao _iconDao;
+  IconDao get iconDao => _iconDao ??= IconDao(this as AppDatabase);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override

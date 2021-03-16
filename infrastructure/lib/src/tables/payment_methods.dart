@@ -7,6 +7,5 @@ class PaymentMethods extends Table {
 
   IntColumn get color => integer()();
 
-  IntColumn get iconId =>
-      integer().nullable().customConstraint('NULL REFERENCES icons(id)')();
+  IntColumn get iconId => integer().nullable().customConstraint('NULL REFERENCES icons(id)')();
 }

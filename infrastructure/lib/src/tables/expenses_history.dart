@@ -1,22 +1,27 @@
 import 'package:moor/moor.dart';
-import '../helpers/builder_extensions.dart';
 
 @DataClassName('ExpenseHistory')
 class ExpensesHistory extends Table {
   IntColumn get id => integer().autoIncrement()();
 
-  DateTimeColumn get alteredAt => dateTime()();
+  IntColumn get expenseId => integer().autoIncrement()();
 
-  IntColumn get expenseId => integer().references('expenses(id)')();
+  TextColumn get description => text().withLength(min: 1, max: 400)();
+
+  IntColumn get value => integer()();
 
   DateTimeColumn get date => dateTime()();
 
   IntColumn get paymentMethodId =>
-      integer().references(' payment_methods(id)')();
+      integer().customConstraint('REFERENCES payment_methods(id)')();
 
   IntColumn get subcategoryId =>
-      integer().references(' subcategories(id)')();
+      integer().customConstraint('REFERENCES subcategories(id)')();
 
   IntColumn get storeId =>
       integer().nullable().customConstraint('NULL REFERENCES stores(id)')();
+
+  DateTimeColumn get createdAt => dateTime()();
+
+  DateTimeColumn get updatedAt => dateTime()();
 }

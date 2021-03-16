@@ -1,6 +1,5 @@
 import 'package:moor/moor.dart';
 import 'package:moor/moor.dart';
-import '../helpers/builder_extensions.dart';
 
 @DataClassName('Category')
 class Categories extends Table {
@@ -8,5 +7,5 @@ class Categories extends Table {
 
   TextColumn get name => text().nullable().withLength(min: 1, max: 40)();
 
-  IntColumn get iconId => integer().references('icons(id)')();
+  IntColumn get iconId => integer().customConstraint('REFERENCES icons(id)')();
 }

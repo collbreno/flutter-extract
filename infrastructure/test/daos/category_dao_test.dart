@@ -53,7 +53,7 @@ void main() {
       expect(fromDb, orderedEquals([expected1, expected2]));
     });
 
-    test('Insertion with id', () async {
+    test('Insertion with defined id', () async {
       final category = fix.category1.copyWith(id: Value(42));
 
       final result = await database.categoryDao.insertCategory(category);
@@ -83,7 +83,7 @@ void main() {
       var fromDB = await database.categoryDao.getAllCategories();
       expect(fromDB, orderedEquals([expected1]));
 
-      final category2 = fix.category1.copyWith(id: Value(42));
+      final category2 = fix.category2.copyWith(id: Value(42));
 
       expect(
         () => database.categoryDao.insertCategory(category2),
@@ -150,15 +150,14 @@ void main() {
   });
 
   group('Query by id', () {
-    final category1 = fix.category1;
-    final category2 = fix.category2;
-
     test('Success cases', () async {
+      final category1 = fix.category1;
+      final category2 = fix.category2;
       await database.categoryDao.insertCategory(category1);
       await database.categoryDao.insertCategory(category2);
 
       var result =
-          await database.categoryDao.getCategoryWithId(category1.id.value);
+          await database.categoryDao.getCategoryById(category1.id.value);
       var expected = Category(
         id: category1.id.value,
         name: category1.name.value,
@@ -166,7 +165,7 @@ void main() {
       );
       expect(result, expected);
 
-      result = await database.categoryDao.getCategoryWithId(category2.id.value);
+      result = await database.categoryDao.getCategoryById(category2.id.value);
       expected = Category(
         id: category2.id.value,
         name: category2.name.value,
@@ -176,8 +175,7 @@ void main() {
     });
 
     test('Error cases', () async {
-      final result = await database.categoryDao.getCategoryWithId(1);
-
+      final result = await database.categoryDao.getCategoryById(1);
       expect(result, isNull);
     });
   });
@@ -193,7 +191,7 @@ void main() {
     });
 
     test('Updating name', () async {
-      final newCategory = category1.copyWith(name: Value('Novo nome'));
+      final newCategory = category1.copyWith(name: Value('New name'));
       final result = await database.categoryDao.updateCategory(newCategory);
       expect(result, isTrue);
 

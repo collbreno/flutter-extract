@@ -17,6 +17,8 @@ part 'database.g.dart';
   ],
   daos: [
     CategoryDao,
+    ExpenseDao,
+    IconDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -28,6 +30,9 @@ class AppDatabase extends _$AppDatabase {
   @override
   MigrationStrategy get migration {
     return MigrationStrategy(
+      beforeOpen: (details) async {
+        await customStatement('PRAGMA foreign_keys = ON');
+      },
       onCreate: (m) async {
         await m.createAll();
       },
