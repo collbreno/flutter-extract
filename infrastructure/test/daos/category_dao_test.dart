@@ -6,9 +6,12 @@ import 'package:moor/moor.dart' hide isNull;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../utils/fixture_category.dart';
+import '../utils/fixture_icon.dart';
+import '../utils/foreign_keys_utils.dart';
 
 void main() {
   AppDatabase database;
+  ForeignKeyUtils fkUtils;
   final fix = FixtureCategory();
 
   setUpAll(() {
@@ -17,6 +20,7 @@ void main() {
 
   setUp(() {
     database = AppDatabase(VmDatabase.memory());
+    fkUtils = ForeignKeyUtils(database);
   });
   tearDown(() async {
     await database.close();
@@ -26,10 +30,28 @@ void main() {
   // getAllCategories because this method is just a select from the table,
   // so it's more reliable rather other queries methods.
   group('Insertion', () {
+    test(
+      'Inserting category with icon id that does not have any reference '
+      'to the icon table must fail.',
+      () async {
+        final category = fix.category1;
+
+        final iconFromDb =
+            await database.iconDao.getIconById(category.iconId.value);
+        expect(iconFromDb, isNull);
+
+        expect(
+          () async => await database.categoryDao.insertCategory(category),
+          throwsA(isA<SqliteException>()),
+        );
+      },
+    );
+
     test('Auto incremented insertion', () async {
       final category1 = fix.category1.copyWith(id: Value.absent());
       final category2 = fix.category2.copyWith(id: Value.absent());
 
+      await fkUtils.insertCategoryFKDependencies(category1);
       var result = await database.categoryDao.insertCategory(category1);
       expect(result, 1);
 
@@ -41,6 +63,7 @@ void main() {
       );
       expect(fromDb, orderedEquals([expected1]));
 
+      await fkUtils.insertCategoryFKDependencies(category2);
       result = await database.categoryDao.insertCategory(category2);
       expect(result, 2);
 
@@ -56,6 +79,7 @@ void main() {
     test('Insertion with defined id', () async {
       final category = fix.category1.copyWith(id: Value(42));
 
+      await fkUtils.insertCategoryFKDependencies(category);
       final result = await database.categoryDao.insertCategory(category);
       expect(result, 42);
 
@@ -72,6 +96,7 @@ void main() {
     test('Insertion with duplicated id', () async {
       final category1 = fix.category1.copyWith(id: Value(42));
 
+      await fkUtils.insertCategoryFKDependencies(category1);
       final result = await database.categoryDao.insertCategory(category1);
       expect(result, 42);
 
@@ -85,6 +110,7 @@ void main() {
 
       final category2 = fix.category2.copyWith(id: Value(42));
 
+      await fkUtils.insertCategoryFKDependencies(category2);
       expect(
         () => database.categoryDao.insertCategory(category2),
         throwsA(isA<SqliteException>()),
@@ -99,6 +125,7 @@ void main() {
   group('Deletion', () {
     test('Simple deletion', () async {
       final category1 = fix.category1;
+      await fkUtils.insertCategoryFKDependencies(category1);
       await database.categoryDao.insertCategory(category1);
 
       var fromDb = await database.categoryDao.getAllCategories();
@@ -114,6 +141,7 @@ void main() {
 
     test('Deletion of an item that does not exist', () async {
       final category1 = fix.category1;
+      await fkUtils.insertCategoryFKDependencies(category1);
       await database.categoryDao.insertCategory(category1);
 
       var fromDb = await database.categoryDao.getAllCategories();
@@ -136,10 +164,12 @@ void main() {
     var count = await database.categoryDao.getCategoriesAmount();
     expect(count, 0);
 
+    await fkUtils.insertCategoryFKDependencies(category1);
     await database.categoryDao.insertCategory(category1);
     count = await database.categoryDao.getCategoriesAmount();
     expect(count, 1);
 
+    await fkUtils.insertCategoryFKDependencies(category2);
     await database.categoryDao.insertCategory(category2);
     count = await database.categoryDao.getCategoriesAmount();
     expect(count, 2);
@@ -153,7 +183,10 @@ void main() {
     test('Success cases', () async {
       final category1 = fix.category1;
       final category2 = fix.category2;
+
+      await fkUtils.insertCategoryFKDependencies(category1);
       await database.categoryDao.insertCategory(category1);
+      await fkUtils.insertCategoryFKDependencies(category2);
       await database.categoryDao.insertCategory(category2);
 
       var result =
@@ -186,12 +219,15 @@ void main() {
     final category3 = fix.category3;
 
     setUp(() async {
+      await fkUtils.insertCategoryFKDependencies(category1);
       await database.categoryDao.insertCategory(category1);
+      await fkUtils.insertCategoryFKDependencies(category2);
       await database.categoryDao.insertCategory(category2);
     });
 
     test('Updating name', () async {
       final newCategory = category1.copyWith(name: Value('New name'));
+      await fkUtils.insertCategoryFKDependencies(newCategory);
       final result = await database.categoryDao.updateCategory(newCategory);
       expect(result, isTrue);
 
@@ -211,6 +247,7 @@ void main() {
 
     test('Updating icon id', () async {
       final newCategory = category1.copyWith(iconId: Value(4834));
+      await fkUtils.insertCategoryFKDependencies(newCategory);
       final result = await database.categoryDao.updateCategory(newCategory);
       expect(result, isTrue);
 
@@ -229,7 +266,8 @@ void main() {
     });
 
     test('Updating a category that does not exist', () async {
-      final newCategory = category3.copyWith(iconId: Value(4834));
+      final newCategory = category3.copyWith(name: Value('New name'));
+      await fkUtils.insertCategoryFKDependencies(newCategory);
       final result = await database.categoryDao.updateCategory(newCategory);
       expect(result, isFalse);
 
