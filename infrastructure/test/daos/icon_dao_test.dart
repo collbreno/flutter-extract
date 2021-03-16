@@ -25,7 +25,7 @@ void main() {
   });
 
   group('Insertion', () {
-    test('Auto incremented insertion', () async {
+    test('Insertion without id must have an auto incremented id', () async {
       final icon1 = fix.icon1.copyWith(id: Value.absent());
       final icon2 = fix.icon2.copyWith(id: Value.absent());
 
@@ -52,7 +52,31 @@ void main() {
       expect(fromDb, orderedEquals([expected1, expected2]));
     });
 
-    test('Insertion with defined id', () async {
+    test('Insertion without name must fail', () async {
+      final icon = fix.icon1.copyWith(name: Value.absent());
+
+      expect(
+        () => database.iconDao.insertIcon(icon),
+        throwsA(isA<InvalidDataException>()),
+      );
+
+      final fromDb = await database.iconDao.getAllIcons();
+      expect(fromDb, isEmpty);
+    });
+
+    test('Insertion without family must fail', () async {
+      final icon = fix.icon1.copyWith(family: Value.absent());
+
+      expect(
+        () => database.iconDao.insertIcon(icon),
+        throwsA(isA<InvalidDataException>()),
+      );
+
+      final fromDb = await database.iconDao.getAllIcons();
+      expect(fromDb, isEmpty);
+    });
+
+    test('Insertion with defined id must use the id', () async {
       final icon = fix.icon1.copyWith(id: Value(42));
 
       final result = await database.iconDao.insertIcon(icon);
@@ -67,7 +91,7 @@ void main() {
       expect(fromDb, orderedEquals([expected]));
     });
 
-    test('Insertion with duplicated id', () async {
+    test('Insertion with duplicated id must fail', () async {
       final icon1 = fix.icon1.copyWith(id: Value(42));
       final icon2 = fix.icon2.copyWith(id: Value(42));
 

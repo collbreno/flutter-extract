@@ -4,8 +4,7 @@ import 'package:moor/moor.dart';
 part 'category_dao.g.dart';
 
 @UseDao(tables: [Categories])
-class CategoryDao extends DatabaseAccessor<AppDatabase>
-    with _$CategoryDaoMixin {
+class CategoryDao extends DatabaseAccessor<AppDatabase> with _$CategoryDaoMixin {
   final AppDatabase db;
 
   CategoryDao(this.db) : super(db);
@@ -18,8 +17,7 @@ class CategoryDao extends DatabaseAccessor<AppDatabase>
     return query.map((row) => row.read(count)).getSingle();
   }
 
-  Future<int> insertCategory(Insertable<Category> category) =>
-      into(categories).insert(category);
+  Future<int> insertCategory(Insertable<Category> category) => into(categories).insert(category);
 
   Future<bool> updateCategory(Insertable<Category> category) =>
       update(categories).replace(category);

@@ -11,7 +11,7 @@ class Category extends DataClass implements Insertable<Category> {
   final int id;
   final String name;
   final int iconId;
-  Category({@required this.id, this.name, @required this.iconId});
+  Category({@required this.id, @required this.name, @required this.iconId});
   factory Category.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -105,9 +105,10 @@ class CategoriesCompanion extends UpdateCompanion<Category> {
   });
   CategoriesCompanion.insert({
     this.id = const Value.absent(),
-    this.name = const Value.absent(),
+    @required String name,
     @required int iconId,
-  }) : iconId = Value(iconId);
+  })  : name = Value(name),
+        iconId = Value(iconId);
   static Insertable<Category> custom({
     Expression<int> id,
     Expression<String> name,
@@ -174,7 +175,7 @@ class $CategoriesTable extends Categories
   @override
   GeneratedTextColumn get name => _name ??= _constructName();
   GeneratedTextColumn _constructName() {
-    return GeneratedTextColumn('name', $tableName, true,
+    return GeneratedTextColumn('name', $tableName, false,
         minTextLength: 1, maxTextLength: 40);
   }
 
@@ -206,6 +207,8 @@ class $CategoriesTable extends Categories
     if (data.containsKey('name')) {
       context.handle(
           _nameMeta, name.isAcceptableOrUnknown(data['name'], _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
     }
     if (data.containsKey('icon_id')) {
       context.handle(_iconIdMeta,
@@ -1448,22 +1451,22 @@ class $StoresTable extends Stores with TableInfo<$StoresTable, Store> {
   }
 }
 
-class SubCategory extends DataClass implements Insertable<SubCategory> {
+class Subcategory extends DataClass implements Insertable<Subcategory> {
   final int id;
   final String name;
   final int iconId;
   final int parentId;
-  SubCategory(
+  Subcategory(
       {@required this.id,
       @required this.name,
-      this.iconId,
+      @required this.iconId,
       @required this.parentId});
-  factory SubCategory.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+  factory Subcategory.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
     final stringType = db.typeSystem.forDartType<String>();
-    return SubCategory(
+    return Subcategory(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
       iconId:
@@ -1502,10 +1505,10 @@ class SubCategory extends DataClass implements Insertable<SubCategory> {
     );
   }
 
-  factory SubCategory.fromJson(Map<String, dynamic> json,
+  factory Subcategory.fromJson(Map<String, dynamic> json,
       {ValueSerializer serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
-    return SubCategory(
+    return Subcategory(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       iconId: serializer.fromJson<int>(json['iconId']),
@@ -1523,8 +1526,8 @@ class SubCategory extends DataClass implements Insertable<SubCategory> {
     };
   }
 
-  SubCategory copyWith({int id, String name, int iconId, int parentId}) =>
-      SubCategory(
+  Subcategory copyWith({int id, String name, int iconId, int parentId}) =>
+      Subcategory(
         id: id ?? this.id,
         name: name ?? this.name,
         iconId: iconId ?? this.iconId,
@@ -1532,7 +1535,7 @@ class SubCategory extends DataClass implements Insertable<SubCategory> {
       );
   @override
   String toString() {
-    return (StringBuffer('SubCategory(')
+    return (StringBuffer('Subcategory(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('iconId: $iconId, ')
@@ -1547,14 +1550,14 @@ class SubCategory extends DataClass implements Insertable<SubCategory> {
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
-      (other is SubCategory &&
+      (other is Subcategory &&
           other.id == this.id &&
           other.name == this.name &&
           other.iconId == this.iconId &&
           other.parentId == this.parentId);
 }
 
-class SubcategoriesCompanion extends UpdateCompanion<SubCategory> {
+class SubcategoriesCompanion extends UpdateCompanion<Subcategory> {
   final Value<int> id;
   final Value<String> name;
   final Value<int> iconId;
@@ -1568,11 +1571,12 @@ class SubcategoriesCompanion extends UpdateCompanion<SubCategory> {
   SubcategoriesCompanion.insert({
     this.id = const Value.absent(),
     @required String name,
-    this.iconId = const Value.absent(),
+    @required int iconId,
     @required int parentId,
   })  : name = Value(name),
+        iconId = Value(iconId),
         parentId = Value(parentId);
-  static Insertable<SubCategory> custom({
+  static Insertable<Subcategory> custom({
     Expression<int> id,
     Expression<String> name,
     Expression<int> iconId,
@@ -1630,7 +1634,7 @@ class SubcategoriesCompanion extends UpdateCompanion<SubCategory> {
 }
 
 class $SubcategoriesTable extends Subcategories
-    with TableInfo<$SubcategoriesTable, SubCategory> {
+    with TableInfo<$SubcategoriesTable, Subcategory> {
   final GeneratedDatabase _db;
   final String _alias;
   $SubcategoriesTable(this._db, [this._alias]);
@@ -1657,7 +1661,7 @@ class $SubcategoriesTable extends Subcategories
   @override
   GeneratedIntColumn get iconId => _iconId ??= _constructIconId();
   GeneratedIntColumn _constructIconId() {
-    return GeneratedIntColumn('icon_id', $tableName, true,
+    return GeneratedIntColumn('icon_id', $tableName, false,
         $customConstraints: 'REFERENCES icons(id)');
   }
 
@@ -1679,7 +1683,7 @@ class $SubcategoriesTable extends Subcategories
   @override
   final String actualTableName = 'subcategories';
   @override
-  VerificationContext validateIntegrity(Insertable<SubCategory> instance,
+  VerificationContext validateIntegrity(Insertable<Subcategory> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -1695,6 +1699,8 @@ class $SubcategoriesTable extends Subcategories
     if (data.containsKey('icon_id')) {
       context.handle(_iconIdMeta,
           iconId.isAcceptableOrUnknown(data['icon_id'], _iconIdMeta));
+    } else if (isInserting) {
+      context.missing(_iconIdMeta);
     }
     if (data.containsKey('parent_id')) {
       context.handle(_parentIdMeta,
@@ -1708,9 +1714,9 @@ class $SubcategoriesTable extends Subcategories
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  SubCategory map(Map<String, dynamic> data, {String tablePrefix}) {
+  Subcategory map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return SubCategory.fromData(data, _db, prefix: effectivePrefix);
+    return Subcategory.fromData(data, _db, prefix: effectivePrefix);
   }
 
   @override
@@ -2206,6 +2212,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   CategoryDao _categoryDao;
   CategoryDao get categoryDao =>
       _categoryDao ??= CategoryDao(this as AppDatabase);
+  SubcategoryDao _subcategoryDao;
+  SubcategoryDao get subcategoryDao =>
+      _subcategoryDao ??= SubcategoryDao(this as AppDatabase);
   ExpenseDao _expenseDao;
   ExpenseDao get expenseDao => _expenseDao ??= ExpenseDao(this as AppDatabase);
   IconDao _iconDao;

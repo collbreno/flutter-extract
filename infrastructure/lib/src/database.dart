@@ -17,6 +17,7 @@ part 'database.g.dart';
   ],
   daos: [
     CategoryDao,
+    SubcategoryDao,
     ExpenseDao,
     IconDao,
   ],

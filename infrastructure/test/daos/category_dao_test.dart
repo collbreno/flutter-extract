@@ -30,7 +30,7 @@ void main() {
   // getAllCategories because this method is just a select from the table,
   // so it's more reliable rather other queries methods.
   group('Insertion', () {
-    test('Auto incremented insertion', () async {
+    test('Insertion without id must have an auto incremented id', () async {
       final category1 = fix.category1.copyWith(id: Value.absent());
       final category2 = fix.category2.copyWith(id: Value.absent());
 
@@ -59,7 +59,29 @@ void main() {
       expect(fromDb, orderedEquals([expected1, expected2]));
     });
 
-    test('Insertion with defined id', () async {
+    test('Insertion without name must fail', () async {
+      final category = fix.category1.copyWith(name: Value.absent());
+
+      await fkUtils.insertCategoryFKDependencies(category);
+      expect(
+        () => database.categoryDao.insertCategory(category),
+        throwsA(isA<InvalidDataException>()),
+      );
+
+      final fromDb = await database.categoryDao.getAllCategories();
+      expect(fromDb, isEmpty);
+    });
+
+    test('Insertion without icon id must fail', () async {
+      final category = fix.category1.copyWith(iconId: Value.absent());
+
+      expect(
+        () async => await database.categoryDao.insertCategory(category),
+        throwsA(isA<InvalidDataException>()),
+      );
+    });
+
+    test('Insertion with defined id must use the id given', () async {
       final category = fix.category1.copyWith(id: Value(42));
 
       await fkUtils.insertCategoryFKDependencies(category);
@@ -76,7 +98,7 @@ void main() {
       expect(fromDb, orderedEquals([expected]));
     });
 
-    test('Insertion with duplicated id', () async {
+    test('Insertion with duplicated id must fail', () async {
       final category1 = fix.category1.copyWith(id: Value(42));
 
       await fkUtils.insertCategoryFKDependencies(category1);
@@ -107,27 +129,16 @@ void main() {
 
   group('Foreign Keys', () {
     test(
-      'Inserting category with icon id that does not have any reference '
-      'to the icon table must fail.',
-      () async {
-        final category = fix.category1;
+        'Insertion with icon id that does not have any reference '
+        'to the icon table must fail.', () async {
+      final category = fix.category1;
 
-        final iconFromDb = await database.iconDao.getIconById(category.iconId.value);
-        expect(iconFromDb, isNull);
-
-        expect(
-          () async => await database.categoryDao.insertCategory(category),
-          throwsA(isA<SqliteException>()),
-        );
-      },
-    );
-
-    test('Icon id must not be null', () async {
-      final category = fix.category1.copyWith(iconId: Value.absent());
+      final iconFromDb = await database.iconDao.getIconById(category.iconId.value);
+      expect(iconFromDb, isNull);
 
       expect(
         () async => await database.categoryDao.insertCategory(category),
-        throwsA(isA<InvalidDataException>()),
+        throwsA(isA<SqliteException>()),
       );
     });
   });
@@ -223,7 +234,6 @@ void main() {
   group('Update', () {
     final category1 = fix.category1;
     final category2 = fix.category2;
-    final category3 = fix.category3;
 
     setUp(() async {
       await fkUtils.insertCategoryFKDependencies(category1);
@@ -273,7 +283,7 @@ void main() {
     });
 
     test('Updating a category that does not exist', () async {
-      final newCategory = category3.copyWith(name: Value('New name'));
+      final newCategory = fix.category3.copyWith(name: Value('New name'));
       await fkUtils.insertCategoryFKDependencies(newCategory);
       final result = await database.categoryDao.updateCategory(newCategory);
       expect(result, isFalse);
