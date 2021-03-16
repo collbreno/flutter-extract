@@ -30,23 +30,6 @@ void main() {
   // getAllCategories because this method is just a select from the table,
   // so it's more reliable rather other queries methods.
   group('Insertion', () {
-    test(
-      'Inserting category with icon id that does not have any reference '
-      'to the icon table must fail.',
-      () async {
-        final category = fix.category1;
-
-        final iconFromDb =
-            await database.iconDao.getIconById(category.iconId.value);
-        expect(iconFromDb, isNull);
-
-        expect(
-          () async => await database.categoryDao.insertCategory(category),
-          throwsA(isA<SqliteException>()),
-        );
-      },
-    );
-
     test('Auto incremented insertion', () async {
       final category1 = fix.category1.copyWith(id: Value.absent());
       final category2 = fix.category2.copyWith(id: Value.absent());
@@ -122,6 +105,33 @@ void main() {
     });
   });
 
+  group('Foreign Keys', () {
+    test(
+      'Inserting category with icon id that does not have any reference '
+      'to the icon table must fail.',
+      () async {
+        final category = fix.category1;
+
+        final iconFromDb = await database.iconDao.getIconById(category.iconId.value);
+        expect(iconFromDb, isNull);
+
+        expect(
+          () async => await database.categoryDao.insertCategory(category),
+          throwsA(isA<SqliteException>()),
+        );
+      },
+    );
+
+    test('Icon id must not be null', () async {
+      final category = fix.category1.copyWith(iconId: Value.absent());
+
+      expect(
+        () async => await database.categoryDao.insertCategory(category),
+        throwsA(isA<InvalidDataException>()),
+      );
+    });
+  });
+
   group('Deletion', () {
     test('Simple deletion', () async {
       final category1 = fix.category1;
@@ -131,8 +141,7 @@ void main() {
       var fromDb = await database.categoryDao.getAllCategories();
       expect(fromDb, hasLength(1));
 
-      var result =
-          await database.categoryDao.deleteCategoryWithId(category1.id.value);
+      var result = await database.categoryDao.deleteCategoryWithId(category1.id.value);
       expect(result, 1);
 
       fromDb = await database.categoryDao.getAllCategories();
@@ -147,8 +156,7 @@ void main() {
       var fromDb = await database.categoryDao.getAllCategories();
       expect(fromDb, hasLength(1));
 
-      var result = await database.categoryDao
-          .deleteCategoryWithId(category1.id.value + 1);
+      var result = await database.categoryDao.deleteCategoryWithId(category1.id.value + 1);
       expect(result, 0);
 
       // Database is not affected
@@ -189,8 +197,7 @@ void main() {
       await fkUtils.insertCategoryFKDependencies(category2);
       await database.categoryDao.insertCategory(category2);
 
-      var result =
-          await database.categoryDao.getCategoryById(category1.id.value);
+      var result = await database.categoryDao.getCategoryById(category1.id.value);
       var expected = Category(
         id: category1.id.value,
         name: category1.name.value,
