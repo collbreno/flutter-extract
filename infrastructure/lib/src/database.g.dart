@@ -1728,8 +1728,13 @@ class $SubcategoriesTable extends Subcategories
 class Tag extends DataClass implements Insertable<Tag> {
   final int id;
   final String name;
+  final int color;
   final int iconId;
-  Tag({@required this.id, @required this.name, this.iconId});
+  Tag(
+      {@required this.id,
+      @required this.name,
+      @required this.color,
+      this.iconId});
   factory Tag.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -1738,6 +1743,7 @@ class Tag extends DataClass implements Insertable<Tag> {
     return Tag(
       id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       name: stringType.mapFromDatabaseResponse(data['${effectivePrefix}name']),
+      color: intType.mapFromDatabaseResponse(data['${effectivePrefix}color']),
       iconId:
           intType.mapFromDatabaseResponse(data['${effectivePrefix}icon_id']),
     );
@@ -1751,6 +1757,9 @@ class Tag extends DataClass implements Insertable<Tag> {
     if (!nullToAbsent || name != null) {
       map['name'] = Variable<String>(name);
     }
+    if (!nullToAbsent || color != null) {
+      map['color'] = Variable<int>(color);
+    }
     if (!nullToAbsent || iconId != null) {
       map['icon_id'] = Variable<int>(iconId);
     }
@@ -1761,6 +1770,8 @@ class Tag extends DataClass implements Insertable<Tag> {
     return TagsCompanion(
       id: id == null && nullToAbsent ? const Value.absent() : Value(id),
       name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      color:
+          color == null && nullToAbsent ? const Value.absent() : Value(color),
       iconId:
           iconId == null && nullToAbsent ? const Value.absent() : Value(iconId),
     );
@@ -1772,6 +1783,7 @@ class Tag extends DataClass implements Insertable<Tag> {
     return Tag(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
+      color: serializer.fromJson<int>(json['color']),
       iconId: serializer.fromJson<int>(json['iconId']),
     );
   }
@@ -1781,13 +1793,15 @@ class Tag extends DataClass implements Insertable<Tag> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'name': serializer.toJson<String>(name),
+      'color': serializer.toJson<int>(color),
       'iconId': serializer.toJson<int>(iconId),
     };
   }
 
-  Tag copyWith({int id, String name, int iconId}) => Tag(
+  Tag copyWith({int id, String name, int color, int iconId}) => Tag(
         id: id ?? this.id,
         name: name ?? this.name,
+        color: color ?? this.color,
         iconId: iconId ?? this.iconId,
       );
   @override
@@ -1795,54 +1809,66 @@ class Tag extends DataClass implements Insertable<Tag> {
     return (StringBuffer('Tag(')
           ..write('id: $id, ')
           ..write('name: $name, ')
+          ..write('color: $color, ')
           ..write('iconId: $iconId')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      $mrjf($mrjc(id.hashCode, $mrjc(name.hashCode, iconId.hashCode)));
+  int get hashCode => $mrjf($mrjc(id.hashCode,
+      $mrjc(name.hashCode, $mrjc(color.hashCode, iconId.hashCode))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is Tag &&
           other.id == this.id &&
           other.name == this.name &&
+          other.color == this.color &&
           other.iconId == this.iconId);
 }
 
 class TagsCompanion extends UpdateCompanion<Tag> {
   final Value<int> id;
   final Value<String> name;
+  final Value<int> color;
   final Value<int> iconId;
   const TagsCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
+    this.color = const Value.absent(),
     this.iconId = const Value.absent(),
   });
   TagsCompanion.insert({
     this.id = const Value.absent(),
     @required String name,
+    @required int color,
     this.iconId = const Value.absent(),
-  }) : name = Value(name);
+  })  : name = Value(name),
+        color = Value(color);
   static Insertable<Tag> custom({
     Expression<int> id,
     Expression<String> name,
+    Expression<int> color,
     Expression<int> iconId,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (name != null) 'name': name,
+      if (color != null) 'color': color,
       if (iconId != null) 'icon_id': iconId,
     });
   }
 
   TagsCompanion copyWith(
-      {Value<int> id, Value<String> name, Value<int> iconId}) {
+      {Value<int> id,
+      Value<String> name,
+      Value<int> color,
+      Value<int> iconId}) {
     return TagsCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
+      color: color ?? this.color,
       iconId: iconId ?? this.iconId,
     );
   }
@@ -1856,6 +1882,9 @@ class TagsCompanion extends UpdateCompanion<Tag> {
     if (name.present) {
       map['name'] = Variable<String>(name.value);
     }
+    if (color.present) {
+      map['color'] = Variable<int>(color.value);
+    }
     if (iconId.present) {
       map['icon_id'] = Variable<int>(iconId.value);
     }
@@ -1867,6 +1896,7 @@ class TagsCompanion extends UpdateCompanion<Tag> {
     return (StringBuffer('TagsCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
+          ..write('color: $color, ')
           ..write('iconId: $iconId')
           ..write(')'))
         .toString();
@@ -1895,6 +1925,18 @@ class $TagsTable extends Tags with TableInfo<$TagsTable, Tag> {
         minTextLength: 1, maxTextLength: 24);
   }
 
+  final VerificationMeta _colorMeta = const VerificationMeta('color');
+  GeneratedIntColumn _color;
+  @override
+  GeneratedIntColumn get color => _color ??= _constructColor();
+  GeneratedIntColumn _constructColor() {
+    return GeneratedIntColumn(
+      'color',
+      $tableName,
+      false,
+    );
+  }
+
   final VerificationMeta _iconIdMeta = const VerificationMeta('iconId');
   GeneratedIntColumn _iconId;
   @override
@@ -1905,7 +1947,7 @@ class $TagsTable extends Tags with TableInfo<$TagsTable, Tag> {
   }
 
   @override
-  List<GeneratedColumn> get $columns => [id, name, iconId];
+  List<GeneratedColumn> get $columns => [id, name, color, iconId];
   @override
   $TagsTable get asDslTable => this;
   @override
@@ -1925,6 +1967,12 @@ class $TagsTable extends Tags with TableInfo<$TagsTable, Tag> {
           _nameMeta, name.isAcceptableOrUnknown(data['name'], _nameMeta));
     } else if (isInserting) {
       context.missing(_nameMeta);
+    }
+    if (data.containsKey('color')) {
+      context.handle(
+          _colorMeta, color.isAcceptableOrUnknown(data['color'], _colorMeta));
+    } else if (isInserting) {
+      context.missing(_colorMeta);
     }
     if (data.containsKey('icon_id')) {
       context.handle(_iconIdMeta,
@@ -2219,6 +2267,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   ExpenseDao get expenseDao => _expenseDao ??= ExpenseDao(this as AppDatabase);
   IconDao _iconDao;
   IconDao get iconDao => _iconDao ??= IconDao(this as AppDatabase);
+  StoreDao _storeDao;
+  StoreDao get storeDao => _storeDao ??= StoreDao(this as AppDatabase);
+  PaymentMethodDao _paymentMethodDao;
+  PaymentMethodDao get paymentMethodDao =>
+      _paymentMethodDao ??= PaymentMethodDao(this as AppDatabase);
+  TagDao _tagDao;
+  TagDao get tagDao => _tagDao ??= TagDao(this as AppDatabase);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override

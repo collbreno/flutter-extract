@@ -20,6 +20,9 @@ part 'database.g.dart';
     SubcategoryDao,
     ExpenseDao,
     IconDao,
+    StoreDao,
+    PaymentMethodDao,
+    TagDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {

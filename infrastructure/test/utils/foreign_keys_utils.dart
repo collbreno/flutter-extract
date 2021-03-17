@@ -3,6 +3,7 @@ import 'package:moor/moor.dart';
 
 import 'fixture_category.dart';
 import 'fixture_icon.dart';
+import 'fixture_tag.dart';
 
 class ForeignKeyUtils {
   ForeignKeyUtils(this.database);
@@ -11,10 +12,13 @@ class ForeignKeyUtils {
 
   FixtureIcon _fixtureIcon;
   FixtureCategory _fixtureCategory;
+  FixtureTag _fixtureTag;
 
   FixtureIcon get fixtureIcon => _fixtureIcon ?? FixtureIcon();
 
   FixtureCategory get fixtureCategory => _fixtureCategory ?? FixtureCategory();
+
+  FixtureTag get fixtureTag => _fixtureTag ?? FixtureTag();
 
   Future<void> insertCategoryFKDependencies(CategoriesCompanion category) async {
     await _insertIconIfNeeded(category.iconId.value);
@@ -23,6 +27,10 @@ class ForeignKeyUtils {
   Future<void> insertSubcategoryFKDependencies(SubcategoriesCompanion subcategory) async {
     await _insertCategoryIfNeeded(subcategory.parentId.value);
     await _insertIconIfNeeded(subcategory.iconId.value);
+  }
+
+  Future<void> insertTagFKDependencies(TagsCompanion tag) async {
+    await _insertIconIfNeeded(tag.iconId.value);
   }
 
   Future<void> _insertIconIfNeeded(int iconId) async {

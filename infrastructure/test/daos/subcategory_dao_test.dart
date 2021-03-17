@@ -177,17 +177,20 @@ void main() {
   group('Deletion', () {
     test('Simple deletion', () async {
       final subcategory1 = fix.subcategory1;
+      final subcategory2 = fix.subcategory2;
       await fkUtils.insertSubcategoryFKDependencies(subcategory1);
+      await fkUtils.insertSubcategoryFKDependencies(subcategory2);
       await database.subcategoryDao.insertSubcategory(subcategory1);
+      await database.subcategoryDao.insertSubcategory(subcategory2);
 
       var fromDb = await database.subcategoryDao.getAllSubcategories();
-      expect(fromDb, hasLength(1));
+      expect(fromDb, hasLength(2));
 
       var result = await database.subcategoryDao.deleteSubcategoryWithId(subcategory1.id.value);
       expect(result, 1);
 
       fromDb = await database.subcategoryDao.getAllSubcategories();
-      expect(fromDb, isEmpty);
+      expect(fromDb, hasLength(1));
     });
 
     test('Deletion of an item that does not exist', () async {
@@ -337,6 +340,16 @@ void main() {
       final fromDb = await database.subcategoryDao.getAllSubcategories();
       final newExpected1 = expected1.copyWith(parentId: newParentId);
       expect(fromDb, orderedEquals([newExpected1, expected2]));
+    });
+
+    test('Updating an item that does not exist', () async {
+      final subcategory = fix.subcategory3;
+      final result = await database.subcategoryDao.updateSubcategory(subcategory);
+      expect(result, isFalse);
+
+      final fromDb = await database.subcategoryDao.getAllSubcategories();
+      // Database is not affected
+      expect(fromDb, orderedEquals([expected1, expected2]));
     });
   });
 }
