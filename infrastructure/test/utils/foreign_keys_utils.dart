@@ -33,6 +33,10 @@ class ForeignKeyUtils {
     await _insertIconIfNeeded(tag.iconId.value);
   }
 
+  Future<void> insertPaymentMethodFKDependencies(PaymentMethodsCompanion paymentMethods) async {
+    await _insertIconIfNeeded(paymentMethods.iconId.value);
+  }
+
   Future<void> _insertIconIfNeeded(int iconId) async {
     if (iconId != null) {
       final iconFromDb = await database.iconDao.getIconById(iconId);
