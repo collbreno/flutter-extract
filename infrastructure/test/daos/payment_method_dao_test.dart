@@ -85,7 +85,7 @@ void main() {
       expect(fromDb, orderedEquals([expected]));
     });
 
-    test('Insertion with defined id must use the id given', () async {
+    test('Insertion with defined id must use the given id', () async {
       final paymentMethod = fix.paymentMethod1.copyWith(id: Value(42));
 
       await fkUtils.insertPaymentMethodFKDependencies(paymentMethod);

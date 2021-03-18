@@ -96,7 +96,7 @@ void main() {
       expect(fromDb, isEmpty);
     });
 
-    test('Insertion with defined id must use the id given', () async {
+    test('Insertion with defined id must use the given id', () async {
       final subcategory = fix.subcategory1.copyWith(id: Value(42));
 
       await fkUtils.insertSubcategoryFKDependencies(subcategory);

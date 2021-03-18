@@ -81,7 +81,7 @@ void main() {
       );
     });
 
-    test('Insertion with defined id must use the id given', () async {
+    test('Insertion with defined id must use the given id', () async {
       final category = fix.category1.copyWith(id: Value(42));
 
       await fkUtils.insertCategoryFKDependencies(category);

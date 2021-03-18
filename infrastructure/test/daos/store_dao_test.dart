@@ -54,7 +54,7 @@ void main() {
       expect(fromDb, isEmpty);
     });
 
-    test('Insertion with defined id must use the id given', () async {
+    test('Insertion with defined id must use the given id', () async {
       final store = fix.store1.copyWith(id: Value(42));
 
       final result = await database.storeDao.insertStore(store);

@@ -85,7 +85,7 @@ void main() {
       expect(fromDb, orderedEquals([expected]));
     });
 
-    test('Insertion with defined id must use the id given', () async {
+    test('Insertion with defined id must use the given id', () async {
       final tag = fix.tag1.copyWith(id: Value(42));
 
       await fkUtils.insertTagFKDependencies(tag);
@@ -129,8 +129,8 @@ void main() {
         'to the icon table must fail.', () async {
       final tag = fix.tag1;
 
-      final parentFromDb = await database.iconDao.getIconById(tag.iconId.value);
-      expect(parentFromDb, isNull);
+      final iconFromDb = await database.iconDao.getIconById(tag.iconId.value);
+      expect(iconFromDb, isNull);
 
       expect(
         () => database.tagDao.insertTag(tag),
