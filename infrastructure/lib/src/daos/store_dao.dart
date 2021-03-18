@@ -10,23 +10,25 @@ class StoreDao extends DatabaseAccessor<AppDatabase> with _$StoreDaoMixin {
   StoreDao(this.db) : super(db);
 
   Future<List<Store>> getAllStores() {
-    throw UnimplementedError();
+    return select(stores).get();
   }
 
   Future<Store> getStoreById(int id) {
-    throw UnimplementedError();
+    final query = select(stores)..where((s) => s.id.equals(id));
+    return query.getSingle();
   }
 
   Future<int> insertStore(Insertable<Store> store) {
-    throw UnimplementedError();
+    return into(stores).insert(store);
   }
 
   Future<bool> updateStore(Insertable<Store> store) {
-    throw UnimplementedError();
+    return update(stores).replace(store);
   }
 
   Future<int> deleteStoreWithId(int id) {
-    throw UnimplementedError();
+    final query = delete(stores)..where((s) => s.id.equals(id));
+    return query.go();
   }
 
 }
