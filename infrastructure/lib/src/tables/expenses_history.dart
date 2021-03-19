@@ -4,7 +4,7 @@ import 'package:moor/moor.dart';
 class ExpensesHistory extends Table {
   IntColumn get id => integer().autoIncrement()();
 
-  IntColumn get expenseId => integer().autoIncrement()();
+  IntColumn get expenseId => integer()();
 
   TextColumn get description => text().withLength(min: 1, max: 400)();
 
@@ -21,7 +21,5 @@ class ExpensesHistory extends Table {
   IntColumn get storeId =>
       integer().nullable().customConstraint('NULL REFERENCES stores(id)')();
 
-  DateTimeColumn get createdAt => dateTime()();
-
-  DateTimeColumn get updatedAt => dateTime()();
+  DateTimeColumn get alteredAt => dateTime()();
 }

@@ -2237,6 +2237,546 @@ class $ExpenseTagsTable extends ExpenseTags
   }
 }
 
+class ExpenseHistory extends DataClass implements Insertable<ExpenseHistory> {
+  final int id;
+  final int expenseId;
+  final String description;
+  final int value;
+  final DateTime date;
+  final int paymentMethodId;
+  final int subcategoryId;
+  final int storeId;
+  final DateTime alteredAt;
+  ExpenseHistory(
+      {@required this.id,
+      @required this.expenseId,
+      @required this.description,
+      @required this.value,
+      @required this.date,
+      @required this.paymentMethodId,
+      @required this.subcategoryId,
+      this.storeId,
+      @required this.alteredAt});
+  factory ExpenseHistory.fromData(
+      Map<String, dynamic> data, GeneratedDatabase db,
+      {String prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final intType = db.typeSystem.forDartType<int>();
+    final stringType = db.typeSystem.forDartType<String>();
+    final dateTimeType = db.typeSystem.forDartType<DateTime>();
+    return ExpenseHistory(
+      id: intType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
+      expenseId:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}expense_id']),
+      description: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}description']),
+      value: intType.mapFromDatabaseResponse(data['${effectivePrefix}value']),
+      date:
+          dateTimeType.mapFromDatabaseResponse(data['${effectivePrefix}date']),
+      paymentMethodId: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}payment_method_id']),
+      subcategoryId: intType
+          .mapFromDatabaseResponse(data['${effectivePrefix}subcategory_id']),
+      storeId:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}store_id']),
+      alteredAt: dateTimeType
+          .mapFromDatabaseResponse(data['${effectivePrefix}altered_at']),
+    );
+  }
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || id != null) {
+      map['id'] = Variable<int>(id);
+    }
+    if (!nullToAbsent || expenseId != null) {
+      map['expense_id'] = Variable<int>(expenseId);
+    }
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    if (!nullToAbsent || value != null) {
+      map['value'] = Variable<int>(value);
+    }
+    if (!nullToAbsent || date != null) {
+      map['date'] = Variable<DateTime>(date);
+    }
+    if (!nullToAbsent || paymentMethodId != null) {
+      map['payment_method_id'] = Variable<int>(paymentMethodId);
+    }
+    if (!nullToAbsent || subcategoryId != null) {
+      map['subcategory_id'] = Variable<int>(subcategoryId);
+    }
+    if (!nullToAbsent || storeId != null) {
+      map['store_id'] = Variable<int>(storeId);
+    }
+    if (!nullToAbsent || alteredAt != null) {
+      map['altered_at'] = Variable<DateTime>(alteredAt);
+    }
+    return map;
+  }
+
+  ExpensesHistoryCompanion toCompanion(bool nullToAbsent) {
+    return ExpensesHistoryCompanion(
+      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
+      expenseId: expenseId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(expenseId),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      value:
+          value == null && nullToAbsent ? const Value.absent() : Value(value),
+      date: date == null && nullToAbsent ? const Value.absent() : Value(date),
+      paymentMethodId: paymentMethodId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(paymentMethodId),
+      subcategoryId: subcategoryId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(subcategoryId),
+      storeId: storeId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(storeId),
+      alteredAt: alteredAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(alteredAt),
+    );
+  }
+
+  factory ExpenseHistory.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return ExpenseHistory(
+      id: serializer.fromJson<int>(json['id']),
+      expenseId: serializer.fromJson<int>(json['expenseId']),
+      description: serializer.fromJson<String>(json['description']),
+      value: serializer.fromJson<int>(json['value']),
+      date: serializer.fromJson<DateTime>(json['date']),
+      paymentMethodId: serializer.fromJson<int>(json['paymentMethodId']),
+      subcategoryId: serializer.fromJson<int>(json['subcategoryId']),
+      storeId: serializer.fromJson<int>(json['storeId']),
+      alteredAt: serializer.fromJson<DateTime>(json['alteredAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'expenseId': serializer.toJson<int>(expenseId),
+      'description': serializer.toJson<String>(description),
+      'value': serializer.toJson<int>(value),
+      'date': serializer.toJson<DateTime>(date),
+      'paymentMethodId': serializer.toJson<int>(paymentMethodId),
+      'subcategoryId': serializer.toJson<int>(subcategoryId),
+      'storeId': serializer.toJson<int>(storeId),
+      'alteredAt': serializer.toJson<DateTime>(alteredAt),
+    };
+  }
+
+  ExpenseHistory copyWith(
+          {int id,
+          int expenseId,
+          String description,
+          int value,
+          DateTime date,
+          int paymentMethodId,
+          int subcategoryId,
+          int storeId,
+          DateTime alteredAt}) =>
+      ExpenseHistory(
+        id: id ?? this.id,
+        expenseId: expenseId ?? this.expenseId,
+        description: description ?? this.description,
+        value: value ?? this.value,
+        date: date ?? this.date,
+        paymentMethodId: paymentMethodId ?? this.paymentMethodId,
+        subcategoryId: subcategoryId ?? this.subcategoryId,
+        storeId: storeId ?? this.storeId,
+        alteredAt: alteredAt ?? this.alteredAt,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('ExpenseHistory(')
+          ..write('id: $id, ')
+          ..write('expenseId: $expenseId, ')
+          ..write('description: $description, ')
+          ..write('value: $value, ')
+          ..write('date: $date, ')
+          ..write('paymentMethodId: $paymentMethodId, ')
+          ..write('subcategoryId: $subcategoryId, ')
+          ..write('storeId: $storeId, ')
+          ..write('alteredAt: $alteredAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(
+      id.hashCode,
+      $mrjc(
+          expenseId.hashCode,
+          $mrjc(
+              description.hashCode,
+              $mrjc(
+                  value.hashCode,
+                  $mrjc(
+                      date.hashCode,
+                      $mrjc(
+                          paymentMethodId.hashCode,
+                          $mrjc(
+                              subcategoryId.hashCode,
+                              $mrjc(
+                                  storeId.hashCode, alteredAt.hashCode)))))))));
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      (other is ExpenseHistory &&
+          other.id == this.id &&
+          other.expenseId == this.expenseId &&
+          other.description == this.description &&
+          other.value == this.value &&
+          other.date == this.date &&
+          other.paymentMethodId == this.paymentMethodId &&
+          other.subcategoryId == this.subcategoryId &&
+          other.storeId == this.storeId &&
+          other.alteredAt == this.alteredAt);
+}
+
+class ExpensesHistoryCompanion extends UpdateCompanion<ExpenseHistory> {
+  final Value<int> id;
+  final Value<int> expenseId;
+  final Value<String> description;
+  final Value<int> value;
+  final Value<DateTime> date;
+  final Value<int> paymentMethodId;
+  final Value<int> subcategoryId;
+  final Value<int> storeId;
+  final Value<DateTime> alteredAt;
+  const ExpensesHistoryCompanion({
+    this.id = const Value.absent(),
+    this.expenseId = const Value.absent(),
+    this.description = const Value.absent(),
+    this.value = const Value.absent(),
+    this.date = const Value.absent(),
+    this.paymentMethodId = const Value.absent(),
+    this.subcategoryId = const Value.absent(),
+    this.storeId = const Value.absent(),
+    this.alteredAt = const Value.absent(),
+  });
+  ExpensesHistoryCompanion.insert({
+    this.id = const Value.absent(),
+    @required int expenseId,
+    @required String description,
+    @required int value,
+    @required DateTime date,
+    @required int paymentMethodId,
+    @required int subcategoryId,
+    this.storeId = const Value.absent(),
+    @required DateTime alteredAt,
+  })  : expenseId = Value(expenseId),
+        description = Value(description),
+        value = Value(value),
+        date = Value(date),
+        paymentMethodId = Value(paymentMethodId),
+        subcategoryId = Value(subcategoryId),
+        alteredAt = Value(alteredAt);
+  static Insertable<ExpenseHistory> custom({
+    Expression<int> id,
+    Expression<int> expenseId,
+    Expression<String> description,
+    Expression<int> value,
+    Expression<DateTime> date,
+    Expression<int> paymentMethodId,
+    Expression<int> subcategoryId,
+    Expression<int> storeId,
+    Expression<DateTime> alteredAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (expenseId != null) 'expense_id': expenseId,
+      if (description != null) 'description': description,
+      if (value != null) 'value': value,
+      if (date != null) 'date': date,
+      if (paymentMethodId != null) 'payment_method_id': paymentMethodId,
+      if (subcategoryId != null) 'subcategory_id': subcategoryId,
+      if (storeId != null) 'store_id': storeId,
+      if (alteredAt != null) 'altered_at': alteredAt,
+    });
+  }
+
+  ExpensesHistoryCompanion copyWith(
+      {Value<int> id,
+      Value<int> expenseId,
+      Value<String> description,
+      Value<int> value,
+      Value<DateTime> date,
+      Value<int> paymentMethodId,
+      Value<int> subcategoryId,
+      Value<int> storeId,
+      Value<DateTime> alteredAt}) {
+    return ExpensesHistoryCompanion(
+      id: id ?? this.id,
+      expenseId: expenseId ?? this.expenseId,
+      description: description ?? this.description,
+      value: value ?? this.value,
+      date: date ?? this.date,
+      paymentMethodId: paymentMethodId ?? this.paymentMethodId,
+      subcategoryId: subcategoryId ?? this.subcategoryId,
+      storeId: storeId ?? this.storeId,
+      alteredAt: alteredAt ?? this.alteredAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (expenseId.present) {
+      map['expense_id'] = Variable<int>(expenseId.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (value.present) {
+      map['value'] = Variable<int>(value.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<DateTime>(date.value);
+    }
+    if (paymentMethodId.present) {
+      map['payment_method_id'] = Variable<int>(paymentMethodId.value);
+    }
+    if (subcategoryId.present) {
+      map['subcategory_id'] = Variable<int>(subcategoryId.value);
+    }
+    if (storeId.present) {
+      map['store_id'] = Variable<int>(storeId.value);
+    }
+    if (alteredAt.present) {
+      map['altered_at'] = Variable<DateTime>(alteredAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExpensesHistoryCompanion(')
+          ..write('id: $id, ')
+          ..write('expenseId: $expenseId, ')
+          ..write('description: $description, ')
+          ..write('value: $value, ')
+          ..write('date: $date, ')
+          ..write('paymentMethodId: $paymentMethodId, ')
+          ..write('subcategoryId: $subcategoryId, ')
+          ..write('storeId: $storeId, ')
+          ..write('alteredAt: $alteredAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ExpensesHistoryTable extends ExpensesHistory
+    with TableInfo<$ExpensesHistoryTable, ExpenseHistory> {
+  final GeneratedDatabase _db;
+  final String _alias;
+  $ExpensesHistoryTable(this._db, [this._alias]);
+  final VerificationMeta _idMeta = const VerificationMeta('id');
+  GeneratedIntColumn _id;
+  @override
+  GeneratedIntColumn get id => _id ??= _constructId();
+  GeneratedIntColumn _constructId() {
+    return GeneratedIntColumn('id', $tableName, false,
+        hasAutoIncrement: true, declaredAsPrimaryKey: true);
+  }
+
+  final VerificationMeta _expenseIdMeta = const VerificationMeta('expenseId');
+  GeneratedIntColumn _expenseId;
+  @override
+  GeneratedIntColumn get expenseId => _expenseId ??= _constructExpenseId();
+  GeneratedIntColumn _constructExpenseId() {
+    return GeneratedIntColumn(
+      'expense_id',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  GeneratedTextColumn _description;
+  @override
+  GeneratedTextColumn get description =>
+      _description ??= _constructDescription();
+  GeneratedTextColumn _constructDescription() {
+    return GeneratedTextColumn('description', $tableName, false,
+        minTextLength: 1, maxTextLength: 400);
+  }
+
+  final VerificationMeta _valueMeta = const VerificationMeta('value');
+  GeneratedIntColumn _value;
+  @override
+  GeneratedIntColumn get value => _value ??= _constructValue();
+  GeneratedIntColumn _constructValue() {
+    return GeneratedIntColumn(
+      'value',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _dateMeta = const VerificationMeta('date');
+  GeneratedDateTimeColumn _date;
+  @override
+  GeneratedDateTimeColumn get date => _date ??= _constructDate();
+  GeneratedDateTimeColumn _constructDate() {
+    return GeneratedDateTimeColumn(
+      'date',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _paymentMethodIdMeta =
+      const VerificationMeta('paymentMethodId');
+  GeneratedIntColumn _paymentMethodId;
+  @override
+  GeneratedIntColumn get paymentMethodId =>
+      _paymentMethodId ??= _constructPaymentMethodId();
+  GeneratedIntColumn _constructPaymentMethodId() {
+    return GeneratedIntColumn('payment_method_id', $tableName, false,
+        $customConstraints: 'REFERENCES payment_methods(id)');
+  }
+
+  final VerificationMeta _subcategoryIdMeta =
+      const VerificationMeta('subcategoryId');
+  GeneratedIntColumn _subcategoryId;
+  @override
+  GeneratedIntColumn get subcategoryId =>
+      _subcategoryId ??= _constructSubcategoryId();
+  GeneratedIntColumn _constructSubcategoryId() {
+    return GeneratedIntColumn('subcategory_id', $tableName, false,
+        $customConstraints: 'REFERENCES subcategories(id)');
+  }
+
+  final VerificationMeta _storeIdMeta = const VerificationMeta('storeId');
+  GeneratedIntColumn _storeId;
+  @override
+  GeneratedIntColumn get storeId => _storeId ??= _constructStoreId();
+  GeneratedIntColumn _constructStoreId() {
+    return GeneratedIntColumn('store_id', $tableName, true,
+        $customConstraints: 'NULL REFERENCES stores(id)');
+  }
+
+  final VerificationMeta _alteredAtMeta = const VerificationMeta('alteredAt');
+  GeneratedDateTimeColumn _alteredAt;
+  @override
+  GeneratedDateTimeColumn get alteredAt => _alteredAt ??= _constructAlteredAt();
+  GeneratedDateTimeColumn _constructAlteredAt() {
+    return GeneratedDateTimeColumn(
+      'altered_at',
+      $tableName,
+      false,
+    );
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        expenseId,
+        description,
+        value,
+        date,
+        paymentMethodId,
+        subcategoryId,
+        storeId,
+        alteredAt
+      ];
+  @override
+  $ExpensesHistoryTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'expenses_history';
+  @override
+  final String actualTableName = 'expenses_history';
+  @override
+  VerificationContext validateIntegrity(Insertable<ExpenseHistory> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
+    }
+    if (data.containsKey('expense_id')) {
+      context.handle(_expenseIdMeta,
+          expenseId.isAcceptableOrUnknown(data['expense_id'], _expenseIdMeta));
+    } else if (isInserting) {
+      context.missing(_expenseIdMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description'], _descriptionMeta));
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
+    }
+    if (data.containsKey('value')) {
+      context.handle(
+          _valueMeta, value.isAcceptableOrUnknown(data['value'], _valueMeta));
+    } else if (isInserting) {
+      context.missing(_valueMeta);
+    }
+    if (data.containsKey('date')) {
+      context.handle(
+          _dateMeta, date.isAcceptableOrUnknown(data['date'], _dateMeta));
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    if (data.containsKey('payment_method_id')) {
+      context.handle(
+          _paymentMethodIdMeta,
+          paymentMethodId.isAcceptableOrUnknown(
+              data['payment_method_id'], _paymentMethodIdMeta));
+    } else if (isInserting) {
+      context.missing(_paymentMethodIdMeta);
+    }
+    if (data.containsKey('subcategory_id')) {
+      context.handle(
+          _subcategoryIdMeta,
+          subcategoryId.isAcceptableOrUnknown(
+              data['subcategory_id'], _subcategoryIdMeta));
+    } else if (isInserting) {
+      context.missing(_subcategoryIdMeta);
+    }
+    if (data.containsKey('store_id')) {
+      context.handle(_storeIdMeta,
+          storeId.isAcceptableOrUnknown(data['store_id'], _storeIdMeta));
+    }
+    if (data.containsKey('altered_at')) {
+      context.handle(_alteredAtMeta,
+          alteredAt.isAcceptableOrUnknown(data['altered_at'], _alteredAtMeta));
+    } else if (isInserting) {
+      context.missing(_alteredAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ExpenseHistory map(Map<String, dynamic> data, {String tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return ExpenseHistory.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  $ExpensesHistoryTable createAlias(String alias) {
+    return $ExpensesHistoryTable(_db, alias);
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
   $CategoriesTable _categories;
@@ -2257,6 +2797,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   $TagsTable get tags => _tags ??= $TagsTable(this);
   $ExpenseTagsTable _expenseTags;
   $ExpenseTagsTable get expenseTags => _expenseTags ??= $ExpenseTagsTable(this);
+  $ExpensesHistoryTable _expensesHistory;
+  $ExpensesHistoryTable get expensesHistory =>
+      _expensesHistory ??= $ExpensesHistoryTable(this);
   CategoryDao _categoryDao;
   CategoryDao get categoryDao =>
       _categoryDao ??= CategoryDao(this as AppDatabase);
@@ -2274,6 +2817,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       _paymentMethodDao ??= PaymentMethodDao(this as AppDatabase);
   TagDao _tagDao;
   TagDao get tagDao => _tagDao ??= TagDao(this as AppDatabase);
+  ExpensesHistoryDao _expensesHistoryDao;
+  ExpensesHistoryDao get expensesHistoryDao =>
+      _expensesHistoryDao ??= ExpensesHistoryDao(this as AppDatabase);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
@@ -2285,6 +2831,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         stores,
         subcategories,
         tags,
-        expenseTags
+        expenseTags,
+        expensesHistory
       ];
 }

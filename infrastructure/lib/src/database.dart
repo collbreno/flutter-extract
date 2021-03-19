@@ -1,5 +1,5 @@
 import 'package:infrastructure/infrastructure.dart';
-import 'package:moor/moor.dart';
+import 'package:infrastructure/src/triggers/expenses_triggers.dart';
 import 'package:moor/moor.dart';
 
 part 'database.g.dart';
@@ -14,6 +14,7 @@ part 'database.g.dart';
     Subcategories,
     Tags,
     ExpenseTags,
+    ExpensesHistory,
   ],
   daos: [
     CategoryDao,
@@ -23,6 +24,7 @@ part 'database.g.dart';
     StoreDao,
     PaymentMethodDao,
     TagDao,
+    ExpensesHistoryDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -39,6 +41,14 @@ class AppDatabase extends _$AppDatabase {
       },
       onCreate: (m) async {
         await m.createAll();
+        await m.createTrigger(Trigger(
+          ExpensesTriggers.save_history_after_update_expense,
+          'save_history_after_update_expense',
+        ));
+        await m.createTrigger(Trigger(
+          ExpensesTriggers.save_history_after_delete_expense,
+          'save_history_after_delete_expense',
+        ));
       },
     );
   }

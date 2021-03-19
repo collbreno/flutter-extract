@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart' hide Category;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:infrastructure/infrastructure.dart';
 import 'package:moor/ffi.dart';
@@ -6,7 +5,6 @@ import 'package:moor/moor.dart' hide isNull;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../utils/fixture_category.dart';
-import '../utils/fixture_icon.dart';
 import '../utils/foreign_keys_utils.dart';
 
 void main() {
