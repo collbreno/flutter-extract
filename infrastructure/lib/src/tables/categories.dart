@@ -1,5 +1,4 @@
 import 'package:moor/moor.dart';
-import 'package:moor/moor.dart';
 
 @DataClassName('Category')
 class Categories extends Table {

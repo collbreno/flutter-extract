@@ -1,9 +1,5 @@
 import 'package:moor/moor.dart';
-
-import 'fixture_category.dart';
 import 'package:infrastructure/infrastructure.dart';
-
-import 'fixture_date_time.dart';
 
 class FixtureExpense {
   final expense1 = ExpensesCompanion(
