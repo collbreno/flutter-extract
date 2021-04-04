@@ -37,7 +37,7 @@ void main() {
       expect(result, 1);
 
       var fromDb = await database.categoryDao.getAllCategories();
-      final expected1 = Category(
+      final expected1 = CategoryEntity(
         id: 1,
         iconId: category1.iconId.value,
         name: category1.name.value,
@@ -49,7 +49,7 @@ void main() {
       expect(result, 2);
 
       fromDb = await database.categoryDao.getAllCategories();
-      final expected2 = Category(
+      final expected2 = CategoryEntity(
         id: 2,
         iconId: category2.iconId.value,
         name: category2.name.value,
@@ -87,7 +87,7 @@ void main() {
       expect(result, 42);
 
       final fromDb = await database.categoryDao.getAllCategories();
-      final expected = Category(
+      final expected = CategoryEntity(
         id: category.id.value,
         iconId: category.iconId.value,
         name: category.name.value,
@@ -103,7 +103,7 @@ void main() {
       final result = await database.categoryDao.insertCategory(category1);
       expect(result, 42);
 
-      final expected1 = Category(
+      final expected1 = CategoryEntity(
         id: category1.id.value,
         iconId: category1.iconId.value,
         name: category1.name.value,
@@ -207,7 +207,7 @@ void main() {
       await database.categoryDao.insertCategory(category2);
 
       var result = await database.categoryDao.getCategoryById(category1.id.value);
-      var expected = Category(
+      var expected = CategoryEntity(
         id: category1.id.value,
         name: category1.name.value,
         iconId: category1.iconId.value,
@@ -215,7 +215,7 @@ void main() {
       expect(result, expected);
 
       result = await database.categoryDao.getCategoryById(category2.id.value);
-      expected = Category(
+      expected = CategoryEntity(
         id: category2.id.value,
         name: category2.name.value,
         iconId: category2.iconId.value,
@@ -247,12 +247,12 @@ void main() {
       expect(result, isTrue);
 
       final fromDb = await database.categoryDao.getAllCategories();
-      final expected1 = Category(
+      final expected1 = CategoryEntity(
         id: category1.id.value,
         iconId: category1.iconId.value,
         name: newCategory.name.value,
       );
-      final expected2 = Category(
+      final expected2 = CategoryEntity(
         id: category2.id.value,
         iconId: category2.iconId.value,
         name: category2.name.value,
@@ -267,12 +267,12 @@ void main() {
       expect(result, isTrue);
 
       final fromDb = await database.categoryDao.getAllCategories();
-      final expected1 = Category(
+      final expected1 = CategoryEntity(
         id: category1.id.value,
         iconId: newCategory.iconId.value,
         name: category1.name.value,
       );
-      final expected2 = Category(
+      final expected2 = CategoryEntity(
         id: category2.id.value,
         iconId: category2.iconId.value,
         name: category2.name.value,
@@ -287,12 +287,12 @@ void main() {
       expect(result, isFalse);
 
       final fromDb = await database.categoryDao.getAllCategories();
-      final expected1 = Category(
+      final expected1 = CategoryEntity(
         id: category1.id.value,
         iconId: category1.iconId.value,
         name: category1.name.value,
       );
-      final expected2 = Category(
+      final expected2 = CategoryEntity(
         id: category2.id.value,
         iconId: category2.iconId.value,
         name: category2.name.value,

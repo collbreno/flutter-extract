@@ -9,7 +9,7 @@ class CategoryDao extends DatabaseAccessor<AppDatabase> with _$CategoryDaoMixin 
 
   CategoryDao(this.db) : super(db);
 
-  Future<List<Category>> getAllCategories() => select(categories).get();
+  Future<List<CategoryEntity>> getAllCategories() => select(categories).get();
 
   Future<int> getCategoriesAmount() {
     final count = categories.id.count();
@@ -17,9 +17,9 @@ class CategoryDao extends DatabaseAccessor<AppDatabase> with _$CategoryDaoMixin 
     return query.map((row) => row.read(count)).getSingle();
   }
 
-  Future<int> insertCategory(Insertable<Category> category) => into(categories).insert(category);
+  Future<int> insertCategory(Insertable<CategoryEntity> category) => into(categories).insert(category);
 
-  Future<bool> updateCategory(Insertable<Category> category) =>
+  Future<bool> updateCategory(Insertable<CategoryEntity> category) =>
       update(categories).replace(category);
 
   Future<int> deleteCategoryWithId(int id) {
@@ -27,7 +27,7 @@ class CategoryDao extends DatabaseAccessor<AppDatabase> with _$CategoryDaoMixin 
     return query.go();
   }
 
-  Future<Category> getCategoryById(int id) {
+  Future<CategoryEntity> getCategoryById(int id) {
     final query = select(categories)..where((c) => c.id.equals(id));
     return query.getSingle();
   }

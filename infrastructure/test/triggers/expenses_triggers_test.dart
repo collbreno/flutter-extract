@@ -203,8 +203,8 @@ void main() {
 }
 
 extension on ExpensesCompanion {
-  ExpenseHistory toHistory(int id) {
-    return ExpenseHistory(
+  ExpenseHistoryEntity toHistory(int id) {
+    return ExpenseHistoryEntity(
       id: id,
       description: description.value,
       value: value.value,

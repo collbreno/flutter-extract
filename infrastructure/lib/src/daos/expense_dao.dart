@@ -9,20 +9,20 @@ class ExpenseDao extends DatabaseAccessor<AppDatabase> with _$ExpenseDaoMixin {
 
   ExpenseDao(this.db) : super(db);
 
-  Future<List<Expense>> getAllExpenses() {
+  Future<List<ExpenseEntity>> getAllExpenses() {
     return select(expenses).get();
   }
 
-  Future<Expense> getExpenseById(int id) {
+  Future<ExpenseEntity> getExpenseById(int id) {
     final query = select(expenses)..where((e) => e.id.equals(id));
     return query.getSingle();
   }
 
-  Future<int> insertExpense(Insertable<Expense> expense) {
+  Future<int> insertExpense(Insertable<ExpenseEntity> expense) {
     return into(expenses).insert(expense);
   }
 
-  Future<bool> updateExpense(Insertable<Expense> expense) {
+  Future<bool> updateExpense(Insertable<ExpenseEntity> expense) {
     return update(expenses).replace(expense);
   }
 

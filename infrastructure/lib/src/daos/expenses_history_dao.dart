@@ -10,7 +10,7 @@ class ExpensesHistoryDao extends DatabaseAccessor<AppDatabase> with _$ExpensesHi
 
   ExpensesHistoryDao(this.db) : super(db);
 
-  Future<List<ExpenseHistory>> getAllExpensesHistory() {
+  Future<List<ExpenseHistoryEntity>> getAllExpensesHistory() {
     return select(expensesHistory).get();
   }
 
