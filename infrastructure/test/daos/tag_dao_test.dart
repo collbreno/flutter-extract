@@ -260,13 +260,13 @@ void main() {
 }
 
 extension on TagsCompanion {
-  Tag convert({
+  TagEntity convert({
     int id,
     int iconId,
     int color,
     String name,
   }) {
-    return Tag(
+    return TagEntity(
       id: id ?? this.id.value,
       iconId: iconId ?? this.iconId.value,
       color: color ?? this.color.value,
