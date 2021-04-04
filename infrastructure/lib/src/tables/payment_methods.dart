@@ -1,5 +1,6 @@
 import 'package:moor/moor.dart';
 
+@DataClassName('PaymentMethodEntity')
 class PaymentMethods extends Table {
   IntColumn get id => integer().autoIncrement()();
 

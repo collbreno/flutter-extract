@@ -262,13 +262,13 @@ void main() {
 }
 
 extension on PaymentMethodsCompanion {
-  PaymentMethod convert({
+  PaymentMethodEntity convert({
     int id,
     int iconId,
     int color,
     String name,
   }) {
-    return PaymentMethod(
+    return PaymentMethodEntity(
       id: id ?? this.id.value,
       iconId: iconId ?? this.iconId.value,
       color: color ?? this.color.value,
