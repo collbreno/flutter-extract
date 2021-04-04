@@ -395,7 +395,7 @@ void main() {
 }
 
 extension on ExpensesCompanion {
-  Expense convert({
+  ExpenseEntity convert({
     int id,
     String description,
     int value,
@@ -406,7 +406,7 @@ extension on ExpensesCompanion {
     DateTime createdAt,
     DateTime updatedAt,
   }) {
-    return Expense(
+    return ExpenseEntity(
       id: id ?? this.id.value,
       description: description ?? this.description.value,
       value: value ?? this.value.value,

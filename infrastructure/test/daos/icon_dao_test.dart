@@ -30,7 +30,7 @@ void main() {
       var result = await database.iconDao.insertIcon(icon1);
       expect(result, 1);
 
-      final expected1 = Icon(
+      final expected1 = IconEntity(
         id: 1,
         family: icon1.family.value,
         name: icon1.name.value,
@@ -41,7 +41,7 @@ void main() {
       result = await database.iconDao.insertIcon(icon2);
       expect(result, 2);
 
-      final expected2 = Icon(
+      final expected2 = IconEntity(
         id: 2,
         family: icon2.family.value,
         name: icon2.name.value,
@@ -81,7 +81,7 @@ void main() {
       expect(result, 42);
 
       final fromDb = await database.iconDao.getAllIcons();
-      final expected = Icon(
+      final expected = IconEntity(
         id: 42,
         family: icon.family.value,
         name: icon.name.value,
@@ -96,7 +96,7 @@ void main() {
       final result = await database.iconDao.insertIcon(icon1);
       expect(result, 42);
 
-      final expected1 = Icon(
+      final expected1 = IconEntity(
         id: icon1.id.value,
         name: icon1.name.value,
         family: icon1.family.value,
@@ -150,12 +150,12 @@ void main() {
   group('Update', () {
     final icon1 = fix.icon1;
     final icon2 = fix.icon2;
-    final expected1 = Icon(
+    final expected1 = IconEntity(
       id: icon1.id.value,
       name: icon1.name.value,
       family: icon1.family.value,
     );
-    final expected2 = Icon(
+    final expected2 = IconEntity(
       id: icon2.id.value,
       name: icon2.name.value,
       family: icon2.family.value,
@@ -206,7 +206,7 @@ void main() {
       await database.iconDao.insertIcon(icon2);
 
       var result = await database.iconDao.getIconById(icon1.id.value);
-      var expected = Icon(
+      var expected = IconEntity(
         id: icon1.id.value,
         family: icon1.family.value,
         name: icon1.name.value,
@@ -214,7 +214,7 @@ void main() {
       expect(result, expected);
 
       result = await database.iconDao.getIconById(icon2.id.value);
-      expected = Icon(
+      expected = IconEntity(
         id: icon2.id.value,
         family: icon2.family.value,
         name: icon2.name.value,

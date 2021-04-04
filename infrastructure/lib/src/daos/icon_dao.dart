@@ -9,20 +9,20 @@ class IconDao extends DatabaseAccessor<AppDatabase> with _$IconDaoMixin {
 
   IconDao(this.db) : super(db);
 
-  Future<List<Icon>> getAllIcons() {
+  Future<List<IconEntity>> getAllIcons() {
     return select(icons).get();
   }
 
-  Future<Icon> getIconById(int id) {
+  Future<IconEntity> getIconById(int id) {
     final query = select(icons)..where((i) => i.id.equals(id));
     return query.getSingle();
   }
 
-  Future<int> insertIcon(Insertable<Icon> icon) {
+  Future<int> insertIcon(Insertable<IconEntity> icon) {
     return into(icons).insert(icon);
   }
 
-  Future<bool> updateIcon(Insertable<Icon> icon) {
+  Future<bool> updateIcon(Insertable<IconEntity> icon) {
     return update(icons).replace(icon);
   }
 

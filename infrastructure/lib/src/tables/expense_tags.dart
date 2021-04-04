@@ -1,8 +1,8 @@
 import 'package:moor/moor.dart';
 
+@DataClassName('ExpenseTagEntity')
 class ExpenseTags extends Table {
-  IntColumn get expenseId =>
-      integer().customConstraint('REFERENCES expenses(id)')();
+  IntColumn get expenseId => integer().customConstraint('REFERENCES expenses(id)')();
 
   IntColumn get tagId => integer().customConstraint('REFERENCES tags(id)')();
 

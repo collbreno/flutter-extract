@@ -1,5 +1,6 @@
 import 'package:moor/moor.dart';
 
+@DataClassName('FileEntity')
 class Files extends Table {
   IntColumn get id => integer().autoIncrement()();
 
