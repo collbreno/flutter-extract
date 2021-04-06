@@ -179,11 +179,11 @@ void main() {
 }
 
 extension on StoresCompanion {
-  Store convert({
+  StoreEntity convert({
     int id,
     String name,
   }) {
-    return Store(
+    return StoreEntity(
       id: id ?? this.id.value,
       name: name ?? this.name.value,
     );

@@ -9,20 +9,20 @@ class SubcategoryDao extends DatabaseAccessor<AppDatabase> with _$SubcategoryDao
 
   SubcategoryDao(this.db) : super(db);
 
-  Future<List<Subcategory>> getAllSubcategories() {
+  Future<List<SubcategoryEntity>> getAllSubcategories() {
     return select(subcategories).get();
   }
 
-  Future<List<Subcategory>> getSubcategoriesByParentId(int parentId) {
+  Future<List<SubcategoryEntity>> getSubcategoriesByParentId(int parentId) {
     final query = select(subcategories)..where((s) => s.parentId.equals(parentId));
     return query.get();
   }
 
-  Future<int> insertSubcategory(Insertable<Subcategory> subcategory) {
+  Future<int> insertSubcategory(Insertable<SubcategoryEntity> subcategory) {
     return into(subcategories).insert(subcategory);
   }
 
-  Future<bool> updateSubcategory(Insertable<Subcategory> subcategory) {
+  Future<bool> updateSubcategory(Insertable<SubcategoryEntity> subcategory) {
     return update(subcategories).replace(subcategory);
   }
 
@@ -31,7 +31,7 @@ class SubcategoryDao extends DatabaseAccessor<AppDatabase> with _$SubcategoryDao
     return query.go();
   }
 
-  Future<Subcategory> getSubcategoryById(int id) {
+  Future<SubcategoryEntity> getSubcategoryById(int id) {
     final query = select(subcategories)..where((s) => s.id.equals(id));
     return query.getSingle();
   }
