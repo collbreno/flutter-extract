@@ -9,20 +9,20 @@ class PaymentMethodDao extends DatabaseAccessor<AppDatabase> with _$PaymentMetho
 
   PaymentMethodDao(this.db) : super(db);
 
-  Future<List<PaymentMethod>> getAllPaymentMethods() {
+  Future<List<PaymentMethodEntity>> getAllPaymentMethods() {
     return select(paymentMethods).get();
   }
 
-  Future<PaymentMethod> getPaymentMethodById(int id) {
+  Future<PaymentMethodEntity> getPaymentMethodById(int id) {
     final query = select(paymentMethods)..where((pm) => pm.id.equals(id));
     return query.getSingle();
   }
 
-  Future<int> insertPaymentMethod(Insertable<PaymentMethod> paymentMethod) {
+  Future<int> insertPaymentMethod(Insertable<PaymentMethodEntity> paymentMethod) {
     return into(paymentMethods).insert(paymentMethod);
   }
 
-  Future<bool> updatePaymentMethod(Insertable<PaymentMethod> paymentMethod) {
+  Future<bool> updatePaymentMethod(Insertable<PaymentMethodEntity> paymentMethod) {
     return update(paymentMethods).replace(paymentMethod);
   }
 
