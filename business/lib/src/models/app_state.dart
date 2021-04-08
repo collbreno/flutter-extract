@@ -5,17 +5,21 @@ import 'package:infrastructure/infrastructure.dart';
 part 'app_state.g.dart';
 
 abstract class AppState implements Built<AppState, AppStateBuilder> {
-  BuiltList<Tag> get tags;
-
-  BuiltList<Subcategory> get subcategories;
-
-  BuiltList<Category> get categories;
+  BuiltList<IconEntity> get icons;
+  BuiltList<ExpenseEntity> get expenses;
+  BuiltList<TagEntity> get tags;
+  BuiltList<SubcategoryEntity> get subcategories;
+  BuiltList<CategoryEntity> get categories;
+  BuiltList<ExpenseTagEntity> get expenseTags;
 
   AppState._();
 
   factory AppState({
-    BuiltList<Tag> tags,
-    BuiltList<Subcategory> subcategories,
-    BuiltList<Category> categories,
+    BuiltList<IconEntity> icons,
+    BuiltList<ExpenseEntity> expenses,
+    BuiltList<TagEntity> tags,
+    BuiltList<SubcategoryEntity> subcategories,
+    BuiltList<CategoryEntity> categories,
+    BuiltList<ExpenseTagEntity> expenseTags,
   }) = _$AppState._;
 }
