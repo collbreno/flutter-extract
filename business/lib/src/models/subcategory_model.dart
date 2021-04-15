@@ -1,22 +1,38 @@
 import 'package:built_value/built_value.dart';
-import 'package:business/src/models/category_model.dart';
-import 'package:business/src/models/icon_model.dart';
-import 'package:flutter/material.dart' hide Builder;
+import 'package:infrastructure/infrastructure.dart';
 
 part 'subcategory_model.g.dart';
 
 abstract class SubcategoryModel implements Built<SubcategoryModel, SubcategoryModelBuilder> {
   int get id;
   String get name;
-  AsyncSnapshot<IconModel> get icon;
-  AsyncSnapshot<CategoryModel> get category;
+  int get iconId;
+  int get parentId;
 
   SubcategoryModel._();
+
+  SubcategoryEntity toEntity() {
+    return SubcategoryEntity(
+      id: id,
+      name: name,
+      iconId: iconId,
+      parentId: parentId,
+    );
+  }
+
+  factory SubcategoryModel.fromEntity(SubcategoryEntity entity) {
+    return SubcategoryModel(
+      name: entity.name,
+      iconId: entity.iconId,
+      id: entity.id,
+      parentId: entity.parentId,
+    );
+  }
 
   factory SubcategoryModel({
     int id,
     String name,
-    AsyncSnapshot<IconModel> icon,
-    AsyncSnapshot<CategoryModel> category,
+    int iconId,
+    int parentId,
   }) = _$SubcategoryModel._;
 }

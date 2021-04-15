@@ -15,19 +15,9 @@ class IconConverter {
     );
 
     if (icon != null) {
-      return AsyncSnapshot.withData(ConnectionState.done, convert(icon));
+      return AsyncSnapshot.withData(ConnectionState.done, icon);
     } else {
-      return AsyncSnapshot.waiting();
+      return AsyncSnapshot.nothing();
     }
-  }
-
-  IconModel convert(IconEntity iconEntity) {
-    if (iconEntity.family == 'MaterialIcons') {
-      return IconModel(
-        id: iconEntity.id,
-        iconData: Icons.adb,
-      );
-    }
-    return null;
   }
 }
