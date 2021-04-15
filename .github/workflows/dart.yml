@@ -60,7 +60,7 @@ jobs:
 
         
   build_ui:
-    needs: [build_infrastructure, build_business]
+    needs: [build_infrastructure]
     runs-on: ubuntu-latest
 
     steps:
