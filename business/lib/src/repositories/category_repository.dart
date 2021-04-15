@@ -1,4 +1,3 @@
-import 'package:business/business.dart';
 import 'package:infrastructure/infrastructure.dart';
 
 class CategoryRepository {

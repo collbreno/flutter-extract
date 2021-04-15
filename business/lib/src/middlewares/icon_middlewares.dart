@@ -1,7 +1,6 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:business/business.dart';
 import 'package:business/src/actions/icon_actions.dart';
-import 'package:business/src/repositories/icon_repository.dart';
 import 'package:infrastructure/infrastructure.dart';
 import 'package:redux/redux.dart';
 

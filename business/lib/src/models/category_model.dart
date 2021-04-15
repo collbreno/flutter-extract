@@ -1,5 +1,4 @@
 import 'package:built_value/built_value.dart';
-import 'package:flutter/material.dart' hide Builder;
 import 'package:infrastructure/infrastructure.dart';
 
 part 'category_model.g.dart';

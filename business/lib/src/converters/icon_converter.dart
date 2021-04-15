@@ -1,6 +1,5 @@
 import 'package:business/business.dart';
 import 'package:flutter/material.dart';
-import 'package:infrastructure/infrastructure.dart' hide Icons;
 import 'package:redux/redux.dart';
 
 class IconConverter {

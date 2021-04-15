@@ -1,9 +1,4 @@
 import 'package:built_value/built_value.dart';
-import 'package:business/src/models/payment_method_model.dart';
-import 'package:business/src/models/store_model.dart';
-import 'package:business/src/models/subcategory_model.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart' hide Builder;
 import 'package:infrastructure/infrastructure.dart';
 
 part 'expense_model.g.dart';
