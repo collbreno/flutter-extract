@@ -22,37 +22,37 @@ jobs:
         with:
           flutter-version: '1.22.4'
 
-      - name: Install dependencies
+      - name: Install dependencies in infrastructure
         run: cd infrastructure && flutter pub get
 
-      - name: Generate dart files
+      - name: Generate dart files in infrastructure 
         run: cd infrastructure && flutter pub run build_runner build
 
-      - name: Analyze project source
+      - name: Analyze project source in infrastructure
         run: cd infrastructure && flutter analyze
 
-      - name: Run tests
+      - name: Run tests in infrastructure
         run: cd infrastructure && flutter test
 
         
-  build_business:
-    needs: build_infrastructure
-    runs-on: ubuntu-latest
+  # build_business:
+  #   needs: build_infrastructure
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v2
+  #   steps:
+  #     - uses: actions/checkout@v2
 
-      - uses: subosito/flutter-action@v1.4.0
-        with:
-          flutter-version: '1.22.4'
+  #     - uses: subosito/flutter-action@v1.4.0
+  #       with:
+  #         flutter-version: '1.22.4'
 
-      - name: Install dependencies
+      - name: Install dependencies in business
         run: cd business && flutter pub get
 
-      - name: Generate dart files
+      - name: Generate dart files in business
         run: cd business && flutter pub run build_runner build
 
-      - name: Analyze project source
+      - name: Analyze project source in business
         run: cd business && flutter analyze
 
       # - name: Run tests
