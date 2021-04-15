@@ -1,6 +1,6 @@
 import 'package:moor/moor.dart';
 
-@DataClassName('Subcategory')
+@DataClassName('SubcategoryEntity')
 class Subcategories extends Table {
   IntColumn get id => integer().autoIncrement()();
 

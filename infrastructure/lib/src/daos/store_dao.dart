@@ -9,20 +9,20 @@ class StoreDao extends DatabaseAccessor<AppDatabase> with _$StoreDaoMixin {
 
   StoreDao(this.db) : super(db);
 
-  Future<List<Store>> getAllStores() {
+  Future<List<StoreEntity>> getAllStores() {
     return select(stores).get();
   }
 
-  Future<Store> getStoreById(int id) {
+  Future<StoreEntity> getStoreById(int id) {
     final query = select(stores)..where((s) => s.id.equals(id));
     return query.getSingle();
   }
 
-  Future<int> insertStore(Insertable<Store> store) {
+  Future<int> insertStore(Insertable<StoreEntity> store) {
     return into(stores).insert(store);
   }
 
-  Future<bool> updateStore(Insertable<Store> store) {
+  Future<bool> updateStore(Insertable<StoreEntity> store) {
     return update(stores).replace(store);
   }
 

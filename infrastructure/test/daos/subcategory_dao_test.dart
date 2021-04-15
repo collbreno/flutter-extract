@@ -35,7 +35,7 @@ void main() {
       expect(result, 1);
 
       var fromDb = await database.subcategoryDao.getAllSubcategories();
-      final expected1 = Subcategory(
+      final expected1 = SubcategoryEntity(
         id: 1,
         iconId: subcategory1.iconId.value,
         name: subcategory1.name.value,
@@ -48,7 +48,7 @@ void main() {
       expect(result, 2);
 
       fromDb = await database.subcategoryDao.getAllSubcategories();
-      final expected2 = Subcategory(
+      final expected2 = SubcategoryEntity(
         id: 2,
         iconId: subcategory2.iconId.value,
         name: subcategory2.name.value,
@@ -104,7 +104,7 @@ void main() {
       expect(result, 42);
 
       final fromDb = await database.subcategoryDao.getAllSubcategories();
-      final expected = Subcategory(
+      final expected = SubcategoryEntity(
         id: subcategory.id.value,
         parentId: subcategory.parentId.value,
         iconId: subcategory.iconId.value,
@@ -121,7 +121,7 @@ void main() {
       final result = await database.subcategoryDao.insertSubcategory(subcategory1);
       expect(result, 42);
 
-      final expected1 = Subcategory(
+      final expected1 = SubcategoryEntity(
         id: subcategory1.id.value,
         iconId: subcategory1.iconId.value,
         parentId: subcategory1.parentId.value,
@@ -221,7 +221,7 @@ void main() {
       await database.subcategoryDao.insertSubcategory(subcategory2);
 
       var result = await database.subcategoryDao.getSubcategoryById(subcategory1.id.value);
-      var expected = Subcategory(
+      var expected = SubcategoryEntity(
         id: subcategory1.id.value,
         parentId: subcategory1.parentId.value,
         name: subcategory1.name.value,
@@ -230,7 +230,7 @@ void main() {
       expect(result, expected);
 
       result = await database.subcategoryDao.getSubcategoryById(subcategory2.id.value);
-      expected = Subcategory(
+      expected = SubcategoryEntity(
         id: subcategory2.id.value,
         parentId: subcategory2.parentId.value,
         name: subcategory2.name.value,
@@ -259,7 +259,7 @@ void main() {
     await fkUtils.insertSubcategoryFKDependencies(subcategory5);
 
     var fromDb = await database.subcategoryDao.getSubcategoriesByParentId(1);
-    var expected = <Subcategory>[];
+    var expected = <SubcategoryEntity>[];
     expect(fromDb, expected);
 
     await database.subcategoryDao.insertSubcategory(subcategory1);
@@ -355,13 +355,13 @@ void main() {
 }
 
 extension on SubcategoriesCompanion {
-  Subcategory convert({
+  SubcategoryEntity convert({
     int id,
     int iconId,
     int parentId,
     String name,
   }) {
-    return Subcategory(
+    return SubcategoryEntity(
       id: id ?? this.id.value,
       iconId: iconId ?? this.iconId.value,
       parentId: parentId ?? this.parentId.value,

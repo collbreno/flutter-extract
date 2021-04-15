@@ -10,3 +10,9 @@ class Tags extends Table {
 
   IntColumn get iconId => integer().nullable().customConstraint('NULL REFERENCES icons(id)')();
 }
+
+class A {
+  static const map = {
+    'A': 3,
+  };
+}
