@@ -27,8 +27,8 @@ class CategoryDao extends DatabaseAccessor<AppDatabase> with _$CategoryDaoMixin 
     return query.go();
   }
 
-  Future<CategoryEntity> getCategoryById(int id) {
+  Future<CategoryEntity?> getCategoryById(int id) {
     final query = select(categories)..where((c) => c.id.equals(id));
-    return query.getSingle();
+    return query.getSingleOrNull();
   }
 }

@@ -8,8 +8,8 @@ import '../utils/fixture_tag.dart';
 import '../utils/foreign_keys_utils.dart';
 
 void main() {
-  AppDatabase database;
-  ForeignKeyUtils fkUtils;
+  late AppDatabase database;
+  late ForeignKeyUtils fkUtils;
   final fix = FixtureTag();
 
   setUpAll(() {
@@ -129,7 +129,7 @@ void main() {
         'to the icon table must fail.', () async {
       final tag = fix.tag1;
 
-      final iconFromDb = await database.iconDao.getIconById(tag.iconId.value);
+      final iconFromDb = await database.iconDao.getIconById(tag.iconId.value!);
       expect(iconFromDb, isNull);
 
       expect(
@@ -224,7 +224,7 @@ void main() {
     });
 
     test('Updating iconId', () async {
-      final newIconId = tag1.iconId.value + 1;
+      final newIconId = tag1.iconId.value! + 1;
       final newTag = tag1.copyWith(iconId: Value(newIconId));
       await fkUtils.insertTagFKDependencies(newTag);
       final result = await database.tagDao.updateTag(newTag);
@@ -261,10 +261,10 @@ void main() {
 
 extension on TagsCompanion {
   TagEntity convert({
-    int id,
-    int iconId,
-    int color,
-    String name,
+    int? id,
+    int? iconId,
+    int? color,
+    String? name,
   }) {
     return TagEntity(
       id: id ?? this.id.value,

@@ -7,7 +7,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import '../utils/fixture_icon.dart';
 
 void main() {
-  AppDatabase database;
+  late AppDatabase database;
   final fix = FixtureIcon();
 
   setUpAll(() {

@@ -8,8 +8,8 @@ import '../utils/fixture_payment_method.dart';
 import '../utils/foreign_keys_utils.dart';
 
 void main() {
-  AppDatabase database;
-  ForeignKeyUtils fkUtils;
+  late AppDatabase database;
+  late ForeignKeyUtils fkUtils;
   final fix = FixturePaymentMethod();
 
   setUpAll(() {
@@ -129,7 +129,7 @@ void main() {
         'to the icon table must fail.', () async {
       final paymentMethod = fix.paymentMethod1;
 
-      final parentFromDb = await database.iconDao.getIconById(paymentMethod.iconId.value);
+      final parentFromDb = await database.iconDao.getIconById(paymentMethod.iconId.value!);
       expect(parentFromDb, isNull);
 
       expect(
@@ -226,7 +226,7 @@ void main() {
     });
 
     test('Updating iconId', () async {
-      final newIconId = paymentMethod1.iconId.value + 1;
+      final newIconId = paymentMethod1.iconId.value! + 1;
       final newPaymentMethod = paymentMethod1.copyWith(iconId: Value(newIconId));
       await fkUtils.insertPaymentMethodFKDependencies(newPaymentMethod);
       final result = await database.paymentMethodDao.updatePaymentMethod(newPaymentMethod);
@@ -263,10 +263,10 @@ void main() {
 
 extension on PaymentMethodsCompanion {
   PaymentMethodEntity convert({
-    int id,
-    int iconId,
-    int color,
-    String name,
+    int? id,
+    int? iconId,
+    int? color,
+    String? name,
   }) {
     return PaymentMethodEntity(
       id: id ?? this.id.value,

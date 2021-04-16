@@ -9,8 +9,8 @@ import '../utils/foreign_keys_utils.dart';
 
 void main() {
   final duration = Duration(hours: 2);
-  AppDatabase database;
-  ForeignKeyUtils fkUtils;
+  late AppDatabase database;
+  late ForeignKeyUtils fkUtils;
   final fix = FixtureExpense();
 
   setUpAll(() {
@@ -127,7 +127,7 @@ void main() {
 
         final history1 = expense.toHistory(1);
         expense = expense.copyWith(
-          storeId: Value(expense.storeId.value + 7),
+          storeId: Value(expense.storeId.value! + 7),
           updatedAt: Value(expense.updatedAt.value.add(duration)),
         );
         await fkUtils.insertExpenseFKDependencies(expense);
@@ -163,7 +163,7 @@ void main() {
 
         final history3 = expense.toHistory(3);
         expense = expense.copyWith(
-          storeId: Value(expense.storeId.value + 7),
+          storeId: Value(expense.storeId.value! + 7),
           updatedAt: Value(expense.updatedAt.value.add(duration)),
         );
         await fkUtils.insertExpenseFKDependencies(expense);

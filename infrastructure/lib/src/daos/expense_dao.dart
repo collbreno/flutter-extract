@@ -13,9 +13,9 @@ class ExpenseDao extends DatabaseAccessor<AppDatabase> with _$ExpenseDaoMixin {
     return select(expenses).get();
   }
 
-  Future<ExpenseEntity> getExpenseById(int id) {
+  Future<ExpenseEntity?> getExpenseById(int id) {
     final query = select(expenses)..where((e) => e.id.equals(id));
-    return query.getSingle();
+    return query.getSingleOrNull();
   }
 
   Future<int> insertExpense(Insertable<ExpenseEntity> expense) {
