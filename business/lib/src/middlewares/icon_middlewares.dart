@@ -16,26 +16,30 @@ class FetchIconMiddleware extends MiddlewareClass<AppState> {
     if (action is FetchIconAction) {
       try {
         final entity = await dao.getIconById(action.iconId);
-        store.dispatch(FetchIconSucceededAction(IconModel.fromEntity(entity)));
-        action.onSucceeded?.call();
-      } catch (error) {
-        action.onFailed?.call(error);
+        if (entity != null) {
+          store.dispatch(FetchIconSucceededAction(IconModel.fromEntity(entity)));
+          action.onSucceeded?.call();
+        } else {
+          action.onFailed?.call(Exception()); // TODO: create a exception
+        }
+      } on Exception catch (e) {
+        action.onFailed?.call(e);
       }
     } else if (action is FetchIconsAction) {
       try {
         final entities = await dao.getAllIcons();
-        final icons = BuiltList(entities.map((e) => IconModel.fromEntity(e)));
+        final icons = BuiltList<IconModel>(entities.map((e) => IconModel.fromEntity(e)));
         store.dispatch(FetchIconsSucceededAction(icons));
         action.onSucceeded?.call();
-      } catch (error) {
-        action.onFailed?.call(error);
+      } on Exception catch (e) {
+        action.onFailed?.call(e);
       }
     } else if (action is InsertIconAction) {
       try {
         await dao.insertIcon(action.icon.toEntity());
         action.onSucceeded?.call();
-      } catch (error) {
-        action.onFailed?.call(error);
+      } on Exception catch (e) {
+        action.onFailed?.call(e);
       }
     }
 

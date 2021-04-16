@@ -15,11 +15,11 @@ abstract class AppState implements Built<AppState, AppStateBuilder> {
   AppState._();
 
   factory AppState({
-    BuiltList<IconModel> icons,
-    BuiltList<ExpenseModel> expenses,
-    BuiltList<TagModel> tags,
-    BuiltList<SubcategoryModel> subcategories,
-    BuiltList<CategoryModel> categories,
-    BuiltMap<int, BuiltList<int>> expenseTags,
+    required BuiltList<IconModel> icons,
+    required BuiltList<ExpenseModel> expenses,
+    required BuiltList<TagModel> tags,
+    required BuiltList<SubcategoryModel> subcategories,
+    required BuiltList<CategoryModel> categories,
+    required BuiltMap<int, BuiltList<int>> expenseTags,
   }) = _$AppState._;
 }

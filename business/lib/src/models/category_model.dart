@@ -27,8 +27,8 @@ abstract class CategoryModel implements Built<CategoryModel, CategoryModelBuilde
   }
 
   factory CategoryModel({
-    int id,
-    String name,
-    int iconId,
+    required int id,
+    required String name,
+    required int iconId,
   }) = _$CategoryModel._;
 }

@@ -5,7 +5,7 @@ class CategoryRepository {
 
   CategoryRepository(this.database);
 
-  Future<CategoryEntity> getCategoryFromDatabase(int categoryId) {
+  Future<CategoryEntity?> getCategoryFromDatabase(int categoryId) {
     return database.categoryDao.getCategoryById(categoryId);
   }
 

@@ -8,7 +8,7 @@ abstract class PaymentMethodModel implements Built<PaymentMethodModel, PaymentMe
   int get id;
   String get name;
   Color get color;
-  int get iconId;
+  int? get iconId;
 
   PaymentMethodModel._();
 
@@ -30,9 +30,9 @@ abstract class PaymentMethodModel implements Built<PaymentMethodModel, PaymentMe
   }
 
   factory PaymentMethodModel({
-    int id,
-    String name,
-    Color color,
-    int iconId,
+    required int id,
+    required String name,
+    required Color color,
+    int? iconId,
   }) = _$PaymentMethodModel._;
 }

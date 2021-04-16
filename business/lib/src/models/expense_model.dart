@@ -12,7 +12,7 @@ abstract class ExpenseModel implements Built<ExpenseModel, ExpenseModelBuilder> 
   DateTime get updatedAt;
   int get paymentMethodId;
   int get subcategoryId;
-  int get storeId;
+  int? get storeId;
 
   ExpenseModel._();
 
@@ -44,14 +44,14 @@ abstract class ExpenseModel implements Built<ExpenseModel, ExpenseModelBuilder> 
   }
 
   factory ExpenseModel({
-    int id,
-    String description,
-    int value,
-    DateTime date,
-    int paymentMethodId,
-    int subcategoryId,
-    int storeId,
-    DateTime createdAt,
-    DateTime updatedAt,
+    required int id,
+    required String description,
+    required int value,
+    required DateTime date,
+    required int paymentMethodId,
+    required int subcategoryId,
+    int? storeId,
+    required DateTime createdAt,
+    required DateTime updatedAt,
   }) = _$ExpenseModel._;
 }

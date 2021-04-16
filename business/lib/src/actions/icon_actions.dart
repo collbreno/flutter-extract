@@ -4,8 +4,8 @@ import 'package:flutter/cupertino.dart';
 
 class FetchIconAction {
   final int iconId;
-  final ValueSetter<Exception> onFailed;
-  final VoidCallback onSucceeded;
+  final ValueSetter<Exception>? onFailed;
+  final VoidCallback? onSucceeded;
 
   FetchIconAction(this.iconId, {this.onFailed, this.onSucceeded});
 }
@@ -17,8 +17,8 @@ class FetchIconSucceededAction {
 }
 
 class FetchIconsAction {
-  final ValueSetter<Exception> onFailed;
-  final VoidCallback onSucceeded;
+  final ValueSetter<Exception>? onFailed;
+  final VoidCallback? onSucceeded;
 
   FetchIconsAction({this.onFailed, this.onSucceeded});
 }
@@ -31,8 +31,8 @@ class FetchIconsSucceededAction {
 
 class InsertIconAction {
   final IconModel icon;
-  final ValueSetter<Exception> onFailed;
-  final VoidCallback onSucceeded;
+  final ValueSetter<Exception>? onFailed;
+  final VoidCallback? onSucceeded;
 
   InsertIconAction(this.icon, {this.onFailed, this.onSucceeded});
 }
