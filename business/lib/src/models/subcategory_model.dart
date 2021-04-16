@@ -30,9 +30,9 @@ abstract class SubcategoryModel implements Built<SubcategoryModel, SubcategoryMo
   }
 
   factory SubcategoryModel({
-    int id,
-    String name,
-    int iconId,
-    int parentId,
+    required int id,
+    required String name,
+    required int iconId,
+    required int parentId,
   }) = _$SubcategoryModel._;
 }

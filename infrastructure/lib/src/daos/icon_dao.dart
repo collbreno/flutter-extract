@@ -13,9 +13,9 @@ class IconDao extends DatabaseAccessor<AppDatabase> with _$IconDaoMixin {
     return select(icons).get();
   }
 
-  Future<IconEntity> getIconById(int id) {
+  Future<IconEntity?> getIconById(int id) {
     final query = select(icons)..where((i) => i.id.equals(id));
-    return query.getSingle();
+    return query.getSingleOrNull();
   }
 
   Future<int> insertIcon(Insertable<IconEntity> icon) {

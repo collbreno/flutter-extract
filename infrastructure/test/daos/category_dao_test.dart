@@ -8,8 +8,8 @@ import '../utils/fixture_category.dart';
 import '../utils/foreign_keys_utils.dart';
 
 void main() {
-  AppDatabase database;
-  ForeignKeyUtils fkUtils;
+  late AppDatabase database;
+  late ForeignKeyUtils fkUtils;
   final fix = FixtureCategory();
 
   setUpAll(() {

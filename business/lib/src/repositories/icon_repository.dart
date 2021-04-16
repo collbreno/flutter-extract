@@ -5,7 +5,7 @@ class IconRepository {
 
   IconRepository(this.database);
 
-  Future<IconEntity> getIconFromDatabase(int iconId) {
+  Future<IconEntity?> getIconFromDatabase(int iconId) {
     return database.iconDao.getIconById(iconId);
   }
 

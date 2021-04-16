@@ -24,7 +24,7 @@ abstract class StoreModel implements Built<StoreModel, StoreModelBuilder> {
   }
 
   factory StoreModel({
-    int id,
-    String name,
+    required int id,
+    required String name,
   }) = _$StoreModel._;
 }

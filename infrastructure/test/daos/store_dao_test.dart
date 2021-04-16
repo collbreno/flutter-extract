@@ -7,7 +7,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import '../utils/fixture_store.dart';
 
 void main() {
-  AppDatabase database;
+  late AppDatabase database;
   final fix = FixtureStore();
 
   setUpAll(() {
@@ -180,8 +180,8 @@ void main() {
 
 extension on StoresCompanion {
   StoreEntity convert({
-    int id,
-    String name,
+    int? id,
+    String? name,
   }) {
     return StoreEntity(
       id: id ?? this.id.value,

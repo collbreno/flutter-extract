@@ -8,8 +8,8 @@ import '../utils/fixture_expense.dart';
 import '../utils/foreign_keys_utils.dart';
 
 void main() {
-  AppDatabase database;
-  ForeignKeyUtils fkUtils;
+  late AppDatabase database;
+  late ForeignKeyUtils fkUtils;
   final fix = FixtureExpense();
 
   setUpAll(() {
@@ -350,7 +350,7 @@ void main() {
 
     test('Updating storeId', () async {
       final newExpense1 = expense1.copyWith(
-        storeId: Value(expense1.storeId.value + 1),
+        storeId: Value(expense1.storeId.value! + 1),
       );
       await fkUtils.insertExpenseFKDependencies(newExpense1);
       final result = await database.expenseDao.updateExpense(newExpense1);
@@ -396,15 +396,15 @@ void main() {
 
 extension on ExpensesCompanion {
   ExpenseEntity convert({
-    int id,
-    String description,
-    int value,
-    DateTime date,
-    int paymentMethodId,
-    int subcategoryId,
-    int storeId,
-    DateTime createdAt,
-    DateTime updatedAt,
+    int? id,
+    String? description,
+    int? value,
+    DateTime? date,
+    int? paymentMethodId,
+    int? subcategoryId,
+    int? storeId,
+    DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
     return ExpenseEntity(
       id: id ?? this.id.value,

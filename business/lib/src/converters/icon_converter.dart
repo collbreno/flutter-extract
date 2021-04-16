@@ -8,12 +8,8 @@ class IconConverter {
   IconConverter(this.iconId);
 
   AsyncSnapshot<IconModel> call(Store<AppState> store) {
-    final icon = store.state.icons.singleWhere(
-      (icon) => icon.id == iconId,
-      orElse: () => null,
-    );
-
-    if (icon != null) {
+    if (store.state.icons.any((icon) => icon.id == iconId)) {
+      final icon = store.state.icons.singleWhere((icon) => icon.id == iconId);
       return AsyncSnapshot.withData(ConnectionState.done, icon);
     } else {
       return AsyncSnapshot.nothing();

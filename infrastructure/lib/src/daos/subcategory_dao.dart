@@ -31,8 +31,8 @@ class SubcategoryDao extends DatabaseAccessor<AppDatabase> with _$SubcategoryDao
     return query.go();
   }
 
-  Future<SubcategoryEntity> getSubcategoryById(int id) {
+  Future<SubcategoryEntity?> getSubcategoryById(int id) {
     final query = select(subcategories)..where((s) => s.id.equals(id));
-    return query.getSingle();
+    return query.getSingleOrNull();
   }
 }

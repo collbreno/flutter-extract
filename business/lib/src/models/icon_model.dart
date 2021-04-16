@@ -15,8 +15,9 @@ abstract class IconModel implements Built<IconModel, IconModelBuilder> {
     if (iconData.fontFamily == MaterialIconsMapper.family) {
       return IconEntity(
         id: id,
-        name: MaterialIconsMapper.map.entries.singleWhere((element) => element.value == iconData).key,
-        family: iconData.fontFamily,
+        name:
+            MaterialIconsMapper.map.entries.singleWhere((element) => element.value == iconData).key,
+        family: iconData.fontFamily!,
       );
     }
     throw Error();
@@ -26,14 +27,14 @@ abstract class IconModel implements Built<IconModel, IconModelBuilder> {
     if (entity.family == MaterialIconsMapper.family) {
       return IconModel(
         id: entity.id,
-        iconData: MaterialIconsMapper.map[entity.name],
+        iconData: MaterialIconsMapper.map[entity.name]!,
       );
     }
     throw Error();
   }
 
   factory IconModel({
-    int id,
-    IconData iconData,
+    required int id,
+    required IconData iconData,
   }) = _$IconModel._;
 }

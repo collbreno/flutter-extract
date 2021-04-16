@@ -8,7 +8,7 @@ abstract class TagModel implements Built<TagModel, TagModelBuilder> {
   int get id;
   String get name;
   Color get color;
-  int get iconId;
+  int? get iconId;
 
   TagModel._();
 
@@ -31,9 +31,9 @@ abstract class TagModel implements Built<TagModel, TagModelBuilder> {
   }
 
   factory TagModel({
-    int id,
-    String name,
-    Color color,
-    int iconId,
+    required int id,
+    required String name,
+    required Color color,
+    int? iconId,
   }) = _$TagModel._;
 }

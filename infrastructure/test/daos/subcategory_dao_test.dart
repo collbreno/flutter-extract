@@ -8,8 +8,8 @@ import '../utils/fixture_subcategory.dart';
 import '../utils/foreign_keys_utils.dart';
 
 void main() {
-  AppDatabase database;
-  ForeignKeyUtils fkUtils;
+  late AppDatabase database;
+  late ForeignKeyUtils fkUtils;
   final fix = FixtureSubcategory();
 
   setUpAll(() {
@@ -356,10 +356,10 @@ void main() {
 
 extension on SubcategoriesCompanion {
   SubcategoryEntity convert({
-    int id,
-    int iconId,
-    int parentId,
-    String name,
+    int? id,
+    int? iconId,
+    int? parentId,
+    String? name,
   }) {
     return SubcategoryEntity(
       id: id ?? this.id.value,
