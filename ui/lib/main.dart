@@ -1,33 +1,37 @@
+import 'package:business/business.dart';
+import 'package:business/src/reducers/settings_reducer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
+import 'package:ui/screens/home_screen.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Extract',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: MyHomePage(),
+    final store = Store<AppState>(
+      SettingsReducer(),
+      middleware: [SettingsMiddleware()],
+      initialState: AppState.initialState(),
     );
-  }
-}
-
-class MyHomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Extract"),
-      ),
-      body: Center(
-        child: Text('Hi! This is just a demo app.'),
+    return StoreProvider<AppState>(
+      store: store,
+      child: StoreConnector<AppState, Brightness>(
+        converter: (store) => store.state.brightness,
+        builder: (context, brightness) {
+          return MaterialApp(
+            title: 'Extract',
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+              brightness: brightness,
+              visualDensity: VisualDensity.adaptivePlatformDensity,
+            ),
+            home: HomeScreen(),
+          );
+        },
       ),
     );
   }
