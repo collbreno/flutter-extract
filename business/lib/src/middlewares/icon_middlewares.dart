@@ -4,10 +4,10 @@ import 'package:business/src/actions/icon_actions.dart';
 import 'package:infrastructure/infrastructure.dart';
 import 'package:redux/redux.dart';
 
-class FetchIconMiddleware extends MiddlewareClass<AppState> {
+class IconMiddleware extends MiddlewareClass<AppState> {
   final AppDatabase database;
 
-  FetchIconMiddleware(this.database);
+  IconMiddleware(this.database);
 
   IconDao get dao => database.iconDao;
 
