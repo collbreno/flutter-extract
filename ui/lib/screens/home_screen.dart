@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ui/screens/new_expense_screen.dart';
 import 'package:ui/screens/settings_screen_connector.dart';
+import 'package:ui/screens/test_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -38,26 +39,15 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              TextButton(
-                child: Text("Text button"),
-                onPressed: () {},
-              ),
               ElevatedButton(
-                child: Text("Elevated button"),
-                onPressed: () {},
-              ),
-              OutlinedButton(
-                child: Text("Outlined Button"),
-                onPressed: () {},
-              ),
-              TextField(),
-              Padding(
-                padding: EdgeInsets.all(8),
-              ),
-              TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                ),
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => TestScreen(),
+                    ),
+                  );
+                },
+                child: Text("Teste"),
               ),
             ],
           ),

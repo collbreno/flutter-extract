@@ -17,13 +17,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final moonIcon = Icon(
     Icons.nightlight_round,
     color: Colors.lightBlue[200],
-    key: ValueKey(1),
+    key: UniqueKey(),
   );
 
   final sunIcon = Icon(
     Icons.wb_sunny,
     color: Colors.yellow[700],
-    key: ValueKey(2),
+    key: UniqueKey(),
   );
 
   @override

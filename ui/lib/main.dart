@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
             title: 'Extract',
             theme: ThemeData(
               primarySwatch: Colors.blue,
+              accentColor: Colors.blue[800],
               brightness: brightness,
               visualDensity: VisualDensity.adaptivePlatformDensity,
             ),
