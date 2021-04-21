@@ -25,6 +25,7 @@ dependencies:
     sdk: flutter
   provider: ^5.0.0
   flutter_redux: ^0.8.2
+  animated_theme_switcher: ^2.0.1-nullsafety.0
   business:
     path: ../business
 

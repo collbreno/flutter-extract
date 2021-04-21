@@ -1,19 +1,9 @@
+import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:flutter/material.dart';
 
-class SettingsScreen extends StatefulWidget {
-  final VoidCallback changeBrightnessCallback;
-  final Brightness brightness;
+class SettingsScreen extends StatelessWidget {
+  SettingsScreen();
 
-  SettingsScreen({
-    required this.changeBrightnessCallback,
-    required this.brightness,
-  });
-
-  @override
-  _SettingsScreenState createState() => _SettingsScreenState();
-}
-
-class _SettingsScreenState extends State<SettingsScreen> {
   final moonIcon = Icon(
     Icons.nightlight_round,
     color: Colors.lightBlue[200],
@@ -27,43 +17,56 @@ class _SettingsScreenState extends State<SettingsScreen> {
   );
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Configurações"),
-      ),
-      body: ListView(
-        children: [
-          SwitchListTile(
-            secondary: AnimatedSwitcher(
-              duration: Duration(milliseconds: 300),
-              transitionBuilder: (child, animation) {
-                return ScaleTransition(
-                  scale: animation,
-                  child: child,
-                );
-              },
-              child: _buildIcon(),
-            ),
-            title: Text('Ativar modo escuro'),
-            value: widget.brightness == Brightness.dark,
-            onChanged: _onChanged,
+    return ThemeSwitchingArea(
+      child: Builder(
+        builder: (context) => Scaffold(
+          appBar: AppBar(
+            title: Text("Configurações"),
           ),
-        ],
+          body: ListView(
+            children: [
+              ThemeSwitcher(
+                builder: (context) => SwitchListTile(
+                  secondary: AnimatedSwitcher(
+                    duration: Duration(milliseconds: 300),
+                    transitionBuilder: (child, animation) {
+                      return ScaleTransition(
+                        scale: animation,
+                        child: child,
+                      );
+                    },
+                    child: _buildIcon(context),
+                  ),
+                  title: Text('Ativar modo escuro'),
+                  value: isDarkTheme(context),
+                  onChanged: (isDarkMode) => _onChanged(isDarkMode, context),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  void _onChanged(bool _) {
-    widget.changeBrightnessCallback();
+  bool isDarkTheme(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark;
   }
 
-  Icon _buildIcon() {
+  void _onChanged(bool isDarkMode, BuildContext context) {
+    ThemeSwitcher.of(context)?.changeTheme(
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        accentColor: Colors.blue[800],
+        brightness: isDarkMode ? Brightness.dark : Brightness.light,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      reverseAnimation: !isDarkMode,
+    );
+  }
+
+  Icon _buildIcon(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark ? moonIcon : sunIcon;
   }
 }

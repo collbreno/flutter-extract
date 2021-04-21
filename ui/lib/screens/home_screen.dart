@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ui/screens/new_category_screen.dart';
 import 'package:ui/screens/new_expense_screen.dart';
-import 'package:ui/screens/settings_screen_connector.dart';
+import 'package:ui/screens/settings_screen.dart';
 import 'package:ui/screens/test_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -80,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _goToSettings() {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => SettingsScreenConnector(),
+        builder: (context) => SettingsScreen(),
       ),
     );
   }

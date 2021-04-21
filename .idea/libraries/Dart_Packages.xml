@@ -23,6 +23,13 @@
             </list>
           </value>
         </entry>
+        <entry key="animated_theme_switcher">
+          <value>
+            <list>
+              <option value="$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/animated_theme_switcher-2.0.1-nullsafety.0/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="args">
           <value>
             <list>
@@ -633,6 +640,7 @@
       <root url="file://$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/_fe_analyzer_shared-20.0.0/lib" />
       <root url="file://$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/analyzer-1.4.0/lib" />
       <root url="file://$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/analyzer_plugin_fork-0.5.1/lib" />
+      <root url="file://$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/animated_theme_switcher-2.0.1-nullsafety.0/lib" />
       <root url="file://$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/args-1.6.0/lib" />
       <root url="file://$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/async-2.5.0/lib" />
       <root url="file://$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/boolean_selector-2.1.0/lib" />

@@ -1,3 +1,4 @@
+import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:ui/common/picker_dialog.dart';
 import 'package:ui/services/color_service.dart';
@@ -18,53 +19,60 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Nova Categoria"),
-      ),
-      body: ListView(
-        children: [
-          ListTile(
-            leading: Icon(
-              Icons.color_lens_sharp,
-              color: _selectedColor,
+    return ThemeSwitchingArea(
+      child: ThemeSwitcher(
+        builder: (context) {
+          return Scaffold(
+            appBar: AppBar(
+              title: Text("Nova Categoria"),
             ),
-            onTap: () {
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return PickerDialog<Color>(
-                      title: "Teste",
-                      columns: 5,
-                      items: ColorService.colors.keys.toList(),
-                      renderer: (color) {
-                        return Container(
-                          decoration: ShapeDecoration(
-                            shape: CircleBorder(),
-                            color: color,
-                          ),
-                          margin: EdgeInsets.all(8),
+            body: ListView(
+              children: [
+                ListTile(
+                  leading: Icon(
+                    Icons.color_lens_sharp,
+                    color: _selectedColor,
+                  ),
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return PickerDialog<Color>(
+                          title: "Teste",
+                          columns: 5,
+                          items: ColorService.colors.keys.toList(),
+                          renderer: (color) {
+                            return Container(
+                              decoration: ShapeDecoration(
+                                shape: CircleBorder(),
+                                color: color,
+                              ),
+                              margin: EdgeInsets.all(8),
+                            );
+                          },
+                          onItemSelected: (color) {
+                            setState(() {
+                              _selectedColor = color;
+                            });
+                          },
                         );
                       },
-                      onItemSelected: (color) {
-                        setState(() {
-                          _selectedColor = color;
-                        });
-                      },
                     );
-                  });
-            },
-            title: Text("Selecionar cor"),
-            trailing: Icon(Icons.arrow_drop_down),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-            child: ElevatedButton(
-              onPressed: () {},
-              child: Text("Confirmar"),
+                  },
+                  title: Text("Selecionar cor"),
+                  trailing: Icon(Icons.arrow_drop_down),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    child: Text("Confirmar"),
+                  ),
+                )
+              ],
             ),
-          )
-        ],
+          );
+        },
       ),
     );
   }
