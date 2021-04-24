@@ -5,10 +5,10 @@ import 'package:infrastructure/infrastructure.dart';
 part 'payment_method_model.g.dart';
 
 abstract class PaymentMethodModel implements Built<PaymentMethodModel, PaymentMethodModelBuilder> {
-  int get id;
+  String get id;
   String get name;
   Color get color;
-  int? get iconId;
+  String? get iconId;
 
   PaymentMethodModel._();
 
@@ -30,9 +30,9 @@ abstract class PaymentMethodModel implements Built<PaymentMethodModel, PaymentMe
   }
 
   factory PaymentMethodModel({
-    required int id,
+    required String id,
     required String name,
     required Color color,
-    int? iconId,
+    String? iconId,
   }) = _$PaymentMethodModel._;
 }

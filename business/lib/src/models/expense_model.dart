@@ -4,15 +4,15 @@ import 'package:infrastructure/infrastructure.dart';
 part 'expense_model.g.dart';
 
 abstract class ExpenseModel implements Built<ExpenseModel, ExpenseModelBuilder> {
-  int get id;
+  String get id;
   String get description;
   int get value;
   DateTime get date;
   DateTime get createdAt;
   DateTime get updatedAt;
-  int get paymentMethodId;
-  int get subcategoryId;
-  int? get storeId;
+  String get paymentMethodId;
+  String get subcategoryId;
+  String? get storeId;
 
   ExpenseModel._();
 
@@ -44,13 +44,13 @@ abstract class ExpenseModel implements Built<ExpenseModel, ExpenseModelBuilder> 
   }
 
   factory ExpenseModel({
-    required int id,
+    required String id,
     required String description,
     required int value,
     required DateTime date,
-    required int paymentMethodId,
-    required int subcategoryId,
-    int? storeId,
+    required String paymentMethodId,
+    required String subcategoryId,
+    String? storeId,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) = _$ExpenseModel._;

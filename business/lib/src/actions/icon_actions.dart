@@ -3,7 +3,7 @@ import 'package:business/business.dart';
 import 'package:flutter/cupertino.dart';
 
 class FetchIconAction {
-  final int iconId;
+  final String iconId;
   final ValueSetter<Exception>? onFailed;
   final VoidCallback? onSucceeded;
 

@@ -5,10 +5,10 @@ import 'package:infrastructure/infrastructure.dart';
 part 'tag_model.g.dart';
 
 abstract class TagModel implements Built<TagModel, TagModelBuilder> {
-  int get id;
+  String get id;
   String get name;
   Color get color;
-  int? get iconId;
+  String? get iconId;
 
   TagModel._();
 
@@ -31,9 +31,9 @@ abstract class TagModel implements Built<TagModel, TagModelBuilder> {
   }
 
   factory TagModel({
-    required int id,
+    required String id,
     required String name,
     required Color color,
-    int? iconId,
+    String? iconId,
   }) = _$TagModel._;
 }

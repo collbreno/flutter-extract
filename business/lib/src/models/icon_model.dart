@@ -6,7 +6,7 @@ import 'package:infrastructure/infrastructure.dart';
 part 'icon_model.g.dart';
 
 abstract class IconModel implements Built<IconModel, IconModelBuilder> {
-  int get id;
+  String get id;
   IconData get iconData;
 
   IconModel._();
@@ -34,7 +34,7 @@ abstract class IconModel implements Built<IconModel, IconModelBuilder> {
   }
 
   factory IconModel({
-    required int id,
+    required String id,
     required IconData iconData,
   }) = _$IconModel._;
 }

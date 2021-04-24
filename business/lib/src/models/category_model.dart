@@ -4,9 +4,9 @@ import 'package:infrastructure/infrastructure.dart';
 part 'category_model.g.dart';
 
 abstract class CategoryModel implements Built<CategoryModel, CategoryModelBuilder> {
-  int get id;
+  String get id;
   String get name;
-  int get iconId;
+  String get iconId;
 
   CategoryModel._();
 
@@ -27,8 +27,8 @@ abstract class CategoryModel implements Built<CategoryModel, CategoryModelBuilde
   }
 
   factory CategoryModel({
-    required int id,
+    required String id,
     required String name,
-    required int iconId,
+    required String iconId,
   }) = _$CategoryModel._;
 }

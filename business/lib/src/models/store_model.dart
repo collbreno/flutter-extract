@@ -4,7 +4,7 @@ import 'package:infrastructure/infrastructure.dart';
 part 'store_model.g.dart';
 
 abstract class StoreModel implements Built<StoreModel, StoreModelBuilder> {
-  int get id;
+  String get id;
   String get name;
 
   StoreModel._();
@@ -24,7 +24,7 @@ abstract class StoreModel implements Built<StoreModel, StoreModelBuilder> {
   }
 
   factory StoreModel({
-    required int id,
+    required String id,
     required String name,
   }) = _$StoreModel._;
 }

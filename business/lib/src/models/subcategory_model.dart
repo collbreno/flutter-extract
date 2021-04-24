@@ -4,10 +4,10 @@ import 'package:infrastructure/infrastructure.dart';
 part 'subcategory_model.g.dart';
 
 abstract class SubcategoryModel implements Built<SubcategoryModel, SubcategoryModelBuilder> {
-  int get id;
+  String get id;
   String get name;
-  int get iconId;
-  int get parentId;
+  String get iconId;
+  String get parentId;
 
   SubcategoryModel._();
 
@@ -30,9 +30,9 @@ abstract class SubcategoryModel implements Built<SubcategoryModel, SubcategoryMo
   }
 
   factory SubcategoryModel({
-    required int id,
+    required String id,
     required String name,
-    required int iconId,
-    required int parentId,
+    required String iconId,
+    required String parentId,
   }) = _$SubcategoryModel._;
 }
