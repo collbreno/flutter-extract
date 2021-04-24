@@ -13,7 +13,7 @@ class StoreDao extends DatabaseAccessor<AppDatabase> with _$StoreDaoMixin {
     return select(stores).get();
   }
 
-  Future<StoreEntity?> getStoreById(int id) {
+  Future<StoreEntity?> getStoreById(String id) {
     final query = select(stores)..where((s) => s.id.equals(id));
     return query.getSingleOrNull();
   }
@@ -26,9 +26,8 @@ class StoreDao extends DatabaseAccessor<AppDatabase> with _$StoreDaoMixin {
     return update(stores).replace(store);
   }
 
-  Future<int> deleteStoreWithId(int id) {
+  Future<int> deleteStoreWithId(String id) {
     final query = delete(stores)..where((s) => s.id.equals(id));
     return query.go();
   }
-
 }

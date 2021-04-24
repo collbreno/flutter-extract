@@ -13,7 +13,7 @@ class IconDao extends DatabaseAccessor<AppDatabase> with _$IconDaoMixin {
     return select(icons).get();
   }
 
-  Future<IconEntity?> getIconById(int id) {
+  Future<IconEntity?> getIconById(String id) {
     final query = select(icons)..where((i) => i.id.equals(id));
     return query.getSingleOrNull();
   }
@@ -26,7 +26,7 @@ class IconDao extends DatabaseAccessor<AppDatabase> with _$IconDaoMixin {
     return update(icons).replace(icon);
   }
 
-  Future<int> deleteIconWithId(int id) {
+  Future<int> deleteIconWithId(String id) {
     final query = delete(icons)..where((i) => i.id.equals(id));
     return query.go();
   }

@@ -1,28 +1,31 @@
 import 'package:infrastructure/infrastructure.dart';
 import 'package:moor/moor.dart';
+import 'package:uuid/uuid.dart';
 
 class FixtureCategory {
-  final category1 = CategoriesCompanion(
-    id: Value(1),
+  final _uid = Uuid();
+
+  late final category1 = CategoriesCompanion(
+    id: Value(_uid.v4()),
     name: Value('Market'),
-    iconId: Value(15),
+    iconId: Value(_uid.v4()),
   );
 
-  final category2 = CategoriesCompanion(
-    id: Value(2),
+  late final category2 = CategoriesCompanion(
+    id: Value(_uid.v4()),
     name: Value('Shop'),
-    iconId: Value(60),
+    iconId: Value(_uid.v4()),
   );
 
-  final category3 = CategoriesCompanion(
-    id: Value(3),
+  late final category3 = CategoriesCompanion(
+    id: Value(_uid.v4()),
     name: Value('Health'),
-    iconId: Value(37),
+    iconId: Value(_uid.v4()),
   );
 
-  final category4 = CategoriesCompanion(
-    id: Value(4),
+  late final category4 = CategoriesCompanion(
+    id: Value(_uid.v4()),
     name: Value('Fun'),
-    iconId: Value(92),
+    iconId: Value(_uid.v4()),
   );
 }

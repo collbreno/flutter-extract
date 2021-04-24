@@ -3,10 +3,12 @@ import 'package:infrastructure/infrastructure.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart' hide isNull;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:uuid/uuid.dart';
 
 import '../utils/fixture_store.dart';
 
 void main() {
+  final uid = Uuid();
   late AppDatabase database;
   final fix = FixtureStore();
 
@@ -23,30 +25,11 @@ void main() {
   });
 
   group('Insertion', () {
-    test('Insertion without id must have an auto incremented id', () async {
-      final store1 = fix.store1.copyWith(id: Value.absent());
-      final store2 = fix.store2.copyWith(id: Value.absent());
-
-      var result = await database.storeDao.insertStore(store1);
-      expect(result, 1);
-
-      var fromDb = await database.storeDao.getAllStores();
-      final expected1 = store1.convert(id: 1);
-      expect(fromDb, orderedEquals([expected1]));
-
-      result = await database.storeDao.insertStore(store2);
-      expect(result, 2);
-
-      fromDb = await database.storeDao.getAllStores();
-      final expected2 = store2.convert(id: 2);
-      expect(fromDb, orderedEquals([expected1, expected2]));
-    });
-
     test('Insertion without name must fail', () async {
       final store = fix.store1.copyWith(name: Value.absent());
 
       expect(
-            () => database.storeDao.insertStore(store),
+        () => database.storeDao.insertStore(store),
         throwsA(isA<InvalidDataException>()),
       );
 
@@ -54,32 +37,20 @@ void main() {
       expect(fromDb, isEmpty);
     });
 
-    test('Insertion with defined id must use the given id', () async {
-      final store = fix.store1.copyWith(id: Value(42));
-
-      final result = await database.storeDao.insertStore(store);
-      expect(result, 42);
-
-      final fromDb = await database.storeDao.getAllStores();
-      final expected = store.convert();
-
-      expect(fromDb, orderedEquals([expected]));
-    });
-
     test('Insertion with duplicated id must fail', () async {
-      final store1 = fix.store1.copyWith(id: Value(42));
+      final id = uid.v4();
+      final store1 = fix.store1.copyWith(id: Value(id));
 
-      final result = await database.storeDao.insertStore(store1);
-      expect(result, 42);
+      await database.storeDao.insertStore(store1);
 
       final expected1 = store1.convert();
       var fromDB = await database.storeDao.getAllStores();
       expect(fromDB, orderedEquals([expected1]));
 
-      final store2 = fix.store2.copyWith(id: Value(42));
+      final store2 = fix.store2.copyWith(id: Value(id));
 
       expect(
-            () => database.storeDao.insertStore(store2),
+        () => database.storeDao.insertStore(store2),
         throwsA(isA<SqliteException>()),
       );
 
@@ -113,7 +84,7 @@ void main() {
       var fromDb = await database.storeDao.getAllStores();
       expect(fromDb, hasLength(1));
 
-      var result = await database.storeDao.deleteStoreWithId(store1.id.value + 1);
+      var result = await database.storeDao.deleteStoreWithId(uid.v4());
       expect(result, 0);
 
       // Database is not affected
@@ -138,8 +109,8 @@ void main() {
       expect(result, expected);
     });
 
-    test('Error cases', () async {
-      final result = await database.storeDao.getStoreById(1);
+    test('Query by id of an item that does not exist must return null', () async {
+      final result = await database.storeDao.getStoreById(uid.v4());
       expect(result, isNull);
     });
   });
@@ -180,7 +151,7 @@ void main() {
 
 extension on StoresCompanion {
   StoreEntity convert({
-    int? id,
+    String? id,
     String? name,
   }) {
     return StoreEntity(

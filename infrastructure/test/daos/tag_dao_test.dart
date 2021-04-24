@@ -3,11 +3,13 @@ import 'package:infrastructure/infrastructure.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart' hide isNull;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:uuid/uuid.dart';
 
 import '../utils/fixture_tag.dart';
 import '../utils/foreign_keys_utils.dart';
 
 void main() {
+  final uid = Uuid();
   late AppDatabase database;
   late ForeignKeyUtils fkUtils;
   final fix = FixtureTag();
@@ -26,25 +28,17 @@ void main() {
   });
 
   group('Insertion', () {
-    test('Insertion without id must have an auto incremented id', () async {
-      final tag1 = fix.tag1.copyWith(id: Value.absent());
-      final tag2 = fix.tag2.copyWith(id: Value.absent());
+    test('Insertion without id must fail', () async {
+      final tag = fix.tag1.copyWith(id: Value.absent());
 
-      await fkUtils.insertTagFKDependencies(tag1);
-      var result = await database.tagDao.insertTag(tag1);
-      expect(result, 1);
+      await fkUtils.insertTagFKDependencies(tag);
+      expect(
+        () => database.tagDao.insertTag(tag),
+        throwsA(isA<InvalidDataException>()),
+      );
 
-      var fromDb = await database.tagDao.getAllTags();
-      final expected1 = tag1.convert(id: 1);
-      expect(fromDb, orderedEquals([expected1]));
-
-      await fkUtils.insertTagFKDependencies(tag2);
-      result = await database.tagDao.insertTag(tag2);
-      expect(result, 2);
-
-      fromDb = await database.tagDao.getAllTags();
-      final expected2 = tag2.convert(id: 2);
-      expect(fromDb, orderedEquals([expected1, expected2]));
+      final fromDb = await database.tagDao.getAllTags();
+      expect(fromDb, isEmpty);
     });
 
     test('Insertion without name must fail', () async {
@@ -52,7 +46,7 @@ void main() {
 
       await fkUtils.insertTagFKDependencies(tag);
       expect(
-            () => database.tagDao.insertTag(tag),
+        () => database.tagDao.insertTag(tag),
         throwsA(isA<InvalidDataException>()),
       );
 
@@ -65,7 +59,7 @@ void main() {
 
       await fkUtils.insertTagFKDependencies(tag);
       expect(
-            () => database.tagDao.insertTag(tag),
+        () => database.tagDao.insertTag(tag),
         throwsA(isA<InvalidDataException>()),
       );
 
@@ -85,31 +79,18 @@ void main() {
       expect(fromDb, orderedEquals([expected]));
     });
 
-    test('Insertion with defined id must use the given id', () async {
-      final tag = fix.tag1.copyWith(id: Value(42));
-
-      await fkUtils.insertTagFKDependencies(tag);
-      final result = await database.tagDao.insertTag(tag);
-      expect(result, 42);
-
-      final fromDb = await database.tagDao.getAllTags();
-      final expected = tag.convert();
-
-      expect(fromDb, orderedEquals([expected]));
-    });
-
     test('Insertion with duplicated id must fail', () async {
-      final tag1 = fix.tag1.copyWith(id: Value(42));
+      final id = uid.v4();
+      final tag1 = fix.tag1.copyWith(id: Value(id));
 
       await fkUtils.insertTagFKDependencies(tag1);
-      final result = await database.tagDao.insertTag(tag1);
-      expect(result, 42);
+      await database.tagDao.insertTag(tag1);
 
       final expected1 = tag1.convert();
       var fromDB = await database.tagDao.getAllTags();
       expect(fromDB, orderedEquals([expected1]));
 
-      final tag2 = fix.tag2.copyWith(id: Value(42));
+      final tag2 = fix.tag2.copyWith(id: Value(id));
 
       await fkUtils.insertTagFKDependencies(tag2);
       expect(
@@ -166,7 +147,7 @@ void main() {
       var fromDb = await database.tagDao.getAllTags();
       expect(fromDb, hasLength(1));
 
-      var result = await database.tagDao.deleteTagWithId(tag1.id.value + 1);
+      var result = await database.tagDao.deleteTagWithId(uid.v4());
       expect(result, 0);
 
       // Database is not affected
@@ -193,8 +174,8 @@ void main() {
       expect(result, expected);
     });
 
-    test('Error cases', () async {
-      final result = await database.tagDao.getTagById(1);
+    test('Query by id of an item that does not exist must return null', () async {
+      final result = await database.tagDao.getTagById(uid.v4());
       expect(result, isNull);
     });
   });
@@ -224,7 +205,7 @@ void main() {
     });
 
     test('Updating iconId', () async {
-      final newIconId = tag1.iconId.value! + 1;
+      final newIconId = uid.v4();
       final newTag = tag1.copyWith(iconId: Value(newIconId));
       await fkUtils.insertTagFKDependencies(newTag);
       final result = await database.tagDao.updateTag(newTag);
@@ -261,8 +242,8 @@ void main() {
 
 extension on TagsCompanion {
   TagEntity convert({
-    int? id,
-    int? iconId,
+    String? id,
+    String? iconId,
     int? color,
     String? name,
   }) {

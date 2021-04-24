@@ -3,10 +3,12 @@ import 'package:infrastructure/infrastructure.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart' hide isNull;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:uuid/uuid.dart';
 
 import '../utils/fixture_icon.dart';
 
 void main() {
+  final uid = Uuid();
   late AppDatabase database;
   final fix = FixtureIcon();
 
@@ -23,31 +25,16 @@ void main() {
   });
 
   group('Insertion', () {
-    test('Insertion without id must have an auto incremented id', () async {
-      final icon1 = fix.icon1.copyWith(id: Value.absent());
-      final icon2 = fix.icon2.copyWith(id: Value.absent());
+    test('Insertion without id must fail', () async {
+      final icon = fix.icon1.copyWith(id: Value.absent());
 
-      var result = await database.iconDao.insertIcon(icon1);
-      expect(result, 1);
-
-      final expected1 = IconEntity(
-        id: 1,
-        family: icon1.family.value,
-        name: icon1.name.value,
+      expect(
+        () => database.iconDao.insertIcon(icon),
+        throwsA(isA<InvalidDataException>()),
       );
-      var fromDb = await database.iconDao.getAllIcons();
-      expect(fromDb, orderedEquals([expected1]));
 
-      result = await database.iconDao.insertIcon(icon2);
-      expect(result, 2);
-
-      final expected2 = IconEntity(
-        id: 2,
-        family: icon2.family.value,
-        name: icon2.name.value,
-      );
-      fromDb = await database.iconDao.getAllIcons();
-      expect(fromDb, orderedEquals([expected1, expected2]));
+      final fromDb = await database.iconDao.getAllIcons();
+      expect(fromDb, isEmpty);
     });
 
     test('Insertion without name must fail', () async {
@@ -74,27 +61,12 @@ void main() {
       expect(fromDb, isEmpty);
     });
 
-    test('Insertion with defined id must use the id', () async {
-      final icon = fix.icon1.copyWith(id: Value(42));
-
-      final result = await database.iconDao.insertIcon(icon);
-      expect(result, 42);
-
-      final fromDb = await database.iconDao.getAllIcons();
-      final expected = IconEntity(
-        id: 42,
-        family: icon.family.value,
-        name: icon.name.value,
-      );
-      expect(fromDb, orderedEquals([expected]));
-    });
-
     test('Insertion with duplicated id must fail', () async {
-      final icon1 = fix.icon1.copyWith(id: Value(42));
-      final icon2 = fix.icon2.copyWith(id: Value(42));
+      final id = uid.v4();
+      final icon1 = fix.icon1.copyWith(id: Value(id));
+      final icon2 = fix.icon2.copyWith(id: Value(id));
 
-      final result = await database.iconDao.insertIcon(icon1);
-      expect(result, 42);
+      await database.iconDao.insertIcon(icon1);
 
       final expected1 = IconEntity(
         id: icon1.id.value,
@@ -138,7 +110,10 @@ void main() {
       var fromDb = await database.iconDao.getAllIcons();
       expect(fromDb, hasLength(1));
 
-      var result = await database.iconDao.deleteIconWithId(icon.id.value + 1);
+      final differentId = uid.v4();
+      expect(icon.id.value, isNot(differentId));
+
+      var result = await database.iconDao.deleteIconWithId(differentId);
       expect(result, 0);
 
       // Database is not affected
@@ -222,8 +197,8 @@ void main() {
       expect(result, expected);
     });
 
-    test('Query by id that does not exist must return null', () async {
-      final result = await database.iconDao.getIconById(1);
+    test('Query by id of an item that does not exist must return null', () async {
+      final result = await database.iconDao.getIconById(uid.v4());
       expect(result, isNull);
     });
   });

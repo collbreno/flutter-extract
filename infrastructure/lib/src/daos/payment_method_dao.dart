@@ -13,7 +13,7 @@ class PaymentMethodDao extends DatabaseAccessor<AppDatabase> with _$PaymentMetho
     return select(paymentMethods).get();
   }
 
-  Future<PaymentMethodEntity?> getPaymentMethodById(int id) {
+  Future<PaymentMethodEntity?> getPaymentMethodById(String id) {
     final query = select(paymentMethods)..where((pm) => pm.id.equals(id));
     return query.getSingleOrNull();
   }
@@ -26,9 +26,8 @@ class PaymentMethodDao extends DatabaseAccessor<AppDatabase> with _$PaymentMetho
     return update(paymentMethods).replace(paymentMethod);
   }
 
-  Future<int> deletePaymentMethodWithId(int id) {
+  Future<int> deletePaymentMethodWithId(String id) {
     final query = delete(paymentMethods)..where((pm) => pm.id.equals(id));
     return query.go();
   }
-
 }

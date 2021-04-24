@@ -1,19 +1,22 @@
 import 'package:infrastructure/infrastructure.dart';
 import 'package:moor/moor.dart';
+import 'package:uuid/uuid.dart';
 
 class FixtureStore {
-  final store1 = StoresCompanion(
-    id: Value(1),
+  final _uid = Uuid();
+
+  late final store1 = StoresCompanion(
+    id: Value(_uid.v4()),
     name: Value('Americanas'),
   );
 
-  final store2 = StoresCompanion(
-    id: Value(2),
+  late final store2 = StoresCompanion(
+    id: Value(_uid.v4()),
     name: Value('Amazon'),
   );
 
-  final store3 = StoresCompanion(
-    id: Value(3),
+  late final store3 = StoresCompanion(
+    id: Value(_uid.v4()),
     name: Value('Burger King'),
   );
 }

@@ -1,25 +1,28 @@
 import 'package:infrastructure/infrastructure.dart';
 import 'package:moor/moor.dart';
+import 'package:uuid/uuid.dart';
 
 class FixturePaymentMethod {
-  final paymentMethod1 = PaymentMethodsCompanion(
-    id: Value(1),
-    color: Value(123),
-    iconId: Value(8),
+  final _uid = Uuid();
+
+  late final paymentMethod1 = PaymentMethodsCompanion(
+    id: Value(_uid.v4()),
+    color: Value(324),
+    iconId: Value(_uid.v4()),
     name: Value('Money'),
   );
 
-  final paymentMethod2 = PaymentMethodsCompanion(
-    id: Value(2),
-    color: Value(4132),
-    iconId: Value(5),
+  late final paymentMethod2 = PaymentMethodsCompanion(
+    id: Value(_uid.v4()),
+    color: Value(345),
+    iconId: Value(_uid.v4()),
     name: Value('Debit'),
   );
 
-  final paymentMethod3 = PaymentMethodsCompanion(
-    id: Value(3),
-    color: Value(2344),
-    iconId: Value(9),
+  late final paymentMethod3 = PaymentMethodsCompanion(
+    id: Value(_uid.v4()),
+    color: Value(643),
+    iconId: Value(_uid.v4()),
     name: Value('Credit'),
   );
 }

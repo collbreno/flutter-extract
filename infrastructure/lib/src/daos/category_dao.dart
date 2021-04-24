@@ -17,17 +17,18 @@ class CategoryDao extends DatabaseAccessor<AppDatabase> with _$CategoryDaoMixin 
     return query.map((row) => row.read(count)).getSingle();
   }
 
-  Future<int> insertCategory(Insertable<CategoryEntity> category) => into(categories).insert(category);
+  Future<int> insertCategory(Insertable<CategoryEntity> category) =>
+      into(categories).insert(category);
 
   Future<bool> updateCategory(Insertable<CategoryEntity> category) =>
       update(categories).replace(category);
 
-  Future<int> deleteCategoryWithId(int id) {
+  Future<int> deleteCategoryWithId(String id) {
     final query = delete(categories)..where((c) => c.id.equals(id));
     return query.go();
   }
 
-  Future<CategoryEntity?> getCategoryById(int id) {
+  Future<CategoryEntity?> getCategoryById(String id) {
     final query = select(categories)..where((c) => c.id.equals(id));
     return query.getSingleOrNull();
   }

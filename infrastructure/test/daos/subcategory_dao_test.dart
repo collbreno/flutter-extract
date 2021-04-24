@@ -3,11 +3,13 @@ import 'package:infrastructure/infrastructure.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart' hide isNull;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:uuid/uuid.dart';
 
 import '../utils/fixture_subcategory.dart';
 import '../utils/foreign_keys_utils.dart';
 
 void main() {
+  final uid = Uuid();
   late AppDatabase database;
   late ForeignKeyUtils fkUtils;
   final fix = FixtureSubcategory();
@@ -26,35 +28,17 @@ void main() {
   });
 
   group('Insertion', () {
-    test('Insertion without id must have an auto incremented id', () async {
-      final subcategory1 = fix.subcategory1.copyWith(id: Value.absent());
-      final subcategory2 = fix.subcategory2.copyWith(id: Value.absent());
+    test('Insertion without id must fail', () async {
+      final subcategory = fix.subcategory1.copyWith(id: Value.absent());
 
-      await fkUtils.insertSubcategoryFKDependencies(subcategory1);
-      var result = await database.subcategoryDao.insertSubcategory(subcategory1);
-      expect(result, 1);
-
-      var fromDb = await database.subcategoryDao.getAllSubcategories();
-      final expected1 = SubcategoryEntity(
-        id: 1,
-        iconId: subcategory1.iconId.value,
-        name: subcategory1.name.value,
-        parentId: subcategory1.parentId.value,
+      await fkUtils.insertSubcategoryFKDependencies(subcategory);
+      expect(
+        () => database.subcategoryDao.insertSubcategory(subcategory),
+        throwsA(isA<InvalidDataException>()),
       );
-      expect(fromDb, orderedEquals([expected1]));
 
-      await fkUtils.insertSubcategoryFKDependencies(subcategory2);
-      result = await database.subcategoryDao.insertSubcategory(subcategory2);
-      expect(result, 2);
-
-      fromDb = await database.subcategoryDao.getAllSubcategories();
-      final expected2 = SubcategoryEntity(
-        id: 2,
-        iconId: subcategory2.iconId.value,
-        name: subcategory2.name.value,
-        parentId: subcategory2.parentId.value,
-      );
-      expect(fromDb, orderedEquals([expected1, expected2]));
+      final fromDb = await database.subcategoryDao.getAllSubcategories();
+      expect(fromDb, isEmpty);
     });
 
     test('Insertion without name must fail', () async {
@@ -96,30 +80,12 @@ void main() {
       expect(fromDb, isEmpty);
     });
 
-    test('Insertion with defined id must use the given id', () async {
-      final subcategory = fix.subcategory1.copyWith(id: Value(42));
-
-      await fkUtils.insertSubcategoryFKDependencies(subcategory);
-      final result = await database.subcategoryDao.insertSubcategory(subcategory);
-      expect(result, 42);
-
-      final fromDb = await database.subcategoryDao.getAllSubcategories();
-      final expected = SubcategoryEntity(
-        id: subcategory.id.value,
-        parentId: subcategory.parentId.value,
-        iconId: subcategory.iconId.value,
-        name: subcategory.name.value,
-      );
-
-      expect(fromDb, orderedEquals([expected]));
-    });
-
     test('Insertion with duplicated id must fail', () async {
-      final subcategory1 = fix.subcategory1.copyWith(id: Value(42));
+      final id = uid.v4();
+      final subcategory1 = fix.subcategory1.copyWith(id: Value(id));
 
       await fkUtils.insertSubcategoryFKDependencies(subcategory1);
-      final result = await database.subcategoryDao.insertSubcategory(subcategory1);
-      expect(result, 42);
+      await database.subcategoryDao.insertSubcategory(subcategory1);
 
       final expected1 = SubcategoryEntity(
         id: subcategory1.id.value,
@@ -130,7 +96,7 @@ void main() {
       var fromDB = await database.subcategoryDao.getAllSubcategories();
       expect(fromDB, orderedEquals([expected1]));
 
-      final subcategory2 = fix.subcategory2.copyWith(id: Value(42));
+      final subcategory2 = fix.subcategory2.copyWith(id: Value(id));
 
       await fkUtils.insertSubcategoryFKDependencies(subcategory2);
       expect(
@@ -201,7 +167,7 @@ void main() {
       var fromDb = await database.subcategoryDao.getAllSubcategories();
       expect(fromDb, hasLength(1));
 
-      var result = await database.subcategoryDao.deleteSubcategoryWithId(subcategory1.id.value + 1);
+      var result = await database.subcategoryDao.deleteSubcategoryWithId(uid.v4());
       expect(result, 0);
 
       // Database is not affected
@@ -239,18 +205,22 @@ void main() {
       expect(result, expected);
     });
 
-    test('Error cases', () async {
-      final result = await database.subcategoryDao.getSubcategoryById(1);
+    test('Query by id of an item that does not exist must return null', () async {
+      final result = await database.subcategoryDao.getSubcategoryById(uid.v4());
       expect(result, isNull);
     });
   });
 
   test('Query by parent id', () async {
-    final subcategory1 = fix.subcategory1.copyWith(parentId: Value(1));
-    final subcategory2 = fix.subcategory2.copyWith(parentId: Value(3));
-    final subcategory3 = fix.subcategory3.copyWith(parentId: Value(1));
-    final subcategory4 = fix.subcategory4.copyWith(parentId: Value(2));
-    final subcategory5 = fix.subcategory5.copyWith(parentId: Value(1));
+    final parentId1 = uid.v4();
+    final parentId2 = uid.v4();
+    final parentId3 = uid.v4();
+
+    final subcategory1 = fix.subcategory1.copyWith(parentId: Value(parentId1));
+    final subcategory2 = fix.subcategory2.copyWith(parentId: Value(parentId3));
+    final subcategory3 = fix.subcategory3.copyWith(parentId: Value(parentId1));
+    final subcategory4 = fix.subcategory4.copyWith(parentId: Value(parentId2));
+    final subcategory5 = fix.subcategory5.copyWith(parentId: Value(parentId1));
 
     await fkUtils.insertSubcategoryFKDependencies(subcategory1);
     await fkUtils.insertSubcategoryFKDependencies(subcategory2);
@@ -258,38 +228,38 @@ void main() {
     await fkUtils.insertSubcategoryFKDependencies(subcategory4);
     await fkUtils.insertSubcategoryFKDependencies(subcategory5);
 
-    var fromDb = await database.subcategoryDao.getSubcategoriesByParentId(1);
+    var fromDb = await database.subcategoryDao.getSubcategoriesByParentId(parentId1);
     var expected = <SubcategoryEntity>[];
     expect(fromDb, expected);
 
     await database.subcategoryDao.insertSubcategory(subcategory1);
-    fromDb = await database.subcategoryDao.getSubcategoriesByParentId(1);
+    fromDb = await database.subcategoryDao.getSubcategoriesByParentId(parentId1);
     expected.add(subcategory1.convert());
     expect(fromDb, expected);
 
     await database.subcategoryDao.insertSubcategory(subcategory2);
-    fromDb = await database.subcategoryDao.getSubcategoriesByParentId(1);
+    fromDb = await database.subcategoryDao.getSubcategoriesByParentId(parentId1);
     expect(fromDb, expected);
 
     await database.subcategoryDao.insertSubcategory(subcategory3);
-    fromDb = await database.subcategoryDao.getSubcategoriesByParentId(1);
+    fromDb = await database.subcategoryDao.getSubcategoriesByParentId(parentId1);
     expected.add(subcategory3.convert());
     expect(fromDb, expected);
 
     await database.subcategoryDao.insertSubcategory(subcategory4);
-    fromDb = await database.subcategoryDao.getSubcategoriesByParentId(1);
+    fromDb = await database.subcategoryDao.getSubcategoriesByParentId(parentId1);
     expect(fromDb, expected);
 
     await database.subcategoryDao.insertSubcategory(subcategory5);
-    fromDb = await database.subcategoryDao.getSubcategoriesByParentId(1);
+    fromDb = await database.subcategoryDao.getSubcategoriesByParentId(parentId1);
     expected.add(subcategory5.convert());
     expect(fromDb, expected);
 
-    fromDb = await database.subcategoryDao.getSubcategoriesByParentId(2);
+    fromDb = await database.subcategoryDao.getSubcategoriesByParentId(parentId2);
     expected = [subcategory4.convert()];
     expect(fromDb, expected);
 
-    fromDb = await database.subcategoryDao.getSubcategoriesByParentId(3);
+    fromDb = await database.subcategoryDao.getSubcategoriesByParentId(parentId3);
     expected = [subcategory2.convert()];
     expect(fromDb, expected);
   });
@@ -319,7 +289,7 @@ void main() {
     });
 
     test('Updating iconId', () async {
-      final newIconId = subcategory1.iconId.value + 1;
+      final newIconId = uid.v4();
       final newSubcategory = subcategory1.copyWith(iconId: Value(newIconId));
       await fkUtils.insertSubcategoryFKDependencies(newSubcategory);
       final result = await database.subcategoryDao.updateSubcategory(newSubcategory);
@@ -331,7 +301,7 @@ void main() {
     });
 
     test('Updating parentId', () async {
-      final newParentId = subcategory1.parentId.value + 1;
+      final newParentId = uid.v4();
       final newSubcategory = subcategory1.copyWith(parentId: Value(newParentId));
       await fkUtils.insertSubcategoryFKDependencies(newSubcategory);
       final result = await database.subcategoryDao.updateSubcategory(newSubcategory);
@@ -356,9 +326,9 @@ void main() {
 
 extension on SubcategoriesCompanion {
   SubcategoryEntity convert({
-    int? id,
-    int? iconId,
-    int? parentId,
+    String? id,
+    String? iconId,
+    String? parentId,
     String? name,
   }) {
     return SubcategoryEntity(

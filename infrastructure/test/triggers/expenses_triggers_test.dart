@@ -3,11 +3,13 @@ import 'package:infrastructure/infrastructure.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:uuid/uuid.dart';
 
 import '../utils/fixture_expense.dart';
 import '../utils/foreign_keys_utils.dart';
 
 void main() {
+  final _uid = Uuid();
   final duration = Duration(hours: 2);
   late AppDatabase database;
   late ForeignKeyUtils fkUtils;
@@ -91,7 +93,7 @@ void main() {
 
         final history1 = expense.toHistory(1);
         expense = expense.copyWith(
-          paymentMethodId: Value(expense.paymentMethodId.value + 1),
+          paymentMethodId: Value(_uid.v4()),
           updatedAt: Value(expense.updatedAt.value.add(duration)),
         );
         await fkUtils.insertExpenseFKDependencies(expense);
@@ -109,7 +111,7 @@ void main() {
 
         final history1 = expense.toHistory(1);
         expense = expense.copyWith(
-          subcategoryId: Value(expense.subcategoryId.value + 2),
+          subcategoryId: Value(_uid.v4()),
           updatedAt: Value(expense.updatedAt.value.add(duration)),
         );
         await fkUtils.insertExpenseFKDependencies(expense);
@@ -127,7 +129,7 @@ void main() {
 
         final history1 = expense.toHistory(1);
         expense = expense.copyWith(
-          storeId: Value(expense.storeId.value! + 7),
+          storeId: Value(_uid.v4()),
           updatedAt: Value(expense.updatedAt.value.add(duration)),
         );
         await fkUtils.insertExpenseFKDependencies(expense);
@@ -163,7 +165,7 @@ void main() {
 
         final history3 = expense.toHistory(3);
         expense = expense.copyWith(
-          storeId: Value(expense.storeId.value! + 7),
+          storeId: Value(_uid.v4()),
           updatedAt: Value(expense.updatedAt.value.add(duration)),
         );
         await fkUtils.insertExpenseFKDependencies(expense);
@@ -173,7 +175,7 @@ void main() {
 
         final history4 = expense.toHistory(4);
         expense = expense.copyWith(
-          paymentMethodId: Value(expense.paymentMethodId.value + 2),
+          paymentMethodId: Value(_uid.v4()),
           updatedAt: Value(expense.updatedAt.value.add(duration)),
         );
         await fkUtils.insertExpenseFKDependencies(expense);
@@ -185,21 +187,22 @@ void main() {
   );
 
   test(
-      'On deleting an expense, a copy of the old expense must be created at '
-      'the expenses history table, preserving the updatedAt field, that must '
-      'be stored as alteredAt',
-      () async {
-        var expense = fix.expense1;
-        await fkUtils.insertExpenseFKDependencies(expense);
-        await database.expenseDao.insertExpense(expense);
-        var fromDb = await database.expensesHistoryDao.getAllExpensesHistory();
-        expect(fromDb, isEmpty);
+    'On deleting an expense, a copy of the old expense must be created at '
+    'the expenses history table, preserving the updatedAt field, that must '
+    'be stored as alteredAt',
+    () async {
+      var expense = fix.expense1;
+      await fkUtils.insertExpenseFKDependencies(expense);
+      await database.expenseDao.insertExpense(expense);
+      var fromDb = await database.expensesHistoryDao.getAllExpensesHistory();
+      expect(fromDb, isEmpty);
 
-        final history1 = expense.toHistory(1);
-        await database.expenseDao.deleteExpenseWithId(expense.id.value);
-        fromDb = await database.expensesHistoryDao.getAllExpensesHistory();
-        expect(fromDb, orderedEquals([history1]));
-      });
+      final history1 = expense.toHistory(1);
+      await database.expenseDao.deleteExpenseWithId(expense.id.value);
+      fromDb = await database.expensesHistoryDao.getAllExpensesHistory();
+      expect(fromDb, orderedEquals([history1]));
+    },
+  );
 }
 
 extension on ExpensesCompanion {

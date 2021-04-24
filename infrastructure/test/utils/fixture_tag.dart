@@ -1,25 +1,28 @@
 import 'package:infrastructure/infrastructure.dart';
 import 'package:moor/moor.dart';
+import 'package:uuid/uuid.dart';
 
 class FixtureTag {
-  final tag1 = TagsCompanion(
-    id: Value(1),
+  final _uid = Uuid();
+
+  late final tag1 = TagsCompanion(
+    id: Value(_uid.v4()),
     name: Value('Stadium'),
-    iconId: Value(13),
+    iconId: Value(_uid.v4()),
     color: Value(5423523),
   );
 
-  final tag2 = TagsCompanion(
-    id: Value(2),
+  late final tag2 = TagsCompanion(
+    id: Value(_uid.v4()),
     name: Value('Tech'),
-    iconId: Value(23),
+    iconId: Value(_uid.v4()),
     color: Value(214),
   );
 
-  final tag3 = TagsCompanion(
-    id: Value(3),
+  late final tag3 = TagsCompanion(
+    id: Value(_uid.v4()),
     name: Value('Shared'),
-    iconId: Value(7),
+    iconId: Value(_uid.v4()),
     color: Value(234),
   );
 }

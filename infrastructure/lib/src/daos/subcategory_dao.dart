@@ -13,7 +13,7 @@ class SubcategoryDao extends DatabaseAccessor<AppDatabase> with _$SubcategoryDao
     return select(subcategories).get();
   }
 
-  Future<List<SubcategoryEntity>> getSubcategoriesByParentId(int parentId) {
+  Future<List<SubcategoryEntity>> getSubcategoriesByParentId(String parentId) {
     final query = select(subcategories)..where((s) => s.parentId.equals(parentId));
     return query.get();
   }
@@ -26,12 +26,12 @@ class SubcategoryDao extends DatabaseAccessor<AppDatabase> with _$SubcategoryDao
     return update(subcategories).replace(subcategory);
   }
 
-  Future<int> deleteSubcategoryWithId(int id) {
+  Future<int> deleteSubcategoryWithId(String id) {
     final query = delete(subcategories)..where((s) => s.id.equals(id));
     return query.go();
   }
 
-  Future<SubcategoryEntity?> getSubcategoryById(int id) {
+  Future<SubcategoryEntity?> getSubcategoryById(String id) {
     final query = select(subcategories)..where((s) => s.id.equals(id));
     return query.getSingleOrNull();
   }

@@ -13,7 +13,7 @@ class TagDao extends DatabaseAccessor<AppDatabase> with _$TagDaoMixin {
     return select(tags).get();
   }
 
-  Future<TagEntity?> getTagById(int id) {
+  Future<TagEntity?> getTagById(String id) {
     final query = select(tags)..where((t) => t.id.equals(id));
     return query.getSingleOrNull();
   }
@@ -26,9 +26,8 @@ class TagDao extends DatabaseAccessor<AppDatabase> with _$TagDaoMixin {
     return update(tags).replace(tag);
   }
 
-  Future<int> deleteTagWithId(int id) {
+  Future<int> deleteTagWithId(String id) {
     final query = delete(tags)..where((t) => t.id.equals(id));
     return query.go();
   }
-
 }

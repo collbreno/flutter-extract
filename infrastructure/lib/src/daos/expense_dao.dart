@@ -13,7 +13,7 @@ class ExpenseDao extends DatabaseAccessor<AppDatabase> with _$ExpenseDaoMixin {
     return select(expenses).get();
   }
 
-  Future<ExpenseEntity?> getExpenseById(int id) {
+  Future<ExpenseEntity?> getExpenseById(String id) {
     final query = select(expenses)..where((e) => e.id.equals(id));
     return query.getSingleOrNull();
   }
@@ -26,7 +26,7 @@ class ExpenseDao extends DatabaseAccessor<AppDatabase> with _$ExpenseDaoMixin {
     return update(expenses).replace(expense);
   }
 
-  Future<int> deleteExpenseWithId(int id) {
+  Future<int> deleteExpenseWithId(String id) {
     final query = delete(expenses)..where((e) => e.id.equals(id));
     return query.go();
   }

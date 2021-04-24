@@ -53,7 +53,7 @@ class ForeignKeyUtils {
     }
   }
 
-  Future<void> _insertIconIfNeeded(int iconId) async {
+  Future<void> _insertIconIfNeeded(String iconId) async {
     final iconFromDb = await database.iconDao.getIconById(iconId);
     if (iconFromDb == null) {
       final iconToInsert = fixIcon.icon1.copyWith(id: Value(iconId));
@@ -61,7 +61,7 @@ class ForeignKeyUtils {
     }
   }
 
-  Future<void> _insertCategoryIfNeeded(int categoryId) async {
+  Future<void> _insertCategoryIfNeeded(String categoryId) async {
     final categoryFromDb = await database.categoryDao.getCategoryById(categoryId);
     if (categoryFromDb == null) {
       final categoryToInsert = fixCategory.category1.copyWith(id: Value(categoryId));
@@ -70,7 +70,7 @@ class ForeignKeyUtils {
     }
   }
 
-  Future<void> _insertSubcategoryIfNeeded(int subcategoryId) async {
+  Future<void> _insertSubcategoryIfNeeded(String subcategoryId) async {
     final subcategoryFromDb = await database.subcategoryDao.getSubcategoryById(subcategoryId);
     if (subcategoryFromDb == null) {
       final subcategoryToInsert = fixSubcategory.subcategory1.copyWith(id: Value(subcategoryId));
@@ -79,7 +79,7 @@ class ForeignKeyUtils {
     }
   }
 
-  Future<void> _insertStoreIfNeeded(int storeId) async {
+  Future<void> _insertStoreIfNeeded(String storeId) async {
     final storeFromDb = await database.storeDao.getStoreById(storeId);
     if (storeFromDb == null) {
       final storeToInsert = fixStore.store1.copyWith(id: Value(storeId));
@@ -87,7 +87,7 @@ class ForeignKeyUtils {
     }
   }
 
-  Future<void> _insertPaymentMethodIfNeeded(int paymentMethodId) async {
+  Future<void> _insertPaymentMethodIfNeeded(String paymentMethodId) async {
     final paymentMethodFromDb =
         await database.paymentMethodDao.getPaymentMethodById(paymentMethodId);
     if (paymentMethodFromDb == null) {

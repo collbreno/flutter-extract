@@ -1,39 +1,42 @@
 import 'package:infrastructure/infrastructure.dart';
 import 'package:moor/moor.dart';
+import 'package:uuid/uuid.dart';
 
 class FixtureSubcategory {
-  final subcategory1 = SubcategoriesCompanion(
-    id: Value(1),
-    iconId: Value(32),
+  final _uid = Uuid();
+
+  late final subcategory1 = SubcategoriesCompanion(
+    id: Value(_uid.v4()),
+    iconId: Value(_uid.v4()),
     name: Value('Lunch'),
-    parentId: Value(6),
+    parentId: Value(_uid.v4()),
   );
 
-  final subcategory2 = SubcategoriesCompanion(
-    id: Value(2),
-    iconId: Value(12),
+  late final subcategory2 = SubcategoriesCompanion(
+    id: Value(_uid.v4()),
+    iconId: Value(_uid.v4()),
     name: Value('Subway'),
-    parentId: Value(4),
+    parentId: Value(_uid.v4()),
   );
 
-  final subcategory3 = SubcategoriesCompanion(
-    id: Value(3),
-    iconId: Value(7),
+  late final subcategory3 = SubcategoriesCompanion(
+    id: Value(_uid.v4()),
+    iconId: Value(_uid.v4()),
     name: Value('Movie theater'),
-    parentId: Value(5),
+    parentId: Value(_uid.v4()),
   );
 
-  final subcategory4 = SubcategoriesCompanion(
-    id: Value(4),
-    iconId: Value(37),
+  late final subcategory4 = SubcategoriesCompanion(
+    id: Value(_uid.v4()),
+    iconId: Value(_uid.v4()),
     name: Value('Games'),
-    parentId: Value(2),
+    parentId: Value(_uid.v4()),
   );
 
-  final subcategory5 = SubcategoriesCompanion(
-    id: Value(5),
-    iconId: Value(13),
+  late final subcategory5 = SubcategoriesCompanion(
+    id: Value(_uid.v4()),
+    iconId: Value(_uid.v4()),
     name: Value('Soccer'),
-    parentId: Value(8),
+    parentId: Value(_uid.v4()),
   );
 }

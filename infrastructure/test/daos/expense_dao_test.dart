@@ -3,11 +3,13 @@ import 'package:infrastructure/infrastructure.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart' hide isNull;
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:uuid/uuid.dart';
 
 import '../utils/fixture_expense.dart';
 import '../utils/foreign_keys_utils.dart';
 
 void main() {
+  final uid = Uuid();
   late AppDatabase database;
   late ForeignKeyUtils fkUtils;
   final fix = FixtureExpense();
@@ -26,25 +28,17 @@ void main() {
   });
 
   group('Insertion', () {
-    test('Insertion without id must have an auto incremented id', () async {
-      final expense1 = fix.expense1.copyWith(id: Value.absent());
-      final expense2 = fix.expense2.copyWith(id: Value.absent());
+    test('Insertion without id must fail', () async {
+      final expense = fix.expense1.copyWith(id: Value.absent());
 
-      await fkUtils.insertExpenseFKDependencies(expense1);
-      var result = await database.expenseDao.insertExpense(expense1);
-      expect(result, 1);
+      await fkUtils.insertExpenseFKDependencies(expense);
+      expect(
+        () => database.expenseDao.insertExpense(expense),
+        throwsA(isA<InvalidDataException>()),
+      );
 
-      var fromDb = await database.expenseDao.getAllExpenses();
-      final expected1 = expense1.convert(id: 1);
-      expect(fromDb, orderedEquals([expected1]));
-
-      await fkUtils.insertExpenseFKDependencies(expense2);
-      result = await database.expenseDao.insertExpense(expense2);
-      expect(result, 2);
-
-      fromDb = await database.expenseDao.getAllExpenses();
-      final expected2 = expense2.convert(id: 2);
-      expect(fromDb, orderedEquals([expected1, expected2]));
+      final fromDb = await database.expenseDao.getAllExpenses();
+      expect(fromDb, isEmpty);
     });
 
     test('Insertion without description must fail', () async {
@@ -150,31 +144,18 @@ void main() {
       expect(fromDb, isEmpty);
     });
 
-    test('Insertion with defined id must use the given id', () async {
-      final expense = fix.expense1.copyWith(id: Value(42));
-
-      await fkUtils.insertExpenseFKDependencies(expense);
-      final result = await database.expenseDao.insertExpense(expense);
-      expect(result, 42);
-
-      final fromDb = await database.expenseDao.getAllExpenses();
-      final expected = expense.convert();
-
-      expect(fromDb, orderedEquals([expected]));
-    });
-
     test('Insertion with duplicated id must fail', () async {
-      final expense1 = fix.expense1.copyWith(id: Value(42));
+      final id = uid.v4();
+      final expense1 = fix.expense1.copyWith(id: Value(id));
 
       await fkUtils.insertExpenseFKDependencies(expense1);
-      final result = await database.expenseDao.insertExpense(expense1);
-      expect(result, 42);
+      await database.expenseDao.insertExpense(expense1);
 
       final expected1 = expense1.convert();
       var fromDB = await database.expenseDao.getAllExpenses();
       expect(fromDB, orderedEquals([expected1]));
 
-      final expense2 = fix.expense2.copyWith(id: Value(42));
+      final expense2 = fix.expense2.copyWith(id: Value(id));
 
       await fkUtils.insertExpenseFKDependencies(expense2);
       expect(
@@ -247,7 +228,10 @@ void main() {
       var fromDb = await database.expenseDao.getAllExpenses();
       expect(fromDb, hasLength(1));
 
-      var result = await database.expenseDao.deleteExpenseWithId(expense1.id.value + 1);
+      final differentId = uid.v4();
+      expect(expense1.id.value, isNot(differentId));
+
+      var result = await database.expenseDao.deleteExpenseWithId(differentId);
       expect(result, 0);
 
       // Database is not affected
@@ -274,8 +258,8 @@ void main() {
       expect(result, expected);
     });
 
-    test('Error cases', () async {
-      final result = await database.expenseDao.getExpenseById(1);
+    test('Query by id of an expense that does\'nt exist must return null.', () async {
+      final result = await database.expenseDao.getExpenseById(uid.v4());
       expect(result, isNull);
     });
   });
@@ -326,7 +310,7 @@ void main() {
 
     test('Updating paymentMethodId', () async {
       final newExpense1 = expense1.copyWith(
-        paymentMethodId: Value(expense1.paymentMethodId.value + 1),
+        paymentMethodId: Value(uid.v4()),
       );
       await fkUtils.insertExpenseFKDependencies(newExpense1);
       final result = await database.expenseDao.updateExpense(newExpense1);
@@ -338,7 +322,7 @@ void main() {
 
     test('Updating subcategoryId', () async {
       final newExpense1 = expense1.copyWith(
-        subcategoryId: Value(expense1.subcategoryId.value + 1),
+        subcategoryId: Value(uid.v4()),
       );
       await fkUtils.insertExpenseFKDependencies(newExpense1);
       final result = await database.expenseDao.updateExpense(newExpense1);
@@ -350,7 +334,7 @@ void main() {
 
     test('Updating storeId', () async {
       final newExpense1 = expense1.copyWith(
-        storeId: Value(expense1.storeId.value! + 1),
+        storeId: Value(uid.v4()),
       );
       await fkUtils.insertExpenseFKDependencies(newExpense1);
       final result = await database.expenseDao.updateExpense(newExpense1);
@@ -396,13 +380,13 @@ void main() {
 
 extension on ExpensesCompanion {
   ExpenseEntity convert({
-    int? id,
+    String? id,
     String? description,
     int? value,
     DateTime? date,
-    int? paymentMethodId,
-    int? subcategoryId,
-    int? storeId,
+    String? paymentMethodId,
+    String? subcategoryId,
+    String? storeId,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
