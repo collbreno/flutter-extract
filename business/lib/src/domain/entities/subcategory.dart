@@ -1,5 +1,5 @@
 import 'package:built_value/built_value.dart';
-import 'package:business/src/domain/entities/category.dart';
+import 'package:business/src/domain/_domain.dart';
 import 'package:flutter/material.dart' hide Builder;
 
 part 'subcategory.g.dart';

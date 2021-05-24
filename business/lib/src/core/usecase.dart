@@ -1,4 +1,4 @@
-import 'package:business/src/core/core.dart';
+import 'package:business/src/core/_core.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class UseCase<T, P> {

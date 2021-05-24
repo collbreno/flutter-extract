@@ -1,5 +1,5 @@
-import 'package:business/src/core/core.dart';
-import 'package:business/src/domain/usecases/subcategory/get_subcategory_by_id.dart';
+import 'package:business/src/core/_core.dart';
+import 'package:business/src/domain/_domain.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';

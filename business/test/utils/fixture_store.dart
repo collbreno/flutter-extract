@@ -1,4 +1,4 @@
-import 'package:business/src/domain/entities/entities.dart';
+import 'package:business/src/domain/_domain.dart';
 import 'package:uuid/uuid.dart';
 
 class FixtureStore {

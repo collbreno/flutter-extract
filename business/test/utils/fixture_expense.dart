@@ -1,5 +1,5 @@
 import 'package:built_collection/built_collection.dart';
-import 'package:business/src/domain/entities/entities.dart';
+import 'package:business/src/domain/_domain.dart';
 import 'package:uuid/uuid.dart';
 
 import 'fixture_payment_method.dart';
