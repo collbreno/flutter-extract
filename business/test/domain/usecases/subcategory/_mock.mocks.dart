@@ -40,6 +40,14 @@ class MockISubcategoryRepository extends _i1.Mock
                       _FakeEither<_i5.Failure, List<_i6.Subcategory>>()))
           as _i4.Future<_i2.Either<_i5.Failure, List<_i6.Subcategory>>>);
   @override
+  _i4.Future<_i2.Either<_i5.Failure, List<_i6.Subcategory>>>
+      getSubcategoriesWithParentId(String? id) => (super.noSuchMethod(
+              Invocation.method(#getSubcategoriesWithParentId, [id]),
+              returnValue:
+                  Future<_i2.Either<_i5.Failure, List<_i6.Subcategory>>>.value(
+                      _FakeEither<_i5.Failure, List<_i6.Subcategory>>()))
+          as _i4.Future<_i2.Either<_i5.Failure, List<_i6.Subcategory>>>);
+  @override
   _i4.Future<_i2.Either<_i5.Failure, int>> countExpensesWithSubcategoryWithId(
           String? id) =>
       (super.noSuchMethod(

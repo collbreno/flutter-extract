@@ -3,6 +3,7 @@ import 'package:business/src/domain/_domain.dart';
 
 abstract class ISubcategoryRepository {
   Future<FailureOr<List<Subcategory>>> getAllSubcategories();
+  Future<FailureOr<List<Subcategory>>> getSubcategoriesWithParentId(String id);
   Future<FailureOr<int>> countExpensesWithSubcategoryWithId(String id);
   Future<FailureOr<Subcategory>> getSubcategoryById(String id);
   Future<FailureOr<void>> insertSubcategory(Subcategory subcategory);
