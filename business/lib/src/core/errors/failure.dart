@@ -18,4 +18,6 @@ class EntityBeingUsedFailure extends DatabaseFailure {
   List<Object?> get props => [usages];
 }
 
+class EntityDependencyFailure extends DatabaseFailure {}
+
 class NothingToDeleteFailure extends DatabaseFailure {}
