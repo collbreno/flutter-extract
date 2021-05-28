@@ -115,6 +115,14 @@ class MockICategoryRepository extends _i1.Mock
                   _FakeEither<_i5.Failure, bool>()))
           as _i4.Future<_i2.Either<_i5.Failure, bool>>);
   @override
+  _i4.Future<_i2.Either<_i5.Failure, int>> countSubcategoriesWithParentId(
+          String? id) =>
+      (super.noSuchMethod(
+              Invocation.method(#countSubcategoriesWithParentId, [id]),
+              returnValue: Future<_i2.Either<_i5.Failure, int>>.value(
+                  _FakeEither<_i5.Failure, int>()))
+          as _i4.Future<_i2.Either<_i5.Failure, int>>);
+  @override
   _i4.Future<_i2.Either<_i5.Failure, void>> insertCategory(
           _i8.Category? category) =>
       (super.noSuchMethod(Invocation.method(#insertCategory, [category]),
