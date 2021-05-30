@@ -9,7 +9,6 @@ class GetCategoryById extends UseCase<Category, String> {
 
   @override
   Future<Either<Failure, Category>> call(String id) {
-    // TODO: implement call
-    throw UnimplementedError();
+    return repository.getCategoryById(id);
   }
 }

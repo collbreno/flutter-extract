@@ -9,7 +9,6 @@ class UpdateCategory extends UseCase<bool, Category> {
 
   @override
   Future<Either<Failure, bool>> call(Category category) {
-    // TODO: implement call
-    throw UnimplementedError();
+    return repository.updateCategory(category);
   }
 }

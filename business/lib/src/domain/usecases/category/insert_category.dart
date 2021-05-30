@@ -9,7 +9,6 @@ class InsertCategory extends UseCase<void, Category> {
 
   @override
   Future<Either<Failure, void>> call(Category category) {
-    // TODO: implement call
-    throw UnimplementedError();
+    return repository.insertCategory(category);
   }
 }

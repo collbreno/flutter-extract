@@ -9,7 +9,6 @@ class GetAllCategories extends UseCase<List<Category>, NoParams> {
 
   @override
   Future<Either<Failure, List<Category>>> call(NoParams param) {
-    // TODO: implement call
-    throw UnimplementedError();
+    return repository.getAllCategories();
   }
 }
