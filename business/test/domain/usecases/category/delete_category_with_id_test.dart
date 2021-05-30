@@ -22,11 +22,9 @@ void main() {
       'should delete category from repository '
       'when it is not being used', () async {
     final id = fix.category1.id;
-    final countDeleted = 1;
 
-    when(repository.countSubcategoriesWithParentId(id))
-        .thenAnswer((realInvocation) async => Right(0));
-    when(repository.deleteCategoryWithId(id)).thenAnswer((_) async => Right(countDeleted));
+    when(repository.countSubcategoriesWithParentId(id)).thenAnswer((_) async => Right(0));
+    when(repository.deleteCategoryWithId(id)).thenAnswer((_) async => Right(Null));
 
     final result = await useCase(id);
 
@@ -55,31 +53,12 @@ void main() {
     });
 
     test(
-        'should return $NothingToDeleteFailure '
-        'when the category does not exist', () async {
-      final id = fix.category1.id;
-
-      when(repository.countSubcategoriesWithParentId(id))
-          .thenAnswer((realInvocation) async => Right(0));
-      when(repository.deleteCategoryWithId(id)).thenAnswer((realInvocation) async => Right(0));
-
-      final result = await useCase(id);
-
-      expect(result, Left(NothingToDeleteFailure()));
-
-      verify(repository.countSubcategoriesWithParentId(id));
-      verify(repository.deleteCategoryWithId(id));
-      verifyNoMoreInteractions(repository);
-    });
-
-    test(
         'should return database failure when repository fails '
         'while checking category usages', () async {
       final id = fix.category1.id;
       final failure = UnknownDatabaseFailure();
 
-      when(repository.countSubcategoriesWithParentId(id))
-          .thenAnswer((realInvocation) async => Left(failure));
+      when(repository.countSubcategoriesWithParentId(id)).thenAnswer((_) async => Left(failure));
 
       final result = await useCase(id);
 
@@ -96,7 +75,7 @@ void main() {
       final failure = UnknownDatabaseFailure();
 
       when(repository.countSubcategoriesWithParentId(id)).thenAnswer((_) async => Right(0));
-      when(repository.deleteCategoryWithId(id)).thenAnswer((realInvocation) async => Left(failure));
+      when(repository.deleteCategoryWithId(id)).thenAnswer((_) async => Left(failure));
 
       final result = await useCase(id);
 

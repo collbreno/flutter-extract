@@ -9,7 +9,7 @@ import '_mock.mocks.dart';
 
 void main() {
   final fix = FixtureSubcategory();
-  late MockISubcategoryRepository repository;
+  late ISubcategoryRepository repository;
   late DeleteSubcategoryWithId useCase;
 
   setUp(() {
@@ -22,10 +22,8 @@ void main() {
       'when it is not being used', () async {
     final id = fix.subcategory1.id;
 
-    when(repository.countExpensesWithSubcategoryWithId(id))
-        .thenAnswer((_) async => Right(0));
-    when(repository.deleteSubcategoryWithId(id))
-        .thenAnswer((_) async => Right(1));
+    when(repository.countExpensesWithSubcategoryWithId(id)).thenAnswer((_) async => Right(0));
+    when(repository.deleteSubcategoryWithId(id)).thenAnswer((_) async => Right(Null));
 
     final result = await useCase(id);
 
@@ -36,76 +34,56 @@ void main() {
     verifyNoMoreInteractions(repository);
   });
 
-  test(
-      'should return $EntityBeingUsedFailure '
-      'when the subcategory is being used', () async {
-    final id = fix.subcategory1.id;
-    final count = 2;
+  group('error cases', () {
+    test(
+        'should return $EntityBeingUsedFailure '
+        'when the subcategory is being used', () async {
+      final id = fix.subcategory1.id;
+      final count = 2;
 
-    when(repository.countExpensesWithSubcategoryWithId(id))
-        .thenAnswer((_) async => Right(count));
+      when(repository.countExpensesWithSubcategoryWithId(id)).thenAnswer((_) async => Right(count));
 
-    final result = await useCase(id);
+      final result = await useCase(id);
 
-    expect(result, Left(EntityBeingUsedFailure(count)));
+      expect(result, Left(EntityBeingUsedFailure(count)));
 
-    verify(repository.countExpensesWithSubcategoryWithId(id));
-    verifyNoMoreInteractions(repository);
-  });
+      verify(repository.countExpensesWithSubcategoryWithId(id));
+      verifyNoMoreInteractions(repository);
+    });
 
-  test(
-      'should return $NothingToDeleteFailure '
-      'when the subcategory does not exist', () async {
-    final id = fix.subcategory1.id;
+    test(
+        'should return database failure when repository fails '
+        'while checking subcategory usages', () async {
+      final failure = UnknownDatabaseFailure();
+      final id = fix.subcategory1.id;
 
-    when(repository.countExpensesWithSubcategoryWithId(id))
-        .thenAnswer((_) async => Right(0));
-    when(repository.deleteSubcategoryWithId(id))
-        .thenAnswer((_) async => Right(0));
+      when(repository.countExpensesWithSubcategoryWithId(id))
+          .thenAnswer((_) async => Left(failure));
 
-    final result = await useCase(id);
+      final result = await useCase(id);
 
-    expect(result, Left(NothingToDeleteFailure()));
+      expect(result, Left(failure));
 
-    verify(repository.countExpensesWithSubcategoryWithId(id));
-    verify(repository.deleteSubcategoryWithId(id));
-    verifyNoMoreInteractions(repository);
-  });
+      verify(repository.countExpensesWithSubcategoryWithId(id));
+      verifyNoMoreInteractions(repository);
+    });
 
-  test(
-      'should return database failure when repository fails '
-      'while checking subcategory usages', () async {
-    final failure = UnknownDatabaseFailure();
-    final id = fix.subcategory1.id;
+    test(
+        'should return database failure when repository fails'
+        'while deleting subcategory', () async {
+      final failure = UnknownDatabaseFailure();
+      final id = fix.subcategory1.id;
 
-    when(repository.countExpensesWithSubcategoryWithId(id))
-        .thenAnswer((_) async => Left(failure));
+      when(repository.countExpensesWithSubcategoryWithId(id)).thenAnswer((_) async => Right(0));
+      when(repository.deleteSubcategoryWithId(id)).thenAnswer((_) async => Left(failure));
 
-    final result = await useCase(id);
+      final result = await useCase(id);
 
-    expect(result, Left(failure));
+      expect(result, Left(failure));
 
-    verify(repository.countExpensesWithSubcategoryWithId(id));
-    verifyNoMoreInteractions(repository);
-  });
-
-  test(
-      'should return database failure when repository fails'
-      'while deleting subcategory', () async {
-    final failure = UnknownDatabaseFailure();
-    final id = fix.subcategory1.id;
-
-    when(repository.countExpensesWithSubcategoryWithId(id))
-        .thenAnswer((_) async => Right(0));
-    when(repository.deleteSubcategoryWithId(id))
-        .thenAnswer((_) async => Left(failure));
-
-    final result = await useCase(id);
-
-    expect(result, Left(failure));
-
-    verify(repository.countExpensesWithSubcategoryWithId(id));
-    verify(repository.deleteSubcategoryWithId(id));
-    verifyNoMoreInteractions(repository);
+      verify(repository.countExpensesWithSubcategoryWithId(id));
+      verify(repository.deleteSubcategoryWithId(id));
+      verifyNoMoreInteractions(repository);
+    });
   });
 }

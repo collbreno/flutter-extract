@@ -77,12 +77,12 @@ class MockISubcategoryRepository extends _i1.Mock
                   _FakeEither<_i5.Failure, bool>()))
           as _i4.Future<_i2.Either<_i5.Failure, bool>>);
   @override
-  _i4.Future<_i2.Either<_i5.Failure, int>> deleteSubcategoryWithId(
+  _i4.Future<_i2.Either<_i5.Failure, void>> deleteSubcategoryWithId(
           String? id) =>
       (super.noSuchMethod(Invocation.method(#deleteSubcategoryWithId, [id]),
-              returnValue: Future<_i2.Either<_i5.Failure, int>>.value(
-                  _FakeEither<_i5.Failure, int>()))
-          as _i4.Future<_i2.Either<_i5.Failure, int>>);
+              returnValue: Future<_i2.Either<_i5.Failure, void>>.value(
+                  _FakeEither<_i5.Failure, void>()))
+          as _i4.Future<_i2.Either<_i5.Failure, void>>);
 }
 
 /// A class which mocks [ICategoryRepository].
@@ -137,9 +137,9 @@ class MockICategoryRepository extends _i1.Mock
                   _FakeEither<_i5.Failure, bool>()))
           as _i4.Future<_i2.Either<_i5.Failure, bool>>);
   @override
-  _i4.Future<_i2.Either<_i5.Failure, int>> deleteCategoryWithId(String? id) =>
+  _i4.Future<_i2.Either<_i5.Failure, void>> deleteCategoryWithId(String? id) =>
       (super.noSuchMethod(Invocation.method(#deleteCategoryWithId, [id]),
-              returnValue: Future<_i2.Either<_i5.Failure, int>>.value(
-                  _FakeEither<_i5.Failure, int>()))
-          as _i4.Future<_i2.Either<_i5.Failure, int>>);
+              returnValue: Future<_i2.Either<_i5.Failure, void>>.value(
+                  _FakeEither<_i5.Failure, void>()))
+          as _i4.Future<_i2.Either<_i5.Failure, void>>);
 }

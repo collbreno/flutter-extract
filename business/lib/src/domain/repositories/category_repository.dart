@@ -8,5 +8,5 @@ abstract class ICategoryRepository {
   Future<FailureOr<int>> countSubcategoriesWithParentId(String id);
   Future<FailureOr<void>> insertCategory(Category category);
   Future<FailureOr<bool>> updateCategory(Category category);
-  Future<FailureOr<int>> deleteCategoryWithId(String id);
+  Future<FailureOr<void>> deleteCategoryWithId(String id);
 }
