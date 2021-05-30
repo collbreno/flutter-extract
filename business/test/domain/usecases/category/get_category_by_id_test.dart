@@ -9,7 +9,7 @@ import '_mock.mocks.dart';
 
 void main() {
   final fix = FixtureCategory();
-  late MockICategoryRepository repository;
+  late ICategoryRepository repository;
   late GetCategoryById useCase;
 
   setUp(() {

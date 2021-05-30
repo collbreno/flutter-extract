@@ -9,7 +9,7 @@ import '_mock.mocks.dart';
 
 void main() {
   final fix = FixtureTag();
-  late MockITagRepository repository;
+  late ITagRepository repository;
   late GetTagById useCase;
 
   setUp(() {

@@ -9,7 +9,7 @@ import '_mock.mocks.dart';
 
 void main() {
   final fix = FixtureSubcategory();
-  late MockISubcategoryRepository repository;
+  late ISubcategoryRepository repository;
   late GetSubcategoryById useCase;
 
   setUp(() {
@@ -20,8 +20,7 @@ void main() {
   test('should get the subcategory from repository', () async {
     final expected = fix.subcategory1;
 
-    when(repository.getSubcategoryById(expected.id))
-        .thenAnswer((_) async => Right(expected));
+    when(repository.getSubcategoryById(expected.id)).thenAnswer((_) async => Right(expected));
 
     final result = await useCase(expected.id);
 
@@ -35,8 +34,7 @@ void main() {
     final id = 'test';
     final failure = UnknownDatabaseFailure();
 
-    when(repository.getSubcategoryById(id))
-        .thenAnswer((_) async => Left(failure));
+    when(repository.getSubcategoryById(id)).thenAnswer((_) async => Left(failure));
 
     final result = await useCase(id);
 
