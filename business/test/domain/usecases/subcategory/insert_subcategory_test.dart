@@ -9,8 +9,8 @@ import '_mock.mocks.dart';
 
 void main() {
   final fix = FixtureSubcategory();
-  late MockISubcategoryRepository subcategoryRepository;
-  late MockICategoryRepository categoryRepository;
+  late ISubcategoryRepository subcategoryRepository;
+  late ICategoryRepository categoryRepository;
   late InsertSubcategory useCase;
 
   setUp(() {

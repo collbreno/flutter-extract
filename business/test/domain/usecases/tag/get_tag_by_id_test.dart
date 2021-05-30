@@ -1,4 +1,5 @@
 import 'package:business/src/core/_core.dart';
+import 'package:business/src/domain/_domain.dart';
 import 'package:business/src/domain/usecases/tag/_tag.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,7 +10,7 @@ import '_mock.mocks.dart';
 
 void main() {
   final fix = FixtureTag();
-  late MockITagRepository repository;
+  late ITagRepository repository;
   late GetTagById useCase;
 
   setUp(() {

@@ -9,7 +9,7 @@ import '_mock.mocks.dart';
 
 void main() {
   final fix = FixtureSubcategory();
-  late MockISubcategoryRepository repository;
+  late ISubcategoryRepository repository;
   late GetSubcategoriesWithParentId useCase;
 
   setUp(() {
