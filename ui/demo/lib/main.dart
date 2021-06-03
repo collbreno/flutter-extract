@@ -1,4 +1,4 @@
-import 'package:demo/selectable_item_demo.dart';
+import 'package:demo/multi_select_app_bar_demo.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: SelectableItemDemo(),
+      home: MultiSelectAppBarDemo(),
     );
   }
 }

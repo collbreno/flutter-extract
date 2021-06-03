@@ -5,8 +5,8 @@
         <entry key="_fe_analyzer_shared">
           <value>
             <list>
-              <option value="$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/_fe_analyzer_shared-21.0.0/lib" />
               <option value="$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/_fe_analyzer_shared-22.0.0/lib" />
+              <option value="$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/_fe_analyzer_shared-21.0.0/lib" />
               <option value="$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/_fe_analyzer_shared-20.0.0/lib" />
             </list>
           </value>
@@ -14,8 +14,8 @@
         <entry key="analyzer">
           <value>
             <list>
-              <option value="$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/analyzer-1.5.0/lib" />
               <option value="$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/analyzer-1.7.1/lib" />
+              <option value="$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/analyzer-1.5.0/lib" />
               <option value="$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/analyzer-1.4.0/lib" />
             </list>
           </value>
@@ -30,6 +30,7 @@
         <entry key="animated_theme_switcher">
           <value>
             <list>
+              <option value="$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/animated_theme_switcher-2.0.1/lib" />
               <option value="$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/animated_theme_switcher-2.0.1-nullsafety.0/lib" />
             </list>
           </value>
@@ -58,8 +59,8 @@
         <entry key="build">
           <value>
             <list>
-              <option value="$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/build-2.0.0/lib" />
               <option value="$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/build-2.0.2/lib" />
+              <option value="$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/build-2.0.0/lib" />
             </list>
           </value>
         </entry>
@@ -113,8 +114,8 @@
         <entry key="built_value">
           <value>
             <list>
-              <option value="$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/built_value-8.0.4/lib" />
               <option value="$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/built_value-8.0.6/lib" />
+              <option value="$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/built_value-8.0.4/lib" />
             </list>
           </value>
         </entry>
@@ -206,8 +207,8 @@
         <entry key="dart_style">
           <value>
             <list>
-              <option value="$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/dart_style-2.0.0/lib" />
               <option value="$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/dart_style-2.0.1/lib" />
+              <option value="$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/dart_style-2.0.0/lib" />
             </list>
           </value>
         </entry>
@@ -242,8 +243,8 @@
         <entry key="file">
           <value>
             <list>
-              <option value="$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/file-6.1.0/lib" />
               <option value="$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/file-6.1.1/lib" />
+              <option value="$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/file-6.1.0/lib" />
             </list>
           </value>
         </entry>
@@ -363,8 +364,8 @@
         <entry key="mockito">
           <value>
             <list>
-              <option value="$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/mockito-5.0.8/lib" />
               <option value="$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/mockito-5.0.9/lib" />
+              <option value="$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/mockito-5.0.8/lib" />
             </list>
           </value>
         </entry>
@@ -504,8 +505,8 @@
         <entry key="source_gen">
           <value>
             <list>
-              <option value="$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/source_gen-1.0.0/lib" />
               <option value="$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/source_gen-1.0.1/lib" />
+              <option value="$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/source_gen-1.0.0/lib" />
             </list>
           </value>
         </entry>
@@ -696,6 +697,7 @@
       <root url="file://$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/analyzer-1.7.1/lib" />
       <root url="file://$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/analyzer_plugin_fork-0.5.1/lib" />
       <root url="file://$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/animated_theme_switcher-2.0.1-nullsafety.0/lib" />
+      <root url="file://$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/animated_theme_switcher-2.0.1/lib" />
       <root url="file://$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/args-2.1.0/lib" />
       <root url="file://$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/async-2.6.1/lib" />
       <root url="file://$PROJECT_DIR$/../../../../../../tools/flutter/.pub-cache/hosted/pub.dartlang.org/boolean_selector-2.1.0/lib" />
