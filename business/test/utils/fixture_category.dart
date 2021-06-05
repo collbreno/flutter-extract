@@ -9,23 +9,27 @@ class FixtureCategory {
     id: _uid.v4(),
     name: 'Market',
     icon: Icons.shopping_cart,
+    color: Colors.orange,
   );
 
   late final category2 = Category(
     id: _uid.v4(),
     name: 'Shop',
     icon: Icons.shopping_basket,
+    color: Colors.orangeAccent,
   );
 
   late final category3 = Category(
     id: _uid.v4(),
     name: 'Health',
     icon: Icons.healing,
+    color: Colors.red,
   );
 
   late final category4 = Category(
     id: _uid.v4(),
     name: 'Fun',
     icon: Icons.sports_football,
+    color: Colors.blue,
   );
 }
