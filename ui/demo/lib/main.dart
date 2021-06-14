@@ -1,4 +1,4 @@
-import 'package:demo/tag_chip_demo.dart';
+import 'package:demo/sweet_alert_demo.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: TagChipDemo(),
+      home: SweetAlertDemo(),
     );
   }
 }
