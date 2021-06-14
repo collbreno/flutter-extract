@@ -1,5 +1,6 @@
-import 'package:demo/tag_chip_demo.dart';
 import 'package:flutter/material.dart';
+import 'package:ui/common/app_theme.dart';
+import 'package:ui/demo/sweet_alert_demo.dart';
 
 void main() {
   runApp(MyApp());
@@ -11,10 +12,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: TagChipDemo(),
+      theme: AppTheme.initTheme,
+      home: SweetAlertDemo(),
     );
   }
 }
