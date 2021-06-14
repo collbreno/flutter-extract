@@ -49,8 +49,8 @@ class TagChipDemo extends StatelessWidget {
             children: tags
                 .map((e) => Padding(
                       padding: EdgeInsets.all(8),
-                      child: TagChip.fromTag(
-                        e,
+                      child: TagChip(
+                        tag: e,
                       ),
                     ))
                 .toList(),
