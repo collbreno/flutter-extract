@@ -41,6 +41,7 @@ class _SweetAlertState extends State<SweetAlert> {
     return AlertDialog(
       titlePadding: EdgeInsets.only(top: 12),
       actions: widget.actions,
+      contentPadding: const EdgeInsets.fromLTRB(24.0, 20.0, 24.0, 0.0),
       title: Column(
         children: [
           Lottie.asset(
