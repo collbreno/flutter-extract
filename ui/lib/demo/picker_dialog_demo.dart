@@ -24,29 +24,24 @@ class _PickerDialogDemoState extends State<PickerDialogDemo> {
           children: [
             ElevatedButton(
               child: Text('Open Dialog'),
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (ctx) {
-                      return PickerDialog<String>(
-                        title: Text('teste'),
-                        onSearch: (item, text) => item.contains(text),
-                        items: ['Banana', 'Maçã', 'Mamão', 'Melancia', 'Banana', 'Goiaba'],
-                        renderer: (item) => ListTile(
-                          title: Text(item),
-                        ),
-                        onRemove: () {
-                          setState(() {
-                            _selected = null;
-                          });
-                        },
-                        onItemSelected: (selected) {
-                          setState(() {
-                            _selected = selected;
-                          });
-                        },
-                      );
-                    });
+              onPressed: () async {
+                final result = await showPickerDialog(
+                  context: context,
+                  pickerDialog: PickerDialog<String>(
+                    title: Text('Selecione'),
+                    onSearch: (item, text) => item.toLowerCase().contains(text.toLowerCase()),
+                    items: ['Banana', 'Maçã', 'Mamão', 'Melancia', 'Abacaxi', 'Goiaba'],
+                    renderer: (item) => ListTile(
+                      title: Text(item),
+                    ),
+                    canRemove: true,
+                  ),
+                );
+                if (result != null) {
+                  setState(() {
+                    _selected = result.value;
+                  });
+                }
               },
             ),
             SizedBox(height: 8),

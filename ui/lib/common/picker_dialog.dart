@@ -1,12 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+Future<PickerDialogResult<T>?> showPickerDialog<T>({
+  required BuildContext context,
+  required PickerDialog<T> pickerDialog,
+}) {
+  return showDialog(context: context, builder: (ctx) => pickerDialog);
+}
+
 class PickerDialog<T> extends StatefulWidget {
   final EdgeInsets contentPadding;
   final int columns;
   final bool Function(T, String)? onSearch;
-  final ValueSetter<T> onItemSelected;
-  final VoidCallback? onRemove;
+  final bool canRemove;
   final Widget Function(T) renderer;
   final List<T> items;
   final Widget title;
@@ -15,11 +21,10 @@ class PickerDialog<T> extends StatefulWidget {
     required this.title,
     required this.items,
     required this.renderer,
-    required this.onItemSelected,
     this.onSearch,
     this.contentPadding = const EdgeInsets.all(12),
     this.columns = 1,
-    this.onRemove,
+    this.canRemove = false,
   });
   @override
   _PickerDialogState<T> createState() => _PickerDialogState<T>();
@@ -77,11 +82,10 @@ class _PickerDialogState<T> extends State<PickerDialog<T>> {
       title: _renderTitle(),
       content: _renderItems(),
       actions: [
-        if (widget.onRemove != null)
+        if (widget.canRemove)
           TextButton(
             onPressed: () {
-              Navigator.pop(context);
-              widget.onRemove!();
+              Navigator.pop(context, PickerDialogResult<T>(null));
             },
             child: Text('Remove'),
           ),
@@ -118,7 +122,7 @@ class _PickerDialogState<T> extends State<PickerDialog<T>> {
           top: -12,
           right: -12,
           child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
+            duration: const Duration(milliseconds: 200),
             child: _isSearching ? _renderCloseButton() : _renderSearchButton(),
             transitionBuilder: (child, animation) {
               return ScaleTransition(
@@ -181,14 +185,14 @@ class _PickerDialogState<T> extends State<PickerDialog<T>> {
               crossAxisCount: widget.columns,
             ),
             itemBuilder: (context, index) {
+              final item = _visibleItems[index];
               return InkWell(
                 onTap: () {
-                  widget.onItemSelected(_visibleItems[index]);
-                  Navigator.pop(context);
+                  Navigator.pop(context, PickerDialogResult(item));
                 },
                 child: Padding(
                   padding: EdgeInsets.all(0),
-                  child: widget.renderer(_visibleItems[index]),
+                  child: widget.renderer(item),
                 ),
               );
             },
@@ -205,16 +209,30 @@ class _PickerDialogState<T> extends State<PickerDialog<T>> {
           shrinkWrap: true,
           itemCount: _visibleItems.length,
           itemBuilder: (context, index) {
+            final item = _visibleItems[index];
             return InkWell(
               onTap: () {
-                widget.onItemSelected(_visibleItems[index]);
-                Navigator.pop(context);
+                Navigator.pop(context, PickerDialogResult(item));
               },
-              child: widget.renderer(_visibleItems[index]),
+              child: widget.renderer(item),
             );
           },
         ),
       ),
     );
   }
+}
+
+class PickerDialogResult<T> {
+  final T? value;
+
+  const PickerDialogResult(this.value);
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PickerDialogResult && runtimeType == other.runtimeType && value == other.value;
+
+  @override
+  int get hashCode => value.hashCode;
 }

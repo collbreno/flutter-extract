@@ -33,31 +33,29 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                     Icons.color_lens_sharp,
                     color: _selectedColor,
                   ),
-                  onTap: () {
-                    showDialog(
+                  onTap: () async {
+                    final result = await showPickerDialog(
                       context: context,
-                      builder: (context) {
-                        return PickerDialog<Color>(
-                          title: "Teste",
-                          columns: 5,
-                          items: ColorService.colors.keys.toList(),
-                          renderer: (color) {
-                            return Container(
-                              decoration: ShapeDecoration(
-                                shape: CircleBorder(),
-                                color: color,
-                              ),
-                              margin: EdgeInsets.all(8),
-                            );
-                          },
-                          onItemSelected: (color) {
-                            setState(() {
-                              _selectedColor = color;
-                            });
-                          },
-                        );
-                      },
+                      pickerDialog: PickerDialog<Color>(
+                        title: Text("Teste"),
+                        columns: 5,
+                        items: ColorService.colors.keys.toList(),
+                        renderer: (color) {
+                          return Container(
+                            decoration: ShapeDecoration(
+                              shape: CircleBorder(),
+                              color: color,
+                            ),
+                            margin: EdgeInsets.all(8),
+                          );
+                        },
+                      ),
                     );
+                    if (result != null) {
+                      setState(() {
+                        _selectedColor = result.value!;
+                      });
+                    }
                   },
                   title: Text("Selecionar cor"),
                   trailing: Icon(Icons.arrow_drop_down),
