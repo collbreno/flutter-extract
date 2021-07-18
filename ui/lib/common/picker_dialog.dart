@@ -1,7 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-Future<PickerDialogResult<T>?> showPickerDialog<T>({
+Future<SinglePickerDialogResult<T>?> showPickerDialog<T>({
+  required BuildContext context,
+  required PickerDialog<T> pickerDialog,
+}) {
+  return showDialog(context: context, builder: (ctx) => pickerDialog);
+}
+
+Future<Iterable<T>?> showMultiPickerDialog<T>({
   required BuildContext context,
   required PickerDialog<T> pickerDialog,
 }) {
@@ -9,23 +16,37 @@ Future<PickerDialogResult<T>?> showPickerDialog<T>({
 }
 
 class PickerDialog<T> extends StatefulWidget {
-  final EdgeInsets contentPadding;
   final int columns;
   final bool Function(T, String)? onSearch;
   final bool canRemove;
-  final Widget Function(T) renderer;
+  final Widget Function(T)? singleRenderer;
+  final Widget Function(T, bool)? multipleRenderer;
   final List<T> items;
   final Widget title;
+  final Iterable<T>? initialSelection;
 
-  PickerDialog({
+  PickerDialog.single({
     required this.title,
     required this.items,
-    required this.renderer,
+    required Widget Function(T) renderer,
     this.onSearch,
-    this.contentPadding = const EdgeInsets.all(12),
     this.columns = 1,
     this.canRemove = false,
-  });
+  })  : initialSelection = null,
+        singleRenderer = renderer,
+        multipleRenderer = null;
+
+  PickerDialog.multiple({
+    required this.title,
+    required this.items,
+    required Widget Function(T, bool) renderer,
+    this.onSearch,
+    this.columns = 1,
+    this.canRemove = false,
+    this.initialSelection,
+  })  : multipleRenderer = renderer,
+        singleRenderer = null;
+
   @override
   _PickerDialogState<T> createState() => _PickerDialogState<T>();
 }
@@ -36,17 +57,20 @@ class _PickerDialogState<T> extends State<PickerDialog<T>> {
   final _searchButtonKey = UniqueKey();
   final _closeButtonKey = UniqueKey();
 
+  late Set<T> _selectedItems;
   late bool _isSearching;
   late List<T> _visibleItems;
   TextEditingController? _controller;
   late FocusNode _focusNode;
   late bool _test;
 
+  bool get _isMultiple => widget.multipleRenderer != null;
   bool get _isSearchable => widget.onSearch != null;
 
   @override
   void initState() {
     super.initState();
+    _selectedItems = Set.from(widget.initialSelection ?? <T>[]);
     _isSearching = false;
     _visibleItems = widget.items;
     _test = false;
@@ -82,19 +106,26 @@ class _PickerDialogState<T> extends State<PickerDialog<T>> {
       title: _renderTitle(),
       content: _renderItems(),
       actions: [
-        if (widget.canRemove)
+        if (widget.canRemove && !_isMultiple)
           TextButton(
-            onPressed: () {
-              Navigator.pop(context, PickerDialogResult<T>(null));
-            },
             child: Text('Remove'),
+            onPressed: () {
+              Navigator.pop(context, SinglePickerDialogResult<T>(null));
+            },
           ),
         TextButton(
+          child: Text('Cancel'),
           onPressed: () {
             Navigator.pop(context);
           },
-          child: Text('Cancel'),
-        )
+        ),
+        if (_isMultiple)
+          TextButton(
+            child: Text('Ok'),
+            onPressed: () {
+              Navigator.pop(context, _selectedItems);
+            },
+          ),
       ],
     );
   }
@@ -188,11 +219,11 @@ class _PickerDialogState<T> extends State<PickerDialog<T>> {
               final item = _visibleItems[index];
               return InkWell(
                 onTap: () {
-                  Navigator.pop(context, PickerDialogResult(item));
+                  Navigator.pop(context, SinglePickerDialogResult(item));
                 },
                 child: Padding(
                   padding: EdgeInsets.all(0),
-                  child: widget.renderer(item),
+                  child: widget.singleRenderer!.call(item),
                 ),
               );
             },
@@ -212,9 +243,21 @@ class _PickerDialogState<T> extends State<PickerDialog<T>> {
             final item = _visibleItems[index];
             return InkWell(
               onTap: () {
-                Navigator.pop(context, PickerDialogResult(item));
+                if (_isMultiple) {
+                  setState(() {
+                    if (_selectedItems.contains(item)) {
+                      _selectedItems.remove(item);
+                    } else {
+                      _selectedItems.add(item);
+                    }
+                  });
+                } else {
+                  Navigator.pop(context, SinglePickerDialogResult(item));
+                }
               },
-              child: widget.renderer(item),
+              child: _isMultiple
+                  ? widget.multipleRenderer!.call(item, _selectedItems.contains(item))
+                  : widget.singleRenderer!.call(item),
             );
           },
         ),
@@ -223,15 +266,15 @@ class _PickerDialogState<T> extends State<PickerDialog<T>> {
   }
 }
 
-class PickerDialogResult<T> {
+class SinglePickerDialogResult<T> {
   final T? value;
 
-  const PickerDialogResult(this.value);
+  const SinglePickerDialogResult(this.value);
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is PickerDialogResult && runtimeType == other.runtimeType && value == other.value;
+      other is SinglePickerDialogResult && runtimeType == other.runtimeType && value == other.value;
 
   @override
   int get hashCode => value.hashCode;

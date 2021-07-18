@@ -10,6 +10,7 @@ class PickerDialogDemo extends StatefulWidget {
 
 class _PickerDialogDemoState extends State<PickerDialogDemo> {
   String? _selected;
+  List<String> _multipleSelected = [];
 
   @override
   Widget build(BuildContext context) {
@@ -23,11 +24,44 @@ class _PickerDialogDemoState extends State<PickerDialogDemo> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             ElevatedButton(
-              child: Text('Open Dialog'),
+              child: Text('Open Multiple Item Dialog'),
+              onPressed: () async {
+                final result = await showMultiPickerDialog(
+                  context: context,
+                  pickerDialog: PickerDialog<String>.multiple(
+                    title: Text('Selecione'),
+                    initialSelection: _multipleSelected,
+                    onSearch: (item, text) => item.contains(text),
+                    items: ['Banana', 'Maçã', 'Mamão', 'Melancia', 'Abacaxi', 'Goiaba'],
+                    renderer: (item, isSelected) => ListTile(
+                      title: Text(item),
+                      trailing: AbsorbPointer(
+                        child: Checkbox(
+                          value: isSelected,
+                          onChanged: (_) {},
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+                if (result != null) {
+                  setState(() {
+                    _multipleSelected = result.toList();
+                  });
+                }
+              },
+            ),
+            SizedBox(height: 8),
+            _multipleSelected.isEmpty
+                ? Text('Nenhum selecionado')
+                : Column(children: (_multipleSelected.map((e) => Text(e)).toList())),
+            SizedBox(height: 30),
+            ElevatedButton(
+              child: Text('Open Single Item Dialog'),
               onPressed: () async {
                 final result = await showPickerDialog(
                   context: context,
-                  pickerDialog: PickerDialog<String>(
+                  pickerDialog: PickerDialog<String>.single(
                     title: Text('Selecione'),
                     onSearch: (item, text) => item.toLowerCase().contains(text.toLowerCase()),
                     items: ['Banana', 'Maçã', 'Mamão', 'Melancia', 'Abacaxi', 'Goiaba'],
