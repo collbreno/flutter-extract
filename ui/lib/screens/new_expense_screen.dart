@@ -70,7 +70,6 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
 
   late ExpenseBuilder _expenseBuilder;
   late FocusNode _descriptionFocusNode;
-  late bool _isSubcategoryPickerEnabled;
   final tags = [
     Tag(id: '', name: 'Almoço', color: Colors.grey),
     Tag(id: '', name: 'Splid', color: Colors.grey, icon: Icons.horizontal_split),
@@ -82,14 +81,13 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
   void initState() {
     _descriptionFocusNode = FocusNode();
     _expenseBuilder = widget.expenseToEdit?.toBuilder() ?? ExpenseBuilder();
-    _isSubcategoryPickerEnabled = _expenseBuilder.subcategory.id != null;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      onTapDown: (_) {
         setState(() {
           _descriptionFocusNode.unfocus();
         });
@@ -110,7 +108,7 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
               _buildStore(),
               _buildDescription(),
               _buildTags(),
-              _buildSaveButton(),
+              _buildButtons(),
             ],
           ),
         ),
@@ -152,26 +150,24 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
     );
   }
 
-  Widget _buildSaveButton() {
+  Widget _buildButtons() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: ElevatedButton(
-        child: Text("Salvar"),
-        onPressed: () {
-          _formKey.currentState!.validate();
-        },
-      ),
-    );
-  }
-
-  Widget _buildDraftButton() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: TextButton(
-        child: Text("Salvar Rascunho"),
-        onPressed: () {
-          _formKey.currentState!.validate();
-        },
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          OutlinedButton(
+            onPressed: () {},
+            child: Text('Rascunho'),
+          ),
+          SizedBox(width: 12),
+          ElevatedButton(
+            onPressed: () {
+              _formKey.currentState?.validate();
+            },
+            child: Text("Salvar"),
+          ),
+        ],
       ),
     );
   }

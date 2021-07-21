@@ -94,6 +94,7 @@ class PickerFormField<T> extends FormField<T> {
     T? initialValue,
     bool showRemoveButton = false,
     bool enabled = true,
+    int columns = 1,
   }) : super(
           key: key,
           onSaved: onSaved,
@@ -105,12 +106,16 @@ class PickerFormField<T> extends FormField<T> {
                 leading: leading,
                 showRemoveButton: showRemoveButton,
                 formState: formState,
+                onClear: () {
+                  onChanged?.call(null);
+                },
                 enabled: enabled,
                 onTap: () async {
                   final result = await showPickerDialog(
                     context: ctx,
                     pickerDialog: PickerDialog.single(
                       title: Text('Selecione'),
+                      columns: columns,
                       items: items,
                       renderer: dialogItemBuilder,
                       onSearch: onSearch,
@@ -227,12 +232,14 @@ class ListTileTextFormField extends FormField<String> {
     TextInputType? keyboardType,
     String? labelText,
     String? hintText,
+    ValueChanged<String>? onChanged,
   }) : super(builder: (formState) {
           return Builder(
             builder: (ctx) => ListTile(
               horizontalTitleGap: _horizontalTitleGap,
               leading: leading,
               title: TextFormField(
+                onChanged: onChanged,
                 focusNode: focusNode,
                 keyboardType: keyboardType,
                 maxLines: maxLines,
@@ -260,6 +267,7 @@ class _OuterListTile extends StatelessWidget {
   final Widget? suffixIcon;
   final Widget? prefixIcon;
   final Widget child;
+  final VoidCallback? onClear;
 
   _OuterListTile({
     required this.child,
@@ -270,6 +278,7 @@ class _OuterListTile extends StatelessWidget {
     this.showRemoveButton = false,
     this.suffixIcon,
     this.prefixIcon,
+    this.onClear,
   });
 
   @override
@@ -287,7 +296,10 @@ class _OuterListTile extends StatelessWidget {
               ? null
               : IconButton(
                   icon: Icon(Icons.close),
-                  onPressed: () => formState.didChange(null),
+                  onPressed: () {
+                    formState.didChange(null);
+                    onClear?.call();
+                  },
                 ),
       title: InkWell(
         onTap: !enabled ? null : onTap,
