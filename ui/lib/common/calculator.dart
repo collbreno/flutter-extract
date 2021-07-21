@@ -136,6 +136,7 @@ class _CalculatorState extends State<Calculator> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return AlertDialog(
       titlePadding: EdgeInsets.fromLTRB(24, 24, 24, 6),
       title: SizedBox(
@@ -162,7 +163,7 @@ class _CalculatorState extends State<Calculator> {
                 padding: const EdgeInsets.only(top: 2.0),
                 child: Text(
                   _error!,
-                  style: TextStyle(color: Colors.red, fontSize: 16),
+                  style: TextStyle(color: theme.colorScheme.error, fontSize: 16),
                   textAlign: TextAlign.right,
                 ),
               ),
@@ -178,7 +179,7 @@ class _CalculatorState extends State<Calculator> {
                 children: [0, 1, 2, 3, 4]
                     .map(
                       (i) => Material(
-                        color: j == 3 ? Colors.blue : Colors.white,
+                        color: j == 3 ? theme.colorScheme.primary : theme.colorScheme.surface,
                         child: InkWell(
                           onTap: () {
                             _handleTap(buttons[i * 4 + j]);
@@ -189,9 +190,11 @@ class _CalculatorState extends State<Calculator> {
                               width: buttonSize,
                               child: Container(
                                 alignment: Alignment.center,
-                                // color: Colors.lightBlueAccent,
                                 child: _buildButton(
-                                    buttons[i * 4 + j], j == 3 ? Colors.white : Colors.black),
+                                    buttons[i * 4 + j],
+                                    j == 3
+                                        ? theme.colorScheme.onPrimary
+                                        : theme.colorScheme.onSurface),
                               ),
                             ),
                           ),
