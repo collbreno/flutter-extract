@@ -1,7 +1,12 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:money2/money2.dart';
 import 'package:ui/common/calculator.dart';
+import 'package:ui/common/file_picker_dialog.dart';
 import 'package:ui/common/picker_dialog.dart';
+import 'package:ui/common/thumbnail.dart';
 import 'package:ui/services/date_formatter.dart';
 
 const _horizontalTitleGap = 8.0;
@@ -18,6 +23,44 @@ class FormFieldWidget {
   final Widget child;
 
   FormFieldWidget({required this.child, this.prefixIcon});
+}
+
+class FilePickerFormField extends FormField<List<PlatformFile>> {
+  FilePickerFormField()
+      : super(builder: (formState) {
+          return Builder(
+            builder: (context) => _OuterListTile(
+              child: (formState.value ?? []).isNotEmpty
+                  ? SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: formState.value!
+                            .map(
+                              (file) => Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                child: Thumbnail(
+                                  file: File(file.path!),
+                                  width: 80,
+                                  height: 80,
+                                ),
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    )
+                  : Text('Nenhum anexo'),
+              leading: Icon(Icons.attach_file),
+              formState: formState,
+              onTap: () async {
+                final result = await showFilePickerDialog(
+                  context: context,
+                  initialFiles: formState.value,
+                );
+                if (result != null) formState.didChange(result);
+              },
+            ),
+          );
+        });
 }
 
 class MultiPickerFormField<T> extends FormField<List<T>> {
@@ -272,7 +315,7 @@ class _OuterListTile extends StatelessWidget {
   _OuterListTile({
     required this.child,
     required this.formState,
-    required this.onTap,
+    this.onTap,
     this.leading,
     this.enabled = true,
     this.showRemoveButton = false,
