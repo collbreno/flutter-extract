@@ -11,6 +11,8 @@ dependencies:
     sdk: flutter
   moor: ^4.2.1
   uuid: ^3.0.4
+  mockito: ^5.0.8
+  dartz: ^0.10.0-nullsafety.2
   business:
     path: ../business
 
@@ -21,5 +23,5 @@ dev_dependencies:
     sdk: flutter
   pedantic: ^1.11.0
   test: ^1.16.5
-  build_runner: ^1.12.2
+  build_runner: ^2.0.3
   moor_generator: ^4.2.1

@@ -80,10 +80,10 @@ class ForeignKeyUtils {
   }
 
   Future<void> _insertStoreIfNeeded(String storeId) async {
-    final storeFromDb = await database.storeDao.getStoreById(storeId);
+    final storeFromDb = await database.storeDao.getById(storeId);
     if (storeFromDb == null) {
       final storeToInsert = fixStore.store1.copyWith(id: Value(storeId));
-      await database.storeDao.insertStore(storeToInsert);
+      await database.storeDao.insert(storeToInsert);
     }
   }
 

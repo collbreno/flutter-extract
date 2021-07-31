@@ -29,11 +29,11 @@ void main() {
       final store = fix.store1.copyWith(name: Value.absent());
 
       expect(
-        () => database.storeDao.insertStore(store),
+        () => database.storeDao.insert(store),
         throwsA(isA<InvalidDataException>()),
       );
 
-      final fromDb = await database.storeDao.getAllStores();
+      final fromDb = await database.storeDao.getAll();
       expect(fromDb, isEmpty);
     });
 
@@ -41,21 +41,21 @@ void main() {
       final id = uid.v4();
       final store1 = fix.store1.copyWith(id: Value(id));
 
-      await database.storeDao.insertStore(store1);
+      await database.storeDao.insert(store1);
 
       final expected1 = store1.convert();
-      var fromDB = await database.storeDao.getAllStores();
+      var fromDB = await database.storeDao.getAll();
       expect(fromDB, orderedEquals([expected1]));
 
       final store2 = fix.store2.copyWith(id: Value(id));
 
       expect(
-        () => database.storeDao.insertStore(store2),
+        () => database.storeDao.insert(store2),
         throwsA(isA<SqliteException>()),
       );
 
       // Database is not affected
-      fromDB = await database.storeDao.getAllStores();
+      fromDB = await database.storeDao.getAll();
       expect(fromDB, orderedEquals([expected1]));
     });
   });
@@ -64,31 +64,31 @@ void main() {
     test('Simple deletion', () async {
       final store1 = fix.store1;
       final store2 = fix.store2;
-      await database.storeDao.insertStore(store1);
-      await database.storeDao.insertStore(store2);
+      await database.storeDao.insert(store1);
+      await database.storeDao.insert(store2);
 
-      var fromDb = await database.storeDao.getAllStores();
+      var fromDb = await database.storeDao.getAll();
       expect(fromDb, hasLength(2));
 
-      var result = await database.storeDao.deleteStoreWithId(store1.id.value);
+      var result = await database.storeDao.deleteWithId(store1.id.value);
       expect(result, 1);
 
-      fromDb = await database.storeDao.getAllStores();
+      fromDb = await database.storeDao.getAll();
       expect(fromDb, hasLength(1));
     });
 
     test('Deletion of an item that does not exist', () async {
       final store1 = fix.store1;
-      await database.storeDao.insertStore(store1);
+      await database.storeDao.insert(store1);
 
-      var fromDb = await database.storeDao.getAllStores();
+      var fromDb = await database.storeDao.getAll();
       expect(fromDb, hasLength(1));
 
-      var result = await database.storeDao.deleteStoreWithId(uid.v4());
+      var result = await database.storeDao.deleteWithId(uid.v4());
       expect(result, 0);
 
       // Database is not affected
-      fromDb = await database.storeDao.getAllStores();
+      fromDb = await database.storeDao.getAll();
       expect(fromDb, hasLength(1));
     });
   });
@@ -97,20 +97,20 @@ void main() {
     test('Success cases', () async {
       final store1 = fix.store1;
       final store2 = fix.store2;
-      await database.storeDao.insertStore(store1);
-      await database.storeDao.insertStore(store2);
+      await database.storeDao.insert(store1);
+      await database.storeDao.insert(store2);
 
-      var result = await database.storeDao.getStoreById(store1.id.value);
+      var result = await database.storeDao.getById(store1.id.value);
       var expected = store1.convert();
       expect(result, expected);
 
-      result = await database.storeDao.getStoreById(store2.id.value);
+      result = await database.storeDao.getById(store2.id.value);
       expected = store2.convert();
       expect(result, expected);
     });
 
     test('Query by id of an item that does not exist must return null', () async {
-      final result = await database.storeDao.getStoreById(uid.v4());
+      final result = await database.storeDao.getById(uid.v4());
       expect(result, isNull);
     });
   });
@@ -122,27 +122,27 @@ void main() {
     final expected2 = store2.convert();
 
     setUp(() async {
-      await database.storeDao.insertStore(store1);
-      await database.storeDao.insertStore(store2);
+      await database.storeDao.insert(store1);
+      await database.storeDao.insert(store2);
     });
 
     test('Updating name', () async {
       final newName = 'New ${store1.name.value}';
       final newStore = store1.copyWith(name: Value(newName));
-      final result = await database.storeDao.updateStore(newStore);
+      final result = await database.storeDao.updateWithId(newStore);
       expect(result, isTrue);
 
-      final fromDb = await database.storeDao.getAllStores();
+      final fromDb = await database.storeDao.getAll();
       final newExpected1 = expected1.copyWith(name: newName);
       expect(fromDb, orderedEquals([newExpected1, expected2]));
     });
 
     test('Updating an item that does not exist', () async {
       final store = fix.store3;
-      final result = await database.storeDao.updateStore(store);
+      final result = await database.storeDao.updateWithId(store);
       expect(result, isFalse);
 
-      final fromDb = await database.storeDao.getAllStores();
+      final fromDb = await database.storeDao.getAll();
       // Database is not affected
       expect(fromDb, orderedEquals([expected1, expected2]));
     });

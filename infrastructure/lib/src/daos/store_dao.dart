@@ -1,32 +1,40 @@
 import 'package:infrastructure/infrastructure.dart';
+import 'package:infrastructure/src/daos/interfaces.dart';
 import 'package:moor/moor.dart';
 
 part 'store_dao.g.dart';
 
 @UseDao(tables: [Stores])
-class StoreDao extends DatabaseAccessor<AppDatabase> with _$StoreDaoMixin {
+class StoreDao extends DatabaseAccessor<AppDatabase>
+    with _$StoreDaoMixin
+    implements IEntityDao<StoreEntity> {
   final AppDatabase db;
 
   StoreDao(this.db) : super(db);
 
-  Future<List<StoreEntity>> getAllStores() {
+  @override
+  Future<List<StoreEntity>> getAll() {
     return select(stores).get();
   }
 
-  Future<StoreEntity?> getStoreById(String id) {
+  @override
+  Future<StoreEntity?> getById(String id) {
     final query = select(stores)..where((s) => s.id.equals(id));
     return query.getSingleOrNull();
   }
 
-  Future<int> insertStore(Insertable<StoreEntity> store) {
+  @override
+  Future<int> insert(Insertable<StoreEntity> store) {
     return into(stores).insert(store);
   }
 
-  Future<bool> updateStore(Insertable<StoreEntity> store) {
+  @override
+  Future<bool> updateWithId(Insertable<StoreEntity> store) {
     return update(stores).replace(store);
   }
 
-  Future<int> deleteStoreWithId(String id) {
+  @override
+  Future<int> deleteWithId(String id) {
     final query = delete(stores)..where((s) => s.id.equals(id));
     return query.go();
   }

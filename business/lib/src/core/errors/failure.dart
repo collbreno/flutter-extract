@@ -9,6 +9,8 @@ abstract class DatabaseFailure extends Failure {
 
 class UnknownDatabaseFailure extends DatabaseFailure {}
 
+class NotFoundFailure extends DatabaseFailure {}
+
 class EntityBeingUsedFailure extends DatabaseFailure {
   final int usages;
 
