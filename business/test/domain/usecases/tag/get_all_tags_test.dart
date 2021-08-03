@@ -23,7 +23,7 @@ void main() {
 
     when(repository.getAllTags()).thenAnswer((_) async => Right(expected));
 
-    final result = await useCase(NoParams());
+    final result = await useCase();
 
     expect(result, Right(expected));
 
@@ -36,7 +36,7 @@ void main() {
 
     when(repository.getAllTags()).thenAnswer((_) async => Left(failure));
 
-    final result = await useCase(NoParams());
+    final result = await useCase();
 
     expect(result, Left(failure));
 
