@@ -7,4 +7,5 @@ abstract class IPaymentMethodRepository {
   Future<FailureOr<void>> insertPaymentMethod(PaymentMethod paymentMethod);
   Future<FailureOr<bool>> updatePaymentMethod(PaymentMethod paymentMethod);
   Future<FailureOr<void>> deletePaymentMethodWithId(String id);
+  Future<FailureOr<int>> countExpensesWithPaymentMethodWithId(String id);
 }
