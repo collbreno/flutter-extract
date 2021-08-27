@@ -19,6 +19,7 @@ doc/api/
 
 # Generated Dart files
 **/*.g.dart
+**/*.mocks.dart
 
 # Avoid committing generated Javascript files:
 *.dart.js

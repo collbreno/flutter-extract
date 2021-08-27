@@ -2,12 +2,11 @@ import 'package:business/business.dart';
 import 'package:business/src/core/typedefs.dart';
 import 'package:dartz/dartz.dart';
 import 'package:infrastructure/infrastructure.dart';
-import 'package:infrastructure/src/daos/interfaces.dart';
 
 class StoreRepository implements IStoreRepository {
-  final IEntityDao<StoreEntity> dao;
+  final AppDatabase db;
 
-  StoreRepository(this.dao);
+  StoreRepository(this.db);
 
   /// Deletes the store with the given id.
   /// Returns void if succeeded.
@@ -16,7 +15,9 @@ class StoreRepository implements IStoreRepository {
   @override
   Future<FailureOr<void>> deleteStoreWithId(String id) async {
     try {
-      final countDeleted = await dao.deleteWithId(id);
+      final query = db.delete(db.stores)..where((s) => s.id.equals(id));
+      final countDeleted = await query.go();
+
       if (countDeleted != 0) {
         return Right(Null);
       } else {
@@ -34,7 +35,7 @@ class StoreRepository implements IStoreRepository {
   @override
   Future<FailureOr<List<Store>>> getAllStores() async {
     try {
-      final stores = await dao.getAll();
+      final stores = await db.select(db.stores).get();
       if (stores.isNotEmpty) {
         return Right(
           stores.map(_mapToModel).toList(),
@@ -56,7 +57,9 @@ class StoreRepository implements IStoreRepository {
   @override
   Future<FailureOr<Store>> getStoreById(String id) async {
     try {
-      final store = await dao.getById(id);
+      final query = db.select(db.stores)..where((s) => s.id.equals(id));
+      final store = await query.getSingleOrNull();
+
       if (store != null) {
         return Right(_mapToModel(store));
       } else {
@@ -73,7 +76,7 @@ class StoreRepository implements IStoreRepository {
   @override
   Future<FailureOr<void>> insertStore(Store store) async {
     try {
-      await dao.insert(_mapToEntity(store));
+      await db.into(db.stores).insert(_mapToEntity(store));
       return Right(Null);
     } on Exception {
       return Left(UnknownDatabaseFailure());
@@ -84,10 +87,25 @@ class StoreRepository implements IStoreRepository {
   /// Returns true when updated and false when nothing changed.
   /// Returns [UnknownDatabaseFailure] when datasource fails.
   @override
-  Future<FailureOr<bool>> updateStore(Store store) async {
+  Future<FailureOr<void>> updateStore(Store store) async {
     try {
-      final result = await dao.updateWithId(_mapToEntity(store));
-      return Right(result);
+      final result = await db.update(db.stores).replace(_mapToEntity(store));
+      if (result) {
+        return Right(Null);
+      } else {
+        return Left(NotFoundFailure());
+      }
+    } on Exception {
+      return Left(UnknownDatabaseFailure());
+    }
+  }
+
+  @override
+  Future<FailureOr<int>> countUsages(String storeId) async {
+    try {
+      final query = db.select(db.expenses)..where((e) => e.storeId.equals(storeId));
+      final usages = (await query.get()).length;
+      return Right(usages);
     } on Exception {
       return Left(UnknownDatabaseFailure());
     }

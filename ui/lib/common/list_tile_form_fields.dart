@@ -26,41 +26,49 @@ class FormFieldWidget {
 }
 
 class FilePickerFormField extends FormField<List<PlatformFile>> {
-  FilePickerFormField()
-      : super(builder: (formState) {
-          return Builder(
-            builder: (context) => _OuterListTile(
-              child: (formState.value ?? []).isNotEmpty
-                  ? SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: formState.value!
-                            .map(
-                              (file) => Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                                child: Thumbnail(
-                                  file: File(file.path!),
-                                  width: 80,
-                                  height: 80,
+  FilePickerFormField({
+    List<PlatformFile>? initialValue,
+    FormFieldValidator<List<PlatformFile>>? validator,
+    ValueSetter<List<PlatformFile>?>? onSaved,
+  }) : super(
+          initialValue: initialValue,
+          validator: validator,
+          onSaved: onSaved,
+          builder: (formState) {
+            return Builder(
+              builder: (context) => _OuterListTile(
+                child: (formState.value ?? []).isNotEmpty
+                    ? SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: formState.value!
+                              .map(
+                                (file) => Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                  child: Thumbnail(
+                                    file: File(file.path!),
+                                    width: 80,
+                                    height: 80,
+                                  ),
                                 ),
-                              ),
-                            )
-                            .toList(),
-                      ),
-                    )
-                  : Text('Nenhum anexo'),
-              leading: Icon(Icons.attach_file),
-              formState: formState,
-              onTap: () async {
-                final result = await showFilePickerDialog(
-                  context: context,
-                  initialFiles: formState.value,
-                );
-                if (result != null) formState.didChange(result);
-              },
-            ),
-          );
-        });
+                              )
+                              .toList(),
+                        ),
+                      )
+                    : Text('Nenhum anexo'),
+                leading: Icon(Icons.attach_file),
+                formState: formState,
+                onTap: () async {
+                  final result = await showFilePickerDialog(
+                    context: context,
+                    initialFiles: formState.value,
+                  );
+                  if (result != null) formState.didChange(result);
+                },
+              ),
+            );
+          },
+        );
 }
 
 class MultiPickerFormField<T> extends FormField<List<T>> {

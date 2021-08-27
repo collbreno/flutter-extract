@@ -1,13 +1,13 @@
 import 'package:business/business.dart';
 import 'package:dartz/dartz.dart';
 
-class UpdateStoreUseCase extends UseCase<bool, Store> {
+class UpdateStoreUseCase extends UseCase<void, Store> {
   final IStoreRepository repository;
 
   UpdateStoreUseCase(this.repository);
 
   @override
-  Future<Either<Failure, bool>> call(Store store) {
+  Future<Either<Failure, void>> call(Store store) {
     return repository.updateStore(store);
   }
 }

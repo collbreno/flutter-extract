@@ -5,7 +5,9 @@ import 'package:moor/moor.dart';
 class Subcategories extends Table {
   TextColumn get id => text().withLength(min: UID_SIZE, max: UID_SIZE)();
   TextColumn get name => text().withLength(min: 1, max: 24)();
-  TextColumn get iconId => text().customConstraint('REFERENCES icons(id)')();
+  IntColumn get color => integer()();
+  TextColumn get iconName => text().withLength(min: 1, max: ICON_NAME_MAX)();
+  TextColumn get iconFamily => text().withLength(min: 1, max: ICON_PACKAGE_MAX)();
   TextColumn get parentId => text().customConstraint('REFERENCES categories(id)')();
 
   @override

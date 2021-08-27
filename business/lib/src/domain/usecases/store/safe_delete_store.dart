@@ -7,7 +7,7 @@ class SafeDeleteStoreUseCase extends UseCase<void, String> {
   SafeDeleteStoreUseCase(this.repository);
   @override
   Future<Either<Failure, void>> call(String id) async {
-    final usages = await repository.countExpensesWithStoreWithId(id);
+    final usages = await repository.countUsages(id);
     return usages.fold(
       (failure) => Left(failure),
       (usages) => _handleUsages(id, usages),

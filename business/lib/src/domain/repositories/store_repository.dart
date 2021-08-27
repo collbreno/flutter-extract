@@ -5,7 +5,7 @@ abstract class IStoreRepository {
   Future<FailureOr<List<Store>>> getAllStores();
   Future<FailureOr<Store>> getStoreById(String id);
   Future<FailureOr<void>> insertStore(Store store);
-  Future<FailureOr<bool>> updateStore(Store store);
+  Future<FailureOr<void>> updateStore(Store store);
   Future<FailureOr<void>> deleteStoreWithId(String id);
-  Future<FailureOr<int>> countExpensesWithStoreWithId(String id);
+  Future<FailureOr<int>> countUsages(String id);
 }

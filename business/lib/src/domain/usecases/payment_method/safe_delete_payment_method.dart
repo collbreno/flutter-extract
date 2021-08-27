@@ -7,7 +7,7 @@ class SafeDeletePaymentMethodUseCase extends UseCase<void, String> {
   SafeDeletePaymentMethodUseCase(this.repository);
   @override
   Future<Either<Failure, void>> call(String id) async {
-    final usages = await repository.countExpensesWithPaymentMethodWithId(id);
+    final usages = await repository.countUsages(id);
     return usages.fold(
       (failure) => Left(failure),
       (usages) => _handleUsages(id, usages),

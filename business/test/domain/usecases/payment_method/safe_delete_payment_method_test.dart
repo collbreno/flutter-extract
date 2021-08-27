@@ -22,14 +22,14 @@ void main() {
       'when it is not being used', () async {
     final id = fix.paymentMethod1.id;
 
-    when(repository.countExpensesWithPaymentMethodWithId(id)).thenAnswer((_) async => Right(0));
+    when(repository.countUsages(id)).thenAnswer((_) async => Right(0));
     when(repository.deletePaymentMethodWithId(id)).thenAnswer((_) async => Right(Null));
 
     final result = await useCase(id);
 
     expect(result, Right(Null));
 
-    verify(repository.countExpensesWithPaymentMethodWithId(id));
+    verify(repository.countUsages(id));
     verify(repository.deletePaymentMethodWithId(id));
     verifyNoMoreInteractions(repository);
   });
@@ -41,14 +41,13 @@ void main() {
       final id = fix.paymentMethod1.id;
       final count = 2;
 
-      when(repository.countExpensesWithPaymentMethodWithId(id))
-          .thenAnswer((_) async => Right(count));
+      when(repository.countUsages(id)).thenAnswer((_) async => Right(count));
 
       final result = await useCase(id);
 
       expect(result, Left(EntityBeingUsedFailure(count)));
 
-      verify(repository.countExpensesWithPaymentMethodWithId(id));
+      verify(repository.countUsages(id));
       verifyNoMoreInteractions(repository);
     });
 
@@ -58,14 +57,13 @@ void main() {
       final failure = UnknownDatabaseFailure();
       final id = fix.paymentMethod1.id;
 
-      when(repository.countExpensesWithPaymentMethodWithId(id))
-          .thenAnswer((_) async => Left(failure));
+      when(repository.countUsages(id)).thenAnswer((_) async => Left(failure));
 
       final result = await useCase(id);
 
       expect(result, Left(failure));
 
-      verify(repository.countExpensesWithPaymentMethodWithId(id));
+      verify(repository.countUsages(id));
       verifyNoMoreInteractions(repository);
     });
 
@@ -75,14 +73,14 @@ void main() {
       final failure = UnknownDatabaseFailure();
       final id = fix.paymentMethod1.id;
 
-      when(repository.countExpensesWithPaymentMethodWithId(id)).thenAnswer((_) async => Right(0));
+      when(repository.countUsages(id)).thenAnswer((_) async => Right(0));
       when(repository.deletePaymentMethodWithId(id)).thenAnswer((_) async => Left(failure));
 
       final result = await useCase(id);
 
       expect(result, Left(failure));
 
-      verify(repository.countExpensesWithPaymentMethodWithId(id));
+      verify(repository.countUsages(id));
       verify(repository.deletePaymentMethodWithId(id));
       verifyNoMoreInteractions(repository);
     });

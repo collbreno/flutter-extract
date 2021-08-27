@@ -9,7 +9,7 @@ class SafeDeleteTagWithId extends UseCase<void, String> {
 
   @override
   Future<Either<Failure, void>> call(String id) async {
-    final usages = await repository.countExpensesWithTagWithId(id);
+    final usages = await repository.countUsages(id);
     return usages.fold(
       (failure) => Left(failure),
       (usages) => _handleUsages(id, usages),

@@ -49,6 +49,7 @@ class _ExpenseItemsDemoState extends State<ExpenseItemsDemo> {
         Tag(id: '', name: 'Barney', color: Colors.grey),
       ]),
       store: Store(name: 'Santa Marta', id: 'a'),
+      files: BuiltList(['file1, file2, file3']),
     );
 
     return Scaffold(

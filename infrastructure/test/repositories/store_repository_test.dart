@@ -2,213 +2,214 @@ import 'package:business/business.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:infrastructure/infrastructure.dart';
-import 'package:infrastructure/src/daos/interfaces.dart';
 import 'package:infrastructure/src/repositories/store_repository.dart';
-import 'package:mockito/mockito.dart';
+import 'package:moor/ffi.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:uuid/uuid.dart';
 
-import '../utils/extensions.dart';
+import '../utils/fixture_expense.dart';
 import '../utils/fixture_store.dart';
-import '_mock.mocks.dart';
+import '../utils/foreign_keys_utils.dart';
 
 void main() {
-  final fix = FixtureStore();
-  late IEntityDao<StoreEntity> dao;
+  final uid = Uuid();
   late StoreRepository repository;
+  late AppDatabase database;
+  late ForeignKeyUtils fkUtils;
+  final fix = FixtureStoreModel();
+  final fixExpenses = FixtureExpense();
+
+  setUpAll(() {
+    sqfliteFfiInit();
+  });
 
   setUp(() {
-    dao = MockStoreDao();
-    repository = StoreRepository(dao);
+    database = AppDatabase(VmDatabase.memory());
+    repository = StoreRepository(database);
+    fkUtils = ForeignKeyUtils(database);
+
+    addTearDown(() async {
+      await database.close();
+    });
   });
 
-  group('get by id', () {
-    test('when dao returns normally, repository should return a store', () async {
-      final store = fix.store1.convert();
-      when(dao.getById(store.id)).thenAnswer((_) async => store);
+  test('Get all must return $NotFoundFailure when there is no items in database', () async {
+    final fromDB = await repository.getAllStores();
 
-      final result = await repository.getStoreById(store.id);
-      final expected = Store(
-        id: store.id,
-        name: store.name,
+    fromDB.fold(
+      (l) => expect(l, NotFoundFailure()),
+      (r) => throw Exception('should be left'),
+    );
+  });
+
+  group('Insertion', () {
+    test('Successfully insertion', () async {
+      final store = fix.store1;
+
+      await repository.insertStore(store);
+
+      final fromDb = await repository.getAllStores();
+      fromDb.fold(
+        (l) => throw Exception('should be right'),
+        (r) => expect(r, [store]),
+      );
+    });
+
+    test('Insertion with duplicated id must fail', () async {
+      final id = uid.v4();
+      final store1 = fix.store1.rebuild((s) => s.id = id);
+
+      var result = await repository.insertStore(store1);
+      expect(result, Right(Null));
+
+      var fromDb = await repository.getAllStores();
+      fromDb.fold(
+        (l) => throw Exception('should be right'),
+        (r) => expect(r, [store1]),
       );
 
-      expect(result, Right(expected));
-      verify(dao.getById(store.id));
-      verifyNoMoreInteractions(dao);
-    });
+      final store2 = fix.store2.rebuild((s) => s.id = id);
 
-    test('should return failure when dao throws an exception', () async {
-      final store = fix.store1.convert();
-      when(dao.getById(store.id)).thenThrow(Exception());
+      result = await repository.insertStore(store2);
+      expect(result, Left(UnknownDatabaseFailure()));
 
-      final result = await repository.getStoreById(store.id);
-      final expected = UnknownDatabaseFailure();
-
-      expect(result, Left(expected));
-      verify(dao.getById(store.id));
-      verifyNoMoreInteractions(dao);
-    });
-
-    test('should return $NotFoundFailure when dao returns null', () async {
-      final store = fix.store1.convert();
-      when(dao.getById(store.id)).thenAnswer((_) async => null);
-
-      final result = await repository.getStoreById(store.id);
-      final expected = NotFoundFailure();
-
-      expect(result, Left(expected));
-
-      verify(dao.getById(store.id));
-      verifyNoMoreInteractions(dao);
-    });
-  });
-
-  group('get all', () {
-    test('when dao returns normally, should return the list', () async {
-      final store1 = fix.store1.convert();
-      final store2 = fix.store2.convert();
-      when(dao.getAll()).thenAnswer((_) async => [store1, store2]);
-
-      final result = await repository.getAllStores();
-      final expected = [
-        Store(
-          id: store1.id,
-          name: store1.name,
-        ),
-        Store(
-          id: store2.id,
-          name: store2.name,
-        ),
-      ];
-
-      // TODO: Refactor this expect
-      result.fold(
-        (failure) => throw Exception('should not be failure'),
-        (result) => expect(result, expected),
+      // Database is not affected
+      fromDb = await repository.getAllStores();
+      fromDb.fold(
+        (l) => throw Exception('should be right'),
+        (r) => expect(r, [store1]),
       );
-      verify(dao.getAll());
-      verifyNoMoreInteractions(dao);
-    });
-
-    test('when dao throws an exception, should return $UnknownDatabaseFailure', () async {
-      when(dao.getAll()).thenThrow(Exception());
-
-      final result = await repository.getAllStores();
-      final expected = UnknownDatabaseFailure();
-
-      expect(result, Left(expected));
-
-      verify(dao.getAll());
-      verifyNoMoreInteractions(dao);
-    });
-
-    test('when dao returns an empty list, should return $NotFoundFailure', () async {
-      when(dao.getAll()).thenAnswer((_) async => []);
-
-      final result = await repository.getAllStores();
-
-      expect(result, Left(NotFoundFailure()));
-      verify(dao.getAll());
-      verifyNoMoreInteractions(dao);
     });
   });
 
-  group('insert store', () {
-    test('when dao returns normally, should return nothing', () async {
-      final store = fix.store1.convert();
-      when(dao.insert(store)).thenAnswer((_) async => 1);
+  group('Deletion', () {
+    test('Simple deletion', () async {
+      final store1 = fix.store1;
+      final store2 = fix.store2;
+      await repository.insertStore(store1);
+      await repository.insertStore(store2);
 
-      final result = await repository.insertStore(Store(name: store.name, id: store.id));
+      var fromDb = await repository.getAllStores();
+      fromDb.fold(
+        (l) => throw Exception('should be right'),
+        (r) => expect(r, [store1, store2]),
+      );
 
+      var result = await repository.deleteStoreWithId(store1.id);
       expect(result, Right(Null));
-      verify(dao.insert(store));
-      verifyNoMoreInteractions(dao);
+
+      fromDb = await repository.getAllStores();
+      fromDb.fold(
+        (l) => throw Exception('should be right'),
+        (r) => expect(r, [store2]),
+      );
     });
 
-    test('when dao throws an exception, should return $UnknownDatabaseFailure', () async {
-      final store = fix.store1.convert();
-      when(dao.insert(store)).thenThrow(Exception());
+    test('Deletion of an item that does not exist', () async {
+      final store1 = fix.store1;
+      await repository.insertStore(store1);
 
-      final result = await repository.insertStore(Store(name: store.name, id: store.id));
-      final expected = UnknownDatabaseFailure();
+      var fromDb = await repository.getAllStores();
+      fromDb.fold(
+        (l) => throw Exception('should be right'),
+        (r) => expect(r, [store1]),
+      );
 
-      expect(result, Left(expected));
-
-      verify(dao.insert(store));
-      verifyNoMoreInteractions(dao);
-    });
-  });
-
-  group('delete store', () {
-    test('when dao returns normally, should return nothing', () async {
-      final store = fix.store1.convert();
-      when(dao.deleteWithId(store.id)).thenAnswer((_) async => 1);
-
-      final result = await repository.deleteStoreWithId(store.id);
-
-      expect(result, Right(Null));
-      verify(dao.deleteWithId(store.id));
-      verifyNoMoreInteractions(dao);
-    });
-
-    test('when dao throws an exception, should return $UnknownDatabaseFailure', () async {
-      final store = fix.store1.convert();
-      when(dao.deleteWithId(store.id)).thenThrow(Exception());
-
-      final result = await repository.deleteStoreWithId(store.id);
-      final expected = UnknownDatabaseFailure();
-
-      expect(result, Left(expected));
-
-      verify(dao.deleteWithId(store.id));
-      verifyNoMoreInteractions(dao);
-    });
-
-    test('when dao returns zero, should $NothingToDeleteFailure', () async {
-      final store = fix.store1.convert();
-      when(dao.deleteWithId(store.id)).thenAnswer((_) async => 0);
-
-      final result = await repository.deleteStoreWithId(store.id);
-
+      var result = await repository.deleteStoreWithId(uid.v4());
       expect(result, Left(NothingToDeleteFailure()));
-      verify(dao.deleteWithId(store.id));
-      verifyNoMoreInteractions(dao);
+
+      // Database is not affected
+      fromDb = await repository.getAllStores();
+      fromDb.fold(
+        (l) => throw Exception('should be right'),
+        (r) => expect(r, [store1]),
+      );
     });
   });
 
-  group('update store', () {
-    test('when dao returns true, should return true', () async {
-      final store = fix.store1.convert();
-      when(dao.updateWithId(store)).thenAnswer((_) async => true);
+  group('Query by id', () {
+    test('Success case', () async {
+      final store1 = fix.store1;
+      final store2 = fix.store2;
+      await repository.insertStore(store1);
+      await repository.insertStore(store2);
 
-      final result = await repository.updateStore(Store(id: store.id, name: store.name));
+      var result = await repository.getStoreById(store1.id);
+      expect(result, Right(store1));
 
-      expect(result, Right(true));
-      verify(dao.updateWithId(store));
-      verifyNoMoreInteractions(dao);
+      result = await repository.getStoreById(store2.id);
+      expect(result, Right(store2));
     });
 
-    test('when dao returns false, should return false', () async {
-      final store = fix.store1.convert();
-      when(dao.updateWithId(store)).thenAnswer((_) async => false);
+    test('Query by id of an item that does not exist must return $NotFoundFailure', () async {
+      final result = await repository.getStoreById(uid.v4());
+      expect(result, Left(NotFoundFailure()));
+    });
+  });
 
-      final result = await repository.updateStore(Store(id: store.id, name: store.name));
+  group('Update', () {
+    final store1 = fix.store1;
+    final store2 = fix.store2;
 
-      expect(result, Right(false));
-      verify(dao.updateWithId(store));
-      verifyNoMoreInteractions(dao);
+    setUp(() async {
+      await repository.insertStore(store1);
+      await repository.insertStore(store2);
     });
 
-    test('when dao throws an exception, should return $UnknownDatabaseFailure', () async {
-      final store = fix.store1.convert();
-      when(dao.updateWithId(store)).thenThrow(Exception());
+    test('Should return normally when entity has changed', () async {
+      final newName = 'New ${store1.name}';
+      final newStore = store1.rebuild((s) => s..name = newName);
+      final result = await repository.updateStore(newStore);
+      expect(result, Right(Null));
 
-      final result = await repository.updateStore(Store(id: store.id, name: store.name));
-      final expected = UnknownDatabaseFailure();
-
-      expect(result, Left(expected));
-
-      verify(dao.updateWithId(store));
-      verifyNoMoreInteractions(dao);
+      final fromDb = await repository.getAllStores();
+      fromDb.fold(
+        (l) => throw Exception('should be right'),
+        (r) => expect(r, [newStore, store2]),
+      );
     });
+
+    test('Should return $NotFoundFailure when entity does not exist', () async {
+      final store = fix.store3;
+      final result = await repository.updateStore(store);
+      expect(result, Left(NotFoundFailure()));
+
+      final fromDb = await repository.getAllStores();
+      // Database is not affected
+      fromDb.fold(
+        (l) => throw Exception('should be right'),
+        (r) => expect(r, [store1, store2]),
+      );
+    });
+  });
+
+  test('Count usages', () async {
+    final store1 = fix.store1;
+    final expense1 = fixExpenses.expense1.copyWith(storeId: store1.id);
+    final expense2 = fixExpenses.expense2.copyWith(storeId: store1.id);
+
+    final store2 = fix.store2;
+    final expense3 = fixExpenses.expense3.copyWith(storeId: store2.id);
+
+    final store3 = fix.store3;
+
+    await repository.insertStore(store1);
+    await repository.insertStore(store2);
+    await repository.insertStore(store3);
+    await fkUtils.insertExpenseFKDependencies(expense1.toCompanion(false));
+    await fkUtils.insertExpenseFKDependencies(expense2.toCompanion(false));
+    await fkUtils.insertExpenseFKDependencies(expense3.toCompanion(false));
+    await database.into(database.expenses).insert(expense1);
+    await database.into(database.expenses).insert(expense2);
+    await database.into(database.expenses).insert(expense3);
+
+    var result = await repository.countUsages(store1.id);
+    expect(result, Right(2));
+
+    result = await repository.countUsages(store2.id);
+    expect(result, Right(1));
+
+    result = await repository.countUsages(store3.id);
+    expect(result, Right(0));
   });
 }

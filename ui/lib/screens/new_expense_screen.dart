@@ -108,6 +108,7 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
               _buildStore(),
               _buildDescription(),
               _buildTags(),
+              _buildFiles(),
               _buildButtons(),
             ],
           ),
@@ -255,5 +256,9 @@ class _NewExpenseScreenState extends State<NewExpenseScreen> {
         return null;
       },
     );
+  }
+
+  Widget _buildFiles() {
+    return FilePickerFormField();
   }
 }

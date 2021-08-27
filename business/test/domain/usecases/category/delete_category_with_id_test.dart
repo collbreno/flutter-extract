@@ -23,15 +23,15 @@ void main() {
       'when it is not being used', () async {
     final id = fix.category1.id;
 
-    when(repository.countSubcategoriesWithParentId(id)).thenAnswer((_) async => Right(0));
-    when(repository.deleteCategoryWithId(id)).thenAnswer((_) async => Right(Null));
+    when(repository.countUsages(id)).thenAnswer((_) async => Right(0));
+    when(repository.deleteCategory(id)).thenAnswer((_) async => Right(Null));
 
     final result = await useCase(id);
 
     expect(result, Right(Null));
 
-    verify(repository.countSubcategoriesWithParentId(id));
-    verify(repository.deleteCategoryWithId(id));
+    verify(repository.countUsages(id));
+    verify(repository.deleteCategory(id));
     verifyNoMoreInteractions(repository);
   });
 
@@ -42,13 +42,13 @@ void main() {
       final id = fix.category1.id;
       final usages = 3;
 
-      when(repository.countSubcategoriesWithParentId(id)).thenAnswer((_) async => Right(usages));
+      when(repository.countUsages(id)).thenAnswer((_) async => Right(usages));
 
       final result = await useCase(id);
 
       expect(result, Left(EntityBeingUsedFailure(usages)));
 
-      verify(repository.countSubcategoriesWithParentId(id));
+      verify(repository.countUsages(id));
       verifyNoMoreInteractions(repository);
     });
 
@@ -58,13 +58,13 @@ void main() {
       final id = fix.category1.id;
       final failure = UnknownDatabaseFailure();
 
-      when(repository.countSubcategoriesWithParentId(id)).thenAnswer((_) async => Left(failure));
+      when(repository.countUsages(id)).thenAnswer((_) async => Left(failure));
 
       final result = await useCase(id);
 
       expect(result, Left(failure));
 
-      verify(repository.countSubcategoriesWithParentId(id));
+      verify(repository.countUsages(id));
       verifyNoMoreInteractions(repository);
     });
 
@@ -74,15 +74,15 @@ void main() {
       final id = fix.category1.id;
       final failure = UnknownDatabaseFailure();
 
-      when(repository.countSubcategoriesWithParentId(id)).thenAnswer((_) async => Right(0));
-      when(repository.deleteCategoryWithId(id)).thenAnswer((_) async => Left(failure));
+      when(repository.countUsages(id)).thenAnswer((_) async => Right(0));
+      when(repository.deleteCategory(id)).thenAnswer((_) async => Left(failure));
 
       final result = await useCase(id);
 
       expect(result, Left(failure));
 
-      verify(repository.countSubcategoriesWithParentId(id));
-      verify(repository.deleteCategoryWithId(id));
+      verify(repository.countUsages(id));
+      verify(repository.deleteCategory(id));
       verifyNoMoreInteractions(repository);
     });
   });

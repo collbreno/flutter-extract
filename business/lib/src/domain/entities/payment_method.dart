@@ -7,7 +7,7 @@ abstract class PaymentMethod implements Built<PaymentMethod, PaymentMethodBuilde
   String get id;
   String get name;
   Color get color;
-  IconData? get icon;
+  IconData get icon;
 
   PaymentMethod._();
 
@@ -15,6 +15,6 @@ abstract class PaymentMethod implements Built<PaymentMethod, PaymentMethodBuilde
     required String id,
     required String name,
     required Color color,
-    IconData? icon,
+    required IconData icon,
   }) = _$PaymentMethod._;
 }

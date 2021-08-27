@@ -9,7 +9,7 @@ class DeleteCategoryWithId extends UseCase<void, String> {
 
   @override
   Future<Either<Failure, void>> call(String id) async {
-    final usages = await repository.countSubcategoriesWithParentId(id);
+    final usages = await repository.countUsages(id);
     return usages.fold(
       (failure) => Left(failure),
       (usages) => _handleUsages(id, usages),
@@ -20,7 +20,7 @@ class DeleteCategoryWithId extends UseCase<void, String> {
     if (usages > 0) {
       return Left(EntityBeingUsedFailure(usages));
     } else {
-      return await repository.deleteCategoryWithId(id);
+      return await repository.deleteCategory(id);
     }
   }
 }

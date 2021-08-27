@@ -48,10 +48,11 @@ class ExpenseListItem extends StatelessWidget {
       subtitle: Text(expense.description),
       trailing: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
             MoneyService.format(expense.value),
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
           ),
           SizedBox(height: 10),
           Row(
@@ -63,6 +64,15 @@ class ExpenseListItem extends StatelessWidget {
               ),
               Icon(
                 Icons.label,
+                size: 14,
+              ),
+              SizedBox(width: 6),
+              Text(
+                2.toString(),
+                style: TextStyle(fontSize: 12),
+              ),
+              Icon(
+                Icons.attach_file,
                 size: 14,
               ),
             ],
