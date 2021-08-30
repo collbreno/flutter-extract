@@ -23,8 +23,8 @@ extension ExpenseEntityToModel on ExpenseEntity {
     required Subcategory subcategory,
     required PaymentMethod paymentMethod,
     required Store? store,
-    required List<Tag> tags,
-    required List<String> files,
+    required Iterable<Tag> tags,
+    required Iterable<String> files,
   }) {
     return Expense(
       id: id,
@@ -33,11 +33,11 @@ extension ExpenseEntityToModel on ExpenseEntity {
       description: description,
       date: date,
       value: value,
-      tags: BuiltList(tags),
+      tags: BuiltList.from(tags),
       paymentMethod: paymentMethod,
       subcategory: subcategory,
       store: store,
-      files: BuiltList(files),
+      files: BuiltList.from(files),
     );
   }
 }

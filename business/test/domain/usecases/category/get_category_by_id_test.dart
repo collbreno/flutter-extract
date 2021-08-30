@@ -4,8 +4,8 @@ import 'package:business/src/domain/usecases/category/_category.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:business/fixtures.dart';
 
-import '../../../utils/fixture_category.dart';
 import '_mock.mocks.dart';
 
 void main() {
@@ -21,7 +21,8 @@ void main() {
   test('should get the category from repository', () async {
     final expected = fix.category1;
 
-    when(repository.getCategoryById(expected.id)).thenAnswer((_) async => Right(expected));
+    when(repository.getCategoryById(expected.id))
+        .thenAnswer((_) async => Right(expected));
 
     final result = await useCase(expected.id);
 

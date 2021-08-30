@@ -16,12 +16,12 @@ extension SubcategoryModelToEntity on Subcategory {
 }
 
 extension SubcategoryEntityToModel on SubcategoryEntity {
-  Subcategory toModel(Category category) {
+  Subcategory toModel({required Category parent}) {
     return Subcategory(
       id: id,
       color: Color(color),
       name: name,
-      parent: category,
+      parent: parent,
       icon: IconMapper.getIcon(name: iconName, family: iconFamily),
     );
   }

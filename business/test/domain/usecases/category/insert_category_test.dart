@@ -4,8 +4,8 @@ import 'package:business/src/domain/usecases/category/_category.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:business/fixtures.dart';
 
-import '../../../utils/fixture_category.dart';
 import '_mock.mocks.dart';
 
 void main() {
