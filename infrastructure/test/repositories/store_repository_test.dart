@@ -1,14 +1,13 @@
 import 'package:business/business.dart';
+import 'package:business/fixtures.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:infrastructure/infrastructure.dart';
-import 'package:infrastructure/src/repositories/store_repository.dart';
+import 'package:infrastructure/src/mappers/_mappers.dart';
 import 'package:moor/ffi.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:uuid/uuid.dart';
 
-import '../utils/fixture_expense.dart';
-import '../utils/fixture_store.dart';
 import '../utils/foreign_keys_utils.dart';
 
 void main() {
@@ -16,7 +15,7 @@ void main() {
   late StoreRepository repository;
   late AppDatabase database;
   late ForeignKeyUtils fkUtils;
-  final fix = FixtureStoreModel();
+  final fix = FixtureStore();
   final fixExpenses = FixtureExpense();
 
   setUpAll(() {
@@ -185,20 +184,20 @@ void main() {
 
   test('Count usages', () async {
     final store1 = fix.store1;
-    final expense1 = fixExpenses.expense1.copyWith(storeId: store1.id);
-    final expense2 = fixExpenses.expense2.copyWith(storeId: store1.id);
+    final expense1 = fixExpenses.expense1.toEntity().copyWith(storeId: store1.id);
+    final expense2 = fixExpenses.expense2.toEntity().copyWith(storeId: store1.id);
 
     final store2 = fix.store2;
-    final expense3 = fixExpenses.expense3.copyWith(storeId: store2.id);
+    final expense3 = fixExpenses.expense3.toEntity().copyWith(storeId: store2.id);
 
     final store3 = fix.store3;
 
     await repository.insertStore(store1);
     await repository.insertStore(store2);
     await repository.insertStore(store3);
-    await fkUtils.insertExpenseFKDependencies(expense1.toCompanion(false));
-    await fkUtils.insertExpenseFKDependencies(expense2.toCompanion(false));
-    await fkUtils.insertExpenseFKDependencies(expense3.toCompanion(false));
+    await fkUtils.insertExpenseFKDependencies(expense1);
+    await fkUtils.insertExpenseFKDependencies(expense2);
+    await fkUtils.insertExpenseFKDependencies(expense3);
     await database.into(database.expenses).insert(expense1);
     await database.into(database.expenses).insert(expense2);
     await database.into(database.expenses).insert(expense3);

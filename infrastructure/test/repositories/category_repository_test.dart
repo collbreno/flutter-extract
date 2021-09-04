@@ -1,14 +1,13 @@
 import 'package:business/business.dart';
+import 'package:business/fixtures.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:infrastructure/infrastructure.dart';
+import 'package:infrastructure/src/mappers/_mappers.dart';
 import 'package:moor/ffi.dart';
 import 'package:moor/moor.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:uuid/uuid.dart';
-
-import '../utils/fixture_category.dart';
-import '../utils/fixture_subcategory.dart';
 
 void main() {
   final uid = Uuid();
@@ -40,7 +39,7 @@ void main() {
 
   group('Insertion', () {
     test('Successfully insertion', () async {
-      final category = fix.category1.model;
+      final category = fix.category1;
 
       await repository.insertCategory(category);
 
@@ -53,7 +52,7 @@ void main() {
 
     test('Insertion with duplicated id must fail', () async {
       final id = uid.v4();
-      final category1 = fix.category1.model.rebuild((s) => s.id = id);
+      final category1 = fix.category1.rebuild((s) => s.id = id);
 
       var result = await repository.insertCategory(category1);
       expect(result, Right(Null));
@@ -64,7 +63,7 @@ void main() {
         (r) => expect(r, [category1]),
       );
 
-      final category2 = fix.category2.model.rebuild((s) => s.id = id);
+      final category2 = fix.category2.rebuild((s) => s.id = id);
 
       result = await repository.insertCategory(category2);
       expect(result, Left(UnknownDatabaseFailure()));
@@ -80,8 +79,8 @@ void main() {
 
   group('Deletion', () {
     test('Simple deletion', () async {
-      final category1 = fix.category1.model;
-      final category2 = fix.category2.model;
+      final category1 = fix.category1;
+      final category2 = fix.category2;
       await repository.insertCategory(category1);
       await repository.insertCategory(category2);
 
@@ -102,7 +101,7 @@ void main() {
     });
 
     test('Deletion of an item that does not exist', () async {
-      final category1 = fix.category1.model;
+      final category1 = fix.category1;
       await repository.insertCategory(category1);
 
       var fromDb = await repository.getAllCategories();
@@ -127,8 +126,8 @@ void main() {
 
   group('Query by id', () {
     test('Success case', () async {
-      final category1 = fix.category1.model;
-      final category2 = fix.category2.model;
+      final category1 = fix.category1;
+      final category2 = fix.category2;
       await repository.insertCategory(category1);
       await repository.insertCategory(category2);
 
@@ -146,8 +145,8 @@ void main() {
   });
 
   group('Update', () {
-    final category1 = fix.category1.model;
-    final category2 = fix.category2.model;
+    final category1 = fix.category1;
+    final category2 = fix.category2;
 
     setUp(() async {
       await repository.insertCategory(category1);
@@ -168,7 +167,7 @@ void main() {
     });
 
     test('Should return $NotFoundFailure when entity does not exist', () async {
-      final category = fix.category3.model;
+      final category = fix.category3;
       final result = await repository.updateCategory(category);
       expect(result, Left(NotFoundFailure()));
 
@@ -182,14 +181,14 @@ void main() {
   });
 
   test('Count usages', () async {
-    final category1 = fix.category1.model;
-    final subcategory1 = fixSubcategories.subcategory1.copyWith(parentId: Value(category1.id));
-    final subcategory2 = fixSubcategories.subcategory2.copyWith(parentId: Value(category1.id));
+    final category1 = fix.category1;
+    final subcategory1 = fixSubcategories.subcategory1.toEntity().copyWith(parentId: category1.id);
+    final subcategory2 = fixSubcategories.subcategory2.toEntity().copyWith(parentId: category1.id);
 
-    final category2 = fix.category2.model;
-    final subcategory3 = fixSubcategories.subcategory3.copyWith(parentId: Value(category2.id));
+    final category2 = fix.category2;
+    final subcategory3 = fixSubcategories.subcategory3.toEntity().copyWith(parentId: category2.id);
 
-    final category3 = fix.category3.model;
+    final category3 = fix.category3;
 
     await repository.insertCategory(category1);
     await repository.insertCategory(category2);

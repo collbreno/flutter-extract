@@ -1,13 +1,12 @@
 import 'package:business/business.dart';
+import 'package:business/fixtures.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:infrastructure/infrastructure.dart';
+import 'package:infrastructure/src/mappers/_mappers.dart';
 import 'package:moor/ffi.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:uuid/uuid.dart';
-
-import '../utils/fixture_expense.dart';
-import '../utils/fixture_payment_method.dart';
 import '../utils/foreign_keys_utils.dart';
 
 void main() {
@@ -184,20 +183,20 @@ void main() {
 
   test('Count usages', () async {
     final paymentMethod1 = fix.paymentMethod1;
-    final expense1 = fixExpenses.expense1.copyWith(paymentMethodId: paymentMethod1.id);
-    final expense2 = fixExpenses.expense2.copyWith(paymentMethodId: paymentMethod1.id);
+    final expense1 = fixExpenses.expense1.toEntity().copyWith(paymentMethodId: paymentMethod1.id);
+    final expense2 = fixExpenses.expense2.toEntity().copyWith(paymentMethodId: paymentMethod1.id);
 
     final paymentMethod2 = fix.paymentMethod2;
-    final expense3 = fixExpenses.expense3.copyWith(paymentMethodId: paymentMethod2.id);
+    final expense3 = fixExpenses.expense3.toEntity().copyWith(paymentMethodId: paymentMethod2.id);
 
     final paymentMethod3 = fix.paymentMethod3;
 
     await repository.insertPaymentMethod(paymentMethod1);
     await repository.insertPaymentMethod(paymentMethod2);
     await repository.insertPaymentMethod(paymentMethod3);
-    await fkUtils.insertExpenseFKDependencies(expense1.toCompanion(false));
-    await fkUtils.insertExpenseFKDependencies(expense2.toCompanion(false));
-    await fkUtils.insertExpenseFKDependencies(expense3.toCompanion(false));
+    await fkUtils.insertExpenseFKDependencies(expense1);
+    await fkUtils.insertExpenseFKDependencies(expense2);
+    await fkUtils.insertExpenseFKDependencies(expense3);
     await database.into(database.expenses).insert(expense1);
     await database.into(database.expenses).insert(expense2);
     await database.into(database.expenses).insert(expense3);

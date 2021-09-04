@@ -1,11 +1,6 @@
+import 'package:business/fixtures.dart';
 import 'package:infrastructure/infrastructure.dart';
-import 'package:moor/moor.dart';
-
-import 'fixture_category.dart';
-import 'fixture_payment_method.dart';
-import 'fixture_store.dart';
-import 'fixture_subcategory.dart';
-import 'fixture_tag.dart';
+import 'package:infrastructure/src/mappers/_mappers.dart';
 
 class ForeignKeyUtils {
   ForeignKeyUtils(this.database);
@@ -18,20 +13,16 @@ class ForeignKeyUtils {
   late final FixtureStore fixStore = FixtureStore();
   late final FixtureTag fixTag = FixtureTag();
 
-  Future<void> insertExpenseFKDependencies(ExpensesCompanion expense) async {
-    if (expense.subcategoryId.present) {
-      await _insertSubcategoryIfNeeded(expense.subcategoryId.value);
-    }
-    if (expense.paymentMethodId.present) {
-      await _insertPaymentMethodIfNeeded(expense.paymentMethodId.value);
-    }
-    if (expense.storeId.present && expense.storeId.value != null) {
-      await _insertStoreIfNeeded(expense.storeId.value!);
+  Future<void> insertExpenseFKDependencies(ExpenseEntity expense) async {
+    await _insertSubcategoryIfNeeded(expense.subcategoryId);
+    await _insertPaymentMethodIfNeeded(expense.paymentMethodId);
+    if (expense.storeId != null) {
+      await _insertStoreIfNeeded(expense.storeId!);
     }
   }
 
-  Future<void> insertSubcategoryFKDependencies(SubcategoriesCompanion subcategory) async {
-    if (subcategory.parentId.present) await _insertCategoryIfNeeded(subcategory.parentId.value);
+  Future<void> insertSubcategoryFKDependencies(SubcategoryEntity subcategory) async {
+    await _insertCategoryIfNeeded(subcategory.parentId);
   }
 
   Future<void> _insertCategoryIfNeeded(String categoryId) async {
@@ -39,7 +30,7 @@ class ForeignKeyUtils {
           ..where((tbl) => tbl.id.equals(categoryId)))
         .getSingleOrNull();
     if (categoryFromDb == null) {
-      final categoryToInsert = fixCategory.category1.entity.copyWith(id: categoryId);
+      final categoryToInsert = fixCategory.category1.toEntity().copyWith(id: categoryId);
       await database.into(database.categories).insert(categoryToInsert);
     }
   }
@@ -49,7 +40,8 @@ class ForeignKeyUtils {
           ..where((tbl) => tbl.id.equals(subcategoryId)))
         .getSingleOrNull();
     if (subcategoryFromDb == null) {
-      final subcategoryToInsert = fixSubcategory.subcategory1.copyWith(id: Value(subcategoryId));
+      final subcategoryToInsert =
+          fixSubcategory.subcategory1.toEntity().copyWith(id: subcategoryId);
       await insertSubcategoryFKDependencies(subcategoryToInsert);
       await database.into(database.subcategories).insert(subcategoryToInsert);
     }
@@ -60,7 +52,7 @@ class ForeignKeyUtils {
           ..where((tbl) => tbl.id.equals(storeId)))
         .getSingleOrNull();
     if (storeFromDb == null) {
-      final storeToInsert = fixStore.store1.copyWith(id: Value(storeId));
+      final storeToInsert = fixStore.store1.toEntity().copyWith(id: storeId);
       await database.into(database.stores).insert(storeToInsert);
     }
   }
