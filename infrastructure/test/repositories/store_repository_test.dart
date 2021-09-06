@@ -184,11 +184,11 @@ void main() {
 
   test('Count usages', () async {
     final store1 = fix.store1;
-    final expense1 = fixExpenses.expense1.toEntity().copyWith(storeId: store1.id);
-    final expense2 = fixExpenses.expense2.toEntity().copyWith(storeId: store1.id);
+    final expense1 = fixExpenses.expense1.rebuild((e) => e.store.id = store1.id);
+    final expense2 = fixExpenses.expense2.rebuild((e) => e.store.id = store1.id);
 
     final store2 = fix.store2;
-    final expense3 = fixExpenses.expense3.toEntity().copyWith(storeId: store2.id);
+    final expense3 = fixExpenses.expense3.rebuild((e) => e.store.id = store2.id);
 
     final store3 = fix.store3;
 
@@ -198,9 +198,9 @@ void main() {
     await fkUtils.insertExpenseFKDependencies(expense1);
     await fkUtils.insertExpenseFKDependencies(expense2);
     await fkUtils.insertExpenseFKDependencies(expense3);
-    await database.into(database.expenses).insert(expense1);
-    await database.into(database.expenses).insert(expense2);
-    await database.into(database.expenses).insert(expense3);
+    await database.into(database.expenses).insert(expense1.toEntity());
+    await database.into(database.expenses).insert(expense2.toEntity());
+    await database.into(database.expenses).insert(expense3.toEntity());
 
     var result = await repository.countUsages(store1.id);
     expect(result, Right(2));

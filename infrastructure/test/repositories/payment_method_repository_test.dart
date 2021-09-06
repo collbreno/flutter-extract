@@ -183,11 +183,11 @@ void main() {
 
   test('Count usages', () async {
     final paymentMethod1 = fix.paymentMethod1;
-    final expense1 = fixExpenses.expense1.toEntity().copyWith(paymentMethodId: paymentMethod1.id);
-    final expense2 = fixExpenses.expense2.toEntity().copyWith(paymentMethodId: paymentMethod1.id);
+    final expense1 = fixExpenses.expense1.rebuild((e) => e.paymentMethod.id = paymentMethod1.id);
+    final expense2 = fixExpenses.expense2.rebuild((e) => e.paymentMethod.id = paymentMethod1.id);
 
     final paymentMethod2 = fix.paymentMethod2;
-    final expense3 = fixExpenses.expense3.toEntity().copyWith(paymentMethodId: paymentMethod2.id);
+    final expense3 = fixExpenses.expense3.rebuild((e) => e.paymentMethod.id = paymentMethod2.id);
 
     final paymentMethod3 = fix.paymentMethod3;
 
@@ -197,9 +197,9 @@ void main() {
     await fkUtils.insertExpenseFKDependencies(expense1);
     await fkUtils.insertExpenseFKDependencies(expense2);
     await fkUtils.insertExpenseFKDependencies(expense3);
-    await database.into(database.expenses).insert(expense1);
-    await database.into(database.expenses).insert(expense2);
-    await database.into(database.expenses).insert(expense3);
+    await database.into(database.expenses).insert(expense1.toEntity());
+    await database.into(database.expenses).insert(expense2.toEntity());
+    await database.into(database.expenses).insert(expense3.toEntity());
     var result = await repository.countUsages(paymentMethod1.id);
     expect(result, Right(2));
 

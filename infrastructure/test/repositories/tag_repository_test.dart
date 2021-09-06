@@ -186,11 +186,11 @@ void main() {
 
   test('Count usages', () async {
     final tag1 = fix.tag1;
-    final expense1 = fixExpenses.expense1.toEntity();
-    final expense2 = fixExpenses.expense2.toEntity();
+    final expense1 = fixExpenses.expense1;
+    final expense2 = fixExpenses.expense2;
 
     final tag2 = fix.tag2;
-    final expense3 = fixExpenses.expense3.toEntity();
+    final expense3 = fixExpenses.expense3;
 
     final tag3 = fix.tag3;
 
@@ -200,9 +200,9 @@ void main() {
     await fkUtils.insertExpenseFKDependencies(expense1);
     await fkUtils.insertExpenseFKDependencies(expense2);
     await fkUtils.insertExpenseFKDependencies(expense3);
-    await database.into(database.expenses).insert(expense1);
-    await database.into(database.expenses).insert(expense2);
-    await database.into(database.expenses).insert(expense3);
+    await database.into(database.expenses).insert(expense1.toEntity());
+    await database.into(database.expenses).insert(expense2.toEntity());
+    await database.into(database.expenses).insert(expense3.toEntity());
     await database.into(database.expenseTags).insert(
         ExpenseTagEntity(tagId: tag1.id, expenseId: expense1.id, createdAt: fixDate.dateTime1));
     await database.into(database.expenseTags).insert(

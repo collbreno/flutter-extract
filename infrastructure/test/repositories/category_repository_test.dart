@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:infrastructure/infrastructure.dart';
 import 'package:infrastructure/src/mappers/_mappers.dart';
 import 'package:moor/ffi.dart';
-import 'package:moor/moor.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:uuid/uuid.dart';
 
