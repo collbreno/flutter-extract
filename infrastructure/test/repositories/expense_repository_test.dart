@@ -1,5 +1,6 @@
 import 'package:business/business.dart';
 import 'package:business/fixtures.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:infrastructure/infrastructure.dart';
 import 'package:infrastructure/src/mappers/_mappers.dart';
@@ -8,6 +9,7 @@ import 'package:moor/ffi.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:uuid/uuid.dart';
 
+import '../matchers/either_matcher.dart';
 import '../utils/foreign_keys_utils.dart';
 
 void main() {
@@ -30,10 +32,7 @@ void main() {
   test('Get all must return $NotFoundFailure when there is no items in database', () async {
     final fromDb = await repository.getAllExpenses();
 
-    fromDb.fold(
-      (l) => expect(l, NotFoundFailure()),
-      (r) => throw Exception('should be left'),
-    );
+    expect(fromDb, Left(NotFoundFailure()));
   });
 
   group('Insertion', () {
@@ -69,6 +68,39 @@ void main() {
       expect(expenseFromDb, [expectedExpense]);
       expect(expenseFilesFromDb, expectedExpenseFiles);
       expect(expenseTagsFromDb, expectedExpenseTags);
+    });
+
+    test('Getting after inserting', () async {
+      final expense = fix.expense1;
+
+      await fkUtils.insertExpenseFKDependencies(expense);
+      await repository.insertExpense(expense);
+
+      final fromDb = await repository.getAllExpenses();
+
+      expect(fromDb, orderedRightEquals([expense]));
+    });
+  });
+
+  group('Query by id', () {
+    test('Success case', () async {
+      final expense1 = fix.expense1;
+      final expense2 = fix.expense2;
+      await fkUtils.insertExpenseFKDependencies(expense1);
+      await fkUtils.insertExpenseFKDependencies(expense2);
+      await repository.insertExpense(expense1);
+      await repository.insertExpense(expense2);
+
+      var result = await repository.getExpenseById(expense1.id);
+      expect(result, Right(expense1));
+
+      result = await repository.getExpenseById(expense2.id);
+      expect(result, Right(expense2));
+    });
+
+    test('Query by id of an item that does not exist must return $NotFoundFailure', () async {
+      final result = await repository.getExpenseById(uid.v4());
+      expect(result, Left(NotFoundFailure()));
     });
   });
 }

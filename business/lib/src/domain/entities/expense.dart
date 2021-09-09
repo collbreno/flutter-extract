@@ -14,8 +14,8 @@ abstract class Expense implements Built<Expense, ExpenseBuilder> {
   PaymentMethod get paymentMethod;
   Subcategory get subcategory;
   Store? get store;
-  BuiltList<Tag> get tags;
-  BuiltList<String> get files;
+  BuiltSet<Tag> get tags;
+  BuiltSet<String> get files;
 
   Expense._();
 
@@ -28,8 +28,8 @@ abstract class Expense implements Built<Expense, ExpenseBuilder> {
     required DateTime updatedAt,
     required PaymentMethod paymentMethod,
     required Subcategory subcategory,
-    required BuiltList<Tag> tags,
-    required BuiltList<String> files,
+    required BuiltSet<Tag> tags,
+    required BuiltSet<String> files,
     Store? store,
   }) = _$Expense._;
 }

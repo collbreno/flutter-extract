@@ -33,11 +33,11 @@ extension ExpenseEntityToModel on ExpenseEntity {
       description: description,
       date: date,
       value: value,
-      tags: BuiltList.from(tags),
+      tags: BuiltSet.from(tags),
       paymentMethod: paymentMethod,
       subcategory: subcategory,
       store: store,
-      files: BuiltList.from(files),
+      files: BuiltSet.from(files),
     );
   }
 }

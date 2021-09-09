@@ -7,6 +7,7 @@ import 'package:infrastructure/src/mappers/_mappers.dart';
 import 'package:moor/ffi.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:uuid/uuid.dart';
+import '../matchers/either_matcher.dart';
 import '../utils/foreign_keys_utils.dart';
 
 void main() {
@@ -32,12 +33,9 @@ void main() {
   });
 
   test('Get all must return $NotFoundFailure when there is no items in database', () async {
-    final fromDB = await repository.getAllPaymentMethods();
+    final fromDb = await repository.getAllPaymentMethods();
 
-    fromDB.fold(
-      (l) => expect(l, NotFoundFailure()),
-      (r) => throw Exception('should be left'),
-    );
+    expect(fromDb, Left(NotFoundFailure()));
   });
 
   group('Insertion', () {
@@ -47,10 +45,7 @@ void main() {
       await repository.insertPaymentMethod(paymentMethod);
 
       final fromDb = await repository.getAllPaymentMethods();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [paymentMethod]),
-      );
+      expect(fromDb, orderedRightEquals([paymentMethod]));
     });
 
     test('Insertion with duplicated id must fail', () async {
@@ -61,10 +56,7 @@ void main() {
       expect(result, Right(Null));
 
       var fromDb = await repository.getAllPaymentMethods();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [paymentMethod1]),
-      );
+      expect(fromDb, orderedRightEquals([paymentMethod1]));
 
       final paymentMethod2 = fix.paymentMethod2.rebuild((t) => t.id = id);
 
@@ -73,10 +65,7 @@ void main() {
 
       // Database is not affected
       fromDb = await repository.getAllPaymentMethods();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [paymentMethod1]),
-      );
+      expect(fromDb, orderedRightEquals([paymentMethod1]));
     });
   });
 
@@ -88,19 +77,13 @@ void main() {
       await repository.insertPaymentMethod(paymentMethod2);
 
       var fromDb = await repository.getAllPaymentMethods();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [paymentMethod1, paymentMethod2]),
-      );
+      expect(fromDb, orderedRightEquals([paymentMethod1, paymentMethod2]));
 
       var result = await repository.deletePaymentMethodWithId(paymentMethod1.id);
       expect(result, Right(Null));
 
       fromDb = await repository.getAllPaymentMethods();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [paymentMethod2]),
-      );
+      expect(fromDb, orderedRightEquals([paymentMethod2]));
     });
 
     test('Deletion of an item that does not exist', () async {
@@ -108,20 +91,14 @@ void main() {
       await repository.insertPaymentMethod(paymentMethod1);
 
       var fromDb = await repository.getAllPaymentMethods();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [paymentMethod1]),
-      );
+      expect(fromDb, orderedRightEquals([paymentMethod1]));
 
       var result = await repository.deletePaymentMethodWithId(uid.v4());
       expect(result, Left(NothingToDeleteFailure()));
 
       // Database is not affected
       fromDb = await repository.getAllPaymentMethods();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [paymentMethod1]),
-      );
+      expect(fromDb, orderedRightEquals([paymentMethod1]));
     });
   });
 
@@ -161,10 +138,7 @@ void main() {
       expect(result, Right(Null));
 
       final fromDb = await repository.getAllPaymentMethods();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [newPaymentMethod, paymentMethod2]),
-      );
+      expect(fromDb, orderedRightEquals([newPaymentMethod, paymentMethod2]));
     });
 
     test('Should return $NotFoundFailure when entity does not exist', () async {
@@ -174,10 +148,7 @@ void main() {
 
       final fromDb = await repository.getAllPaymentMethods();
       // Database is not affected
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [paymentMethod1, paymentMethod2]),
-      );
+      expect(fromDb, orderedRightEquals([paymentMethod1, paymentMethod2]));
     });
   });
 

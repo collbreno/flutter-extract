@@ -8,6 +8,8 @@ import 'package:moor/ffi.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:uuid/uuid.dart';
 
+import '../matchers/either_matcher.dart';
+
 void main() {
   final uid = Uuid();
   late CategoryRepository repository;
@@ -28,12 +30,9 @@ void main() {
   });
 
   test('Get all must return $NotFoundFailure when there is no items in database', () async {
-    final fromDB = await repository.getAllCategories();
+    final fromDb = await repository.getAllCategories();
 
-    fromDB.fold(
-      (l) => expect(l, NotFoundFailure()),
-      (r) => throw Exception('should be left'),
-    );
+    expect(fromDb, Left(NotFoundFailure()));
   });
 
   group('Insertion', () {
@@ -43,10 +42,7 @@ void main() {
       await repository.insertCategory(category);
 
       final fromDb = await repository.getAllCategories();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [category]),
-      );
+      expect(fromDb, orderedRightEquals([category]));
     });
 
     test('Insertion with duplicated id must fail', () async {
@@ -57,10 +53,7 @@ void main() {
       expect(result, Right(Null));
 
       var fromDb = await repository.getAllCategories();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [category1]),
-      );
+      expect(fromDb, orderedRightEquals([category1]));
 
       final category2 = fix.category2.rebuild((s) => s.id = id);
 
@@ -69,10 +62,7 @@ void main() {
 
       // Database is not affected
       fromDb = await repository.getAllCategories();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [category1]),
-      );
+      expect(fromDb, orderedRightEquals([category1]));
     });
   });
 
@@ -84,19 +74,13 @@ void main() {
       await repository.insertCategory(category2);
 
       var fromDb = await repository.getAllCategories();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [category1, category2]),
-      );
+      expect(fromDb, orderedRightEquals([category1, category2]));
 
       var result = await repository.deleteCategory(category1.id);
       expect(result, Right(Null));
 
       fromDb = await repository.getAllCategories();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [category2]),
-      );
+      expect(fromDb, orderedRightEquals([category2]));
     });
 
     test('Deletion of an item that does not exist', () async {
@@ -104,10 +88,7 @@ void main() {
       await repository.insertCategory(category1);
 
       var fromDb = await repository.getAllCategories();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [category1]),
-      );
+      expect(fromDb, orderedRightEquals([category1]));
 
       final idToDelete = uid.v4();
       expect(idToDelete, isNot(category1.id));
@@ -116,10 +97,7 @@ void main() {
 
       // Database is not affected
       fromDb = await repository.getAllCategories();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [category1]),
-      );
+      expect(fromDb, orderedRightEquals([category1]));
     });
   });
 
@@ -159,10 +137,7 @@ void main() {
       expect(result, Right(Null));
 
       final fromDb = await repository.getAllCategories();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [newCategory, category2]),
-      );
+      expect(fromDb, orderedRightEquals([newCategory, category2]));
     });
 
     test('Should return $NotFoundFailure when entity does not exist', () async {
@@ -172,10 +147,7 @@ void main() {
 
       final fromDb = await repository.getAllCategories();
       // Database is not affected
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [category1, category2]),
-      );
+      expect(fromDb, orderedRightEquals([category1, category2]));
     });
   });
 

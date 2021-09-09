@@ -9,6 +9,7 @@ import 'package:moor/ffi.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:uuid/uuid.dart';
 
+import '../matchers/either_matcher.dart';
 import '../utils/foreign_keys_utils.dart';
 
 void main() {
@@ -35,12 +36,9 @@ void main() {
   });
 
   test('Get all must return $NotFoundFailure when there is no items in database', () async {
-    final fromDB = await repository.getAllTags();
+    final fromDb = await repository.getAllTags();
 
-    fromDB.fold(
-      (l) => expect(l, NotFoundFailure()),
-      (r) => throw Exception('should be left'),
-    );
+    expect(fromDb, Left(NotFoundFailure()));
   });
 
   group('Insertion', () {
@@ -50,10 +48,7 @@ void main() {
       await repository.insertTag(tag);
 
       final fromDb = await repository.getAllTags();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [tag]),
-      );
+      expect(fromDb, orderedRightEquals([tag]));
     });
 
     test('Insertion with duplicated id must fail', () async {
@@ -64,10 +59,7 @@ void main() {
       expect(result, Right(Null));
 
       var fromDb = await repository.getAllTags();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [tag1]),
-      );
+      expect(fromDb, orderedRightEquals([tag1]));
 
       final tag2 = fix.tag2.rebuild((t) => t.id = id);
 
@@ -76,10 +68,7 @@ void main() {
 
       // Database is not affected
       fromDb = await repository.getAllTags();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [tag1]),
-      );
+      expect(fromDb, orderedRightEquals([tag1]));
     });
   });
 
@@ -91,19 +80,13 @@ void main() {
       await repository.insertTag(tag2);
 
       var fromDb = await repository.getAllTags();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [tag1, tag2]),
-      );
+      expect(fromDb, orderedRightEquals([tag1, tag2]));
 
       var result = await repository.deleteTagWithId(tag1.id);
       expect(result, Right(Null));
 
       fromDb = await repository.getAllTags();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [tag2]),
-      );
+      expect(fromDb, orderedRightEquals([tag2]));
     });
 
     test('Deletion of an item that does not exist', () async {
@@ -111,20 +94,14 @@ void main() {
       await repository.insertTag(tag1);
 
       var fromDb = await repository.getAllTags();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [tag1]),
-      );
+      expect(fromDb, orderedRightEquals([tag1]));
 
       var result = await repository.deleteTagWithId(uid.v4());
       expect(result, Left(NothingToDeleteFailure()));
 
       // Database is not affected
       fromDb = await repository.getAllTags();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [tag1]),
-      );
+      expect(fromDb, orderedRightEquals([tag1]));
     });
   });
 
@@ -164,10 +141,7 @@ void main() {
       expect(result, Right(Null));
 
       final fromDb = await repository.getAllTags();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [newTag, tag2]),
-      );
+      expect(fromDb, orderedRightEquals([newTag, tag2]));
     });
 
     test('Should return $NotFoundFailure when entity does not exist', () async {
@@ -177,10 +151,7 @@ void main() {
 
       final fromDb = await repository.getAllTags();
       // Database is not affected
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [tag1, tag2]),
-      );
+      expect(fromDb, orderedRightEquals([tag1, tag2]));
     });
   });
 

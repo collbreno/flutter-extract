@@ -18,39 +18,15 @@ class ExpenseRepository implements IExpenseRepository {
   @override
   Future<FailureOr<List<Expense>>> getAllExpenses({ExpenseFilter? filter}) async {
     try {
-      final expenses = await db.select(db.expenses).join([
-        innerJoin(db.subcategories, db.subcategories.id.equalsExp(db.expenses.subcategoryId)),
-        innerJoin(db.categories, db.categories.id.equalsExp(db.subcategories.parentId)),
-        innerJoin(db.paymentMethods, db.paymentMethods.id.equalsExp(db.expenses.paymentMethodId)),
-        leftOuterJoin(db.stores, db.stores.id.equalsExp(db.expenses.storeId)),
-      ]).get();
+      final expenses = await _mountExpenseQuery().get();
 
       if (expenses.isEmpty) {
         return Left(NotFoundFailure());
       }
 
-      final expenseIds = expenses.map((e) => e.read(db.expenses.id));
-
-      final tags = await (db
-              .select(db.expenseTags)
-              .join([innerJoin(db.tags, db.tags.id.equalsExp(db.expenseTags.tagId))])
-                ..where(db.expenseTags.expenseId.isIn(expenseIds)))
-          .get();
-      final expenseIdToTags = <String, List<Tag>>{};
-      for (var row in tags) {
-        final tag = row.readTable(db.tags);
-        final id = row.read(db.expenseTags.expenseId)!;
-        expenseIdToTags.putIfAbsent(id, () => []).add(tag.toModel());
-      }
-
-      final files =
-          await (db.select(db.expenseFiles)..where((tbl) => tbl.expenseId.isIn(expenseIds))).get();
-      final expenseIdToFiles = <String, List<String>>{};
-      for (var row in files) {
-        final file = row.filePath;
-        final id = row.expenseId;
-        expenseIdToFiles.putIfAbsent(id, () => []).add(file);
-      }
+      final expenseIds = expenses.map((e) => e.read(db.expenses.id)!);
+      final expenseIdToTags = await _getIdToTags(expenseIds);
+      final expenseIdToFiles = await _getIdToFiles(expenseIds);
 
       return Right(
         expenses.map((row) {
@@ -72,9 +48,32 @@ class ExpenseRepository implements IExpenseRepository {
   }
 
   @override
-  Future<FailureOr<Expense>> getExpenseById(String id) {
-    // TODO: implement getExpenseById
-    throw UnimplementedError();
+  Future<FailureOr<Expense>> getExpenseById(String id) async {
+    try {
+      final result =
+          await (_mountExpenseQuery()..where(db.expenses.id.equals(id))).getSingleOrNull();
+
+      if (result == null) {
+        return Left(NotFoundFailure());
+      }
+
+      final expenseIdToTags = await _getIdToTags([id]);
+      final expenseIdToFiles = await _getIdToFiles([id]);
+
+      return Right(
+        result.readTable(db.expenses).toModel(
+              subcategory: result.readTable(db.subcategories).toModel(
+                    parent: result.readTable(db.categories).toModel(),
+                  ),
+              paymentMethod: result.readTable(db.paymentMethods).toModel(),
+              store: result.readTable(db.stores).toModel(),
+              tags: expenseIdToTags[id] ?? [],
+              files: expenseIdToFiles[id] ?? [],
+            ),
+      );
+    } on Exception {
+      return Left(UnknownDatabaseFailure());
+    }
   }
 
   @override
@@ -117,5 +116,43 @@ class ExpenseRepository implements IExpenseRepository {
   Future<FailureOr<bool>> updateExpense(Expense expense) {
     // TODO: implement updateExpense
     throw UnimplementedError();
+  }
+
+  JoinedSelectStatement _mountExpenseQuery() {
+    return db.select(db.expenses).join([
+      innerJoin(db.subcategories, db.subcategories.id.equalsExp(db.expenses.subcategoryId)),
+      innerJoin(db.categories, db.categories.id.equalsExp(db.subcategories.parentId)),
+      innerJoin(db.paymentMethods, db.paymentMethods.id.equalsExp(db.expenses.paymentMethodId)),
+      leftOuterJoin(db.stores, db.stores.id.equalsExp(db.expenses.storeId)),
+    ]);
+  }
+
+  Future<Map<String, List<Tag>>> _getIdToTags(Iterable<String> expenseIds) async {
+    final tags = await (db
+            .select(db.expenseTags)
+            .join([innerJoin(db.tags, db.tags.id.equalsExp(db.expenseTags.tagId))])
+              ..where(db.expenseTags.expenseId.isIn(expenseIds)))
+        .get();
+    final expenseIdToTags = <String, List<Tag>>{};
+    for (var row in tags) {
+      final tag = row.readTable(db.tags);
+      final id = row.read(db.expenseTags.expenseId)!;
+      expenseIdToTags.putIfAbsent(id, () => []).add(tag.toModel());
+    }
+
+    return expenseIdToTags;
+  }
+
+  Future<Map<String, List<String>>> _getIdToFiles(Iterable<String> expenseIds) async {
+    final files =
+        await (db.select(db.expenseFiles)..where((tbl) => tbl.expenseId.isIn(expenseIds))).get();
+    final expenseIdToFiles = <String, List<String>>{};
+    for (var row in files) {
+      final file = row.filePath;
+      final id = row.expenseId;
+      expenseIdToFiles.putIfAbsent(id, () => []).add(file);
+    }
+
+    return expenseIdToFiles;
   }
 }

@@ -8,6 +8,7 @@ import 'package:moor/ffi.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:uuid/uuid.dart';
 
+import '../matchers/either_matcher.dart';
 import '../utils/foreign_keys_utils.dart';
 
 void main() {
@@ -33,12 +34,9 @@ void main() {
   });
 
   test('Get all must return $NotFoundFailure when there is no items in database', () async {
-    final fromDB = await repository.getAllStores();
+    final fromDb = await repository.getAllStores();
 
-    fromDB.fold(
-      (l) => expect(l, NotFoundFailure()),
-      (r) => throw Exception('should be left'),
-    );
+    expect(fromDb, Left(NotFoundFailure()));
   });
 
   group('Insertion', () {
@@ -48,10 +46,7 @@ void main() {
       await repository.insertStore(store);
 
       final fromDb = await repository.getAllStores();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [store]),
-      );
+      expect(fromDb, orderedRightEquals([store]));
     });
 
     test('Insertion with duplicated id must fail', () async {
@@ -62,10 +57,7 @@ void main() {
       expect(result, Right(Null));
 
       var fromDb = await repository.getAllStores();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [store1]),
-      );
+      expect(fromDb, orderedRightEquals([store1]));
 
       final store2 = fix.store2.rebuild((s) => s.id = id);
 
@@ -74,10 +66,7 @@ void main() {
 
       // Database is not affected
       fromDb = await repository.getAllStores();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [store1]),
-      );
+      expect(fromDb, orderedRightEquals([store1]));
     });
   });
 
@@ -89,19 +78,13 @@ void main() {
       await repository.insertStore(store2);
 
       var fromDb = await repository.getAllStores();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [store1, store2]),
-      );
+      expect(fromDb, orderedRightEquals([store1, store2]));
 
       var result = await repository.deleteStoreWithId(store1.id);
       expect(result, Right(Null));
 
       fromDb = await repository.getAllStores();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [store2]),
-      );
+      expect(fromDb, orderedRightEquals([store2]));
     });
 
     test('Deletion of an item that does not exist', () async {
@@ -109,20 +92,14 @@ void main() {
       await repository.insertStore(store1);
 
       var fromDb = await repository.getAllStores();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [store1]),
-      );
+      expect(fromDb, orderedRightEquals([store1]));
 
       var result = await repository.deleteStoreWithId(uid.v4());
       expect(result, Left(NothingToDeleteFailure()));
 
       // Database is not affected
       fromDb = await repository.getAllStores();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [store1]),
-      );
+      expect(fromDb, orderedRightEquals([store1]));
     });
   });
 
@@ -162,10 +139,7 @@ void main() {
       expect(result, Right(Null));
 
       final fromDb = await repository.getAllStores();
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [newStore, store2]),
-      );
+      expect(fromDb, orderedRightEquals([newStore, store2]));
     });
 
     test('Should return $NotFoundFailure when entity does not exist', () async {
@@ -175,10 +149,7 @@ void main() {
 
       final fromDb = await repository.getAllStores();
       // Database is not affected
-      fromDb.fold(
-        (l) => throw Exception('should be right'),
-        (r) => expect(r, [store1, store2]),
-      );
+      expect(fromDb, orderedRightEquals([store1, store2]));
     });
   });
 
