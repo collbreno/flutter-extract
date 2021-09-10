@@ -3,7 +3,6 @@ import 'package:business/fixtures.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:infrastructure/infrastructure.dart';
-import 'package:infrastructure/src/mappers/_mappers.dart';
 import 'package:infrastructure/src/repositories/tag_repository.dart';
 import 'package:moor/ffi.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -76,8 +75,11 @@ void main() {
     test('Simple deletion', () async {
       final tag1 = fix.tag1;
       final tag2 = fix.tag2;
-      await repository.insertTag(tag1);
-      await repository.insertTag(tag2);
+      final insert1 = await repository.insertTag(tag1);
+      final insert2 = await repository.insertTag(tag2);
+
+      expect(insert1, Right(Null));
+      expect(insert2, Right(Null));
 
       var fromDb = await repository.getAllTags();
       expect(fromDb, orderedRightEquals([tag1, tag2]));

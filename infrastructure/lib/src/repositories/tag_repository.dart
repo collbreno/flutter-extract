@@ -1,6 +1,5 @@
 import 'package:business/business.dart';
 import 'package:dartz/dartz.dart';
-import 'package:flutter/material.dart';
 import 'package:infrastructure/infrastructure.dart';
 
 class TagRepository implements ITagRepository {
@@ -41,7 +40,7 @@ class TagRepository implements ITagRepository {
       final tags = await db.select(db.tags).get();
       if (tags.isNotEmpty) {
         return Right(
-          tags.map(_mapToModel).toList(),
+          tags.map((t) => t.toModel()).toList(),
         );
       } else {
         return Left(NotFoundFailure());
@@ -58,7 +57,7 @@ class TagRepository implements ITagRepository {
       final tag = await query.getSingleOrNull();
 
       if (tag != null) {
-        return Right(_mapToModel(tag));
+        return Right(tag.toModel());
       } else {
         return Left(NotFoundFailure());
       }
@@ -70,7 +69,7 @@ class TagRepository implements ITagRepository {
   @override
   Future<FailureOr<void>> insertTag(Tag tag) async {
     try {
-      await db.into(db.tags).insert(_mapToEntity(tag));
+      await db.into(db.tags).insert(tag.toEntity());
       return Right(Null);
     } on Exception {
       return Left(UnknownDatabaseFailure());
@@ -80,7 +79,7 @@ class TagRepository implements ITagRepository {
   @override
   Future<FailureOr<void>> updateTag(Tag tag) async {
     try {
-      final result = await db.update(db.tags).replace(_mapToEntity(tag));
+      final result = await db.update(db.tags).replace(tag.toEntity());
       if (result) {
         return Right(Null);
       } else {
@@ -89,26 +88,5 @@ class TagRepository implements ITagRepository {
     } on Exception {
       return Left(UnknownDatabaseFailure());
     }
-  }
-
-  Tag _mapToModel(TagEntity entity) {
-    return Tag(
-      id: entity.id,
-      name: entity.name,
-      color: Color(entity.color),
-      icon: entity.iconName != null && entity.iconFamily != null
-          ? IconMapper.getIcon(name: entity.iconName!, family: entity.iconFamily!)
-          : null,
-    );
-  }
-
-  TagEntity _mapToEntity(Tag model) {
-    return TagEntity(
-      id: model.id,
-      name: model.name,
-      color: model.color.value,
-      iconName: model.icon != null ? IconMapper.getIconName(model.icon!) : null,
-      iconFamily: model.icon != null ? IconMapper.getIconFamily(model.icon!) : null,
-    );
   }
 }

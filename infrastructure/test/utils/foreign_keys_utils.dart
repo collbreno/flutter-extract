@@ -1,7 +1,6 @@
 import 'package:business/business.dart';
 import 'package:business/fixtures.dart';
 import 'package:infrastructure/infrastructure.dart';
-import 'package:infrastructure/src/mappers/_mappers.dart';
 
 class ForeignKeyUtils {
   ForeignKeyUtils(this.db);

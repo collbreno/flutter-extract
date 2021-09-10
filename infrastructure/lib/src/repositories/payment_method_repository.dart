@@ -1,6 +1,5 @@
 import 'package:business/business.dart';
 import 'package:dartz/dartz.dart';
-import 'package:flutter/material.dart';
 import 'package:infrastructure/infrastructure.dart';
 
 class PaymentMethodRepository implements IPaymentMethodRepository {
@@ -41,7 +40,7 @@ class PaymentMethodRepository implements IPaymentMethodRepository {
       final paymentMethods = await db.select(db.paymentMethods).get();
       if (paymentMethods.isNotEmpty) {
         return Right(
-          paymentMethods.map(_mapToModel).toList(),
+          paymentMethods.map((c) => c.toModel()).toList(),
         );
       } else {
         return Left(NotFoundFailure());
@@ -58,7 +57,7 @@ class PaymentMethodRepository implements IPaymentMethodRepository {
       final paymentMethod = await query.getSingleOrNull();
 
       if (paymentMethod != null) {
-        return Right(_mapToModel(paymentMethod));
+        return Right(paymentMethod.toModel());
       } else {
         return Left(NotFoundFailure());
       }
@@ -70,7 +69,7 @@ class PaymentMethodRepository implements IPaymentMethodRepository {
   @override
   Future<FailureOr<void>> insertPaymentMethod(PaymentMethod paymentMethod) async {
     try {
-      await db.into(db.paymentMethods).insert(_mapToEntity(paymentMethod));
+      await db.into(db.paymentMethods).insert(paymentMethod.toEntity());
       return Right(Null);
     } on Exception {
       return Left(UnknownDatabaseFailure());
@@ -80,7 +79,7 @@ class PaymentMethodRepository implements IPaymentMethodRepository {
   @override
   Future<FailureOr<void>> updatePaymentMethod(PaymentMethod paymentMethod) async {
     try {
-      final result = await db.update(db.paymentMethods).replace(_mapToEntity(paymentMethod));
+      final result = await db.update(db.paymentMethods).replace(paymentMethod.toEntity());
       if (result) {
         return Right(Null);
       } else {
@@ -89,24 +88,5 @@ class PaymentMethodRepository implements IPaymentMethodRepository {
     } on Exception {
       return Left(UnknownDatabaseFailure());
     }
-  }
-
-  PaymentMethod _mapToModel(PaymentMethodEntity entity) {
-    return PaymentMethod(
-      id: entity.id,
-      name: entity.name,
-      color: Color(entity.color),
-      icon: IconMapper.getIcon(name: entity.iconName, family: entity.iconFamily),
-    );
-  }
-
-  PaymentMethodEntity _mapToEntity(PaymentMethod model) {
-    return PaymentMethodEntity(
-      id: model.id,
-      name: model.name,
-      color: model.color.value,
-      iconName: IconMapper.getIconName(model.icon),
-      iconFamily: IconMapper.getIconFamily(model.icon),
-    );
   }
 }

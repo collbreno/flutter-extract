@@ -38,7 +38,7 @@ class StoreRepository implements IStoreRepository {
       final stores = await db.select(db.stores).get();
       if (stores.isNotEmpty) {
         return Right(
-          stores.map(_mapToModel).toList(),
+          stores.map((s) => s.toModel()).toList(),
         );
       } else {
         return Left(NotFoundFailure());
@@ -61,7 +61,7 @@ class StoreRepository implements IStoreRepository {
       final store = await query.getSingleOrNull();
 
       if (store != null) {
-        return Right(_mapToModel(store));
+        return Right(store.toModel());
       } else {
         return Left(NotFoundFailure());
       }
@@ -76,7 +76,7 @@ class StoreRepository implements IStoreRepository {
   @override
   Future<FailureOr<void>> insertStore(Store store) async {
     try {
-      await db.into(db.stores).insert(_mapToEntity(store));
+      await db.into(db.stores).insert(store.toEntity());
       return Right(Null);
     } on Exception {
       return Left(UnknownDatabaseFailure());
@@ -89,7 +89,7 @@ class StoreRepository implements IStoreRepository {
   @override
   Future<FailureOr<void>> updateStore(Store store) async {
     try {
-      final result = await db.update(db.stores).replace(_mapToEntity(store));
+      final result = await db.update(db.stores).replace(store.toEntity());
       if (result) {
         return Right(Null);
       } else {
@@ -109,13 +109,5 @@ class StoreRepository implements IStoreRepository {
     } on Exception {
       return Left(UnknownDatabaseFailure());
     }
-  }
-
-  Store _mapToModel(StoreEntity entity) {
-    return Store(id: entity.id, name: entity.name);
-  }
-
-  StoreEntity _mapToEntity(Store model) {
-    return StoreEntity(id: model.id, name: model.name);
   }
 }
