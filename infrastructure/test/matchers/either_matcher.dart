@@ -12,9 +12,11 @@ class _OrderedRightEquals extends Matcher {
   @override
   bool matches(dynamic item, Map matchState) {
     return item is Right<dynamic, List> &&
-        listEquals(
-          item.getOrElse(() => throw Exception()),
-          _expected,
+        orderedEquals(_expected).matches(
+          item.getOrElse(
+            () => throw Exception(),
+          ),
+          matchState,
         );
   }
 

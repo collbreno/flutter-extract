@@ -6,6 +6,6 @@ abstract class IExpenseRepository {
   Future<FailureOr<Expense>> getExpenseById(String id);
   Future<FailureOr<int>> getTotalSpent({ExpenseFilter? filter});
   Future<FailureOr<void>> insertExpense(Expense expense);
-  Future<FailureOr<bool>> updateExpense(Expense expense);
+  Future<FailureOr<void>> updateExpense(Expense expense);
   Future<FailureOr<void>> deleteExpenseWithId(String id);
 }

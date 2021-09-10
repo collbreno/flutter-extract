@@ -2,7 +2,8 @@ import 'package:moor/moor.dart';
 
 @DataClassName('ExpenseTagEntity')
 class ExpenseTags extends Table {
-  TextColumn get expenseId => text().customConstraint('REFERENCES expenses(id)')();
+  TextColumn get expenseId =>
+      text().customConstraint('REFERENCES expenses(id) ON DELETE CASCADE')();
   TextColumn get tagId => text().customConstraint('REFERENCES tags(id)')();
   DateTimeColumn get createdAt => dateTime()();
 

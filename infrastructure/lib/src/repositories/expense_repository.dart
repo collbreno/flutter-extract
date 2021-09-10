@@ -9,9 +9,19 @@ class ExpenseRepository implements IExpenseRepository {
   ExpenseRepository(this.db);
 
   @override
-  Future<FailureOr<void>> deleteExpenseWithId(String id) {
-    // TODO: implement deleteExpenseWithId
-    throw UnimplementedError();
+  Future<FailureOr<void>> deleteExpenseWithId(String expenseId) async {
+    try {
+      final query = db.delete(db.expenses)..where((e) => e.id.equals(expenseId));
+      final countDeleted = await query.go();
+
+      if (countDeleted != 0) {
+        return Right(Null);
+      } else {
+        return Left(NothingToDeleteFailure());
+      }
+    } on Exception {
+      return Left(UnknownDatabaseFailure());
+    }
   }
 
   @override
@@ -112,9 +122,17 @@ class ExpenseRepository implements IExpenseRepository {
   }
 
   @override
-  Future<FailureOr<bool>> updateExpense(Expense expense) {
-    // TODO: implement updateExpense
-    throw UnimplementedError();
+  Future<FailureOr<void>> updateExpense(Expense expense) async {
+    try {
+      final result = await db.update(db.expenses).replace(expense.toEntity());
+      if (result) {
+        return Right(Null);
+      } else {
+        return Left(NotFoundFailure());
+      }
+    } on Exception {
+      return Left(UnknownDatabaseFailure());
+    }
   }
 
   JoinedSelectStatement _mountExpenseQuery() {
