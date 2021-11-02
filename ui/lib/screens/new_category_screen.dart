@@ -32,13 +32,35 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
             ),
             body: Form(
               key: _formKey,
-              child: ListView(
-                children: [
-                  _buildToggleButtons(),
-                  _buildName(),
-                  _buildColor(),
-                  _buildParent(),
-                  _buildButton()
+              child: CustomScrollView(
+                slivers: [
+                  SliverList(
+                    delegate: SliverChildListDelegate(
+                      [
+                        _buildToggleButtons(),
+                        _buildName(),
+                        _buildColor(),
+                        _buildParent(),
+                      ],
+                    ),
+                  ),
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Align(
+                      alignment: Alignment.bottomRight,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            OutlinedButton(onPressed: () {}, child: Text('Draft')),
+                            SizedBox(width: 12),
+                            ElevatedButton(onPressed: () {}, child: Text('Save')),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -50,7 +72,7 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
 
   Widget _buildButton() {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+      padding: EdgeInsets.only(bottom: 30, right: 20),
       child: ElevatedButton(
         onPressed: () {
           _formKey.currentState?.validate();
