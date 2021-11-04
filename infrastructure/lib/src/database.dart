@@ -1,4 +1,9 @@
 import 'package:infrastructure/infrastructure.dart';
+import 'package:infrastructure/src/tables/expense_draft_files.dart';
+import 'package:infrastructure/src/tables/expense_draft_tags.dart';
+import 'package:infrastructure/src/tables/expense_drafts.dart';
+import 'package:infrastructure/src/tables/expense_files.dart';
+import 'package:infrastructure/src/triggers/expense_draft_trigger.dart';
 import 'package:infrastructure/src/triggers/expenses_triggers.dart';
 import 'package:moor/moor.dart';
 
@@ -8,23 +13,16 @@ part 'database.g.dart';
   tables: [
     Categories,
     Expenses,
-    Icons,
+    ExpenseTags,
+    ExpenseFiles,
+    ExpenseDrafts,
+    ExpenseDraftFiles,
+    ExpenseDraftTags,
     PaymentMethods,
     Stores,
     Subcategories,
     Tags,
-    ExpenseTags,
     ExpensesHistory,
-  ],
-  daos: [
-    CategoryDao,
-    SubcategoryDao,
-    ExpenseDao,
-    IconDao,
-    StoreDao,
-    PaymentMethodDao,
-    TagDao,
-    ExpensesHistoryDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -41,6 +39,10 @@ class AppDatabase extends _$AppDatabase {
       },
       onCreate: (m) async {
         await m.createAll();
+        await m.createTrigger(Trigger(
+          ExpenseDraftTriggers.delete_draft_after_insert_expense,
+          'delete_draft_after_insert_expense',
+        ));
         await m.createTrigger(Trigger(
           ExpensesTriggers.save_history_after_update_expense,
           'save_history_after_update_expense',

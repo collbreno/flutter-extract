@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ui/common/mutable_app_bar.dart';
 
 class TestScreen extends StatefulWidget {
   @override
@@ -24,22 +23,22 @@ class _TestScreenState extends State<TestScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MutableAppBar(
-        defaultAppBar: AppBar(
-          title: Text("Gastos"),
-          key: GlobalKey(),
-        ),
-        actions: [
-          IconButton(icon: Icon(Icons.edit), onPressed: () {}),
-          IconButton(icon: Icon(Icons.delete), onPressed: () {}),
-        ],
-        onClear: () {
-          setState(() {
-            _selectedItems.clear();
-          });
-        },
-        selectedItems: _selectedItems,
-      ),
+      // appBar: MutableAppBar(
+      //   defaultAppBar: AppBar(
+      //     title: Text("Gastos"),
+      //     key: GlobalKey(),
+      //   ),
+      //   actions: [
+      //     IconButton(icon: Icon(Icons.edit), onPressed: () {}),
+      //     IconButton(icon: Icon(Icons.delete), onPressed: () {}),
+      //   ],
+      //   onClear: () {
+      //     setState(() {
+      //       _selectedItems.clear();
+      //     });
+      //   },
+      //   selectedItems: _selectedItems,
+      // ),
       body: ListView.builder(
         itemCount: list.length,
         itemBuilder: (context, index) {

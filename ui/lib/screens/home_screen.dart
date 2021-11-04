@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ui/navigation/page_transitions.dart';
 import 'package:ui/screens/new_category_screen.dart';
 import 'package:ui/screens/new_expense_screen.dart';
+import 'package:ui/screens/new_store_screen.dart';
+import 'package:ui/screens/new_tag_screen.dart';
 import 'package:ui/screens/settings_screen.dart';
-import 'package:ui/screens/test_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -21,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: ListView(
           children: [
             DrawerHeader(
-              child: Container(),
+              child: SizedBox(),
               decoration: BoxDecoration(
                 color: Theme.of(context).accentColor,
               ),
@@ -43,23 +45,32 @@ class _HomeScreenState extends State<HomeScreen> {
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => TestScreen(),
-                    ),
-                  );
-                },
-                child: Text("Teste"),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => NewCategoryScreen(),
+                    AndroidTransition(
+                      NewCategoryScreen(),
                     ),
                   );
                 },
                 child: Text("Adicionar Categoria"),
               ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    AndroidTransition(
+                      NewTagScreen(),
+                    ),
+                  );
+                },
+                child: Text("Adicionar Tag"),
+              ),
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      AndroidTransition(
+                        NewStoreScreen(),
+                      ),
+                    );
+                  },
+                  child: Text('Adicionar Loja')),
             ],
           ),
         ),
@@ -67,8 +78,8 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => NewExpenseScreen(),
+            AndroidTransition(
+              NewExpenseScreen(),
             ),
           );
         },

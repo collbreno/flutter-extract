@@ -1,6 +1,7 @@
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:flutter/material.dart';
-import 'package:ui/common/picker_dialog.dart';
+import 'package:ui/common/list_tile_form_fields.dart';
+import 'package:ui/common/toggle_buttons_form_field.dart';
 import 'package:ui/services/color_service.dart';
 
 class NewCategoryScreen extends StatefulWidget {
@@ -9,12 +10,15 @@ class NewCategoryScreen extends StatefulWidget {
 }
 
 class _NewCategoryScreenState extends State<NewCategoryScreen> {
-  late Color _selectedColor;
+  final _formKey = GlobalKey<FormState>();
+  final _sizedBoxKey = GlobalKey();
+  final _parentKey = GlobalKey();
+  late bool _showParent;
 
   @override
   void initState() {
-    _selectedColor = Colors.blue;
     super.initState();
+    _showParent = false;
   }
 
   @override
@@ -26,54 +30,129 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
             appBar: AppBar(
               title: Text("Nova Categoria"),
             ),
-            body: ListView(
-              children: [
-                ListTile(
-                  leading: Icon(
-                    Icons.color_lens_sharp,
-                    color: _selectedColor,
+            body: Form(
+              key: _formKey,
+              child: CustomScrollView(
+                slivers: [
+                  SliverList(
+                    delegate: SliverChildListDelegate(
+                      [
+                        _buildToggleButtons(),
+                        _buildName(),
+                        _buildColor(),
+                        _buildParent(),
+                      ],
+                    ),
                   ),
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return PickerDialog<Color>(
-                          title: "Teste",
-                          columns: 5,
-                          items: ColorService.colors.keys.toList(),
-                          renderer: (color) {
-                            return Container(
-                              decoration: ShapeDecoration(
-                                shape: CircleBorder(),
-                                color: color,
-                              ),
-                              margin: EdgeInsets.all(8),
-                            );
-                          },
-                          onItemSelected: (color) {
-                            setState(() {
-                              _selectedColor = color;
-                            });
-                          },
-                        );
-                      },
-                    );
-                  },
-                  title: Text("Selecionar cor"),
-                  trailing: Icon(Icons.arrow_drop_down),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: Text("Confirmar"),
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Align(
+                      alignment: Alignment.bottomRight,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            OutlinedButton(onPressed: () {}, child: Text('Draft')),
+                            SizedBox(width: 12),
+                            ElevatedButton(onPressed: () {}, child: Text('Save')),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
-                )
-              ],
+                ],
+              ),
             ),
           );
         },
       ),
     );
   }
+
+  Widget _buildButton() {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 30, right: 20),
+      child: ElevatedButton(
+        onPressed: () {
+          _formKey.currentState?.validate();
+        },
+        child: Text("Confirmar"),
+      ),
+    );
+  }
+
+  Widget _buildParent() {
+    return AnimatedSwitcher(
+      duration: Duration(milliseconds: 150),
+      transitionBuilder: (child, animation) => SizeTransition(
+        sizeFactor: animation,
+        child: child,
+      ),
+      child: _showParent
+          ? PickerFormField<String>(
+              key: _parentKey,
+              items: ['a', 'b'],
+              dialogItemBuilder: (text) => ListTile(title: Text(text)),
+              formFieldWidgetBuilder: (text) => FormFieldWidget(child: Text(text)),
+            )
+          : SizedBox(key: _sizedBoxKey),
+    );
+  }
+
+  Widget _buildToggleButtons() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: ToggleButtonsFormField<String>(
+        items: [_ToggleButtons.category, _ToggleButtons.subcategory],
+        contentPadding: const EdgeInsets.symmetric(vertical: 12.0),
+        itemBuilder: (text) => Text(text),
+        borderRadius: BorderRadius.circular(4),
+        validator: (item) => item == null ? 'Obrigatório' : null,
+        onChanged: (value) {
+          setState(() {
+            _showParent = value == _ToggleButtons.subcategory;
+          });
+        },
+      ),
+    );
+  }
+
+  Widget _buildName() {
+    return ListTileTextFormField(
+      leading: Icon(Icons.edit),
+      hintText: 'Insira o nome',
+    );
+  }
+
+  Widget _buildColor() {
+    return PickerFormField<Color>(
+      items: ColorService.colors.keys.toList(),
+      columns: 5,
+      leading: Icon(Icons.color_lens),
+      dialogItemBuilder: (color) {
+        return Container(
+          decoration: ShapeDecoration(
+            shape: CircleBorder(),
+            color: color,
+          ),
+          margin: EdgeInsets.all(8),
+        );
+      },
+      formFieldWidgetBuilder: (color) {
+        return FormFieldWidget(
+          child: Text('0x' + color.value.toRadixString(16).toUpperCase()),
+          prefixIcon: Icon(
+            Icons.circle,
+            color: color,
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _ToggleButtons {
+  static const category = 'Categoria';
+  static const subcategory = 'Subcategory';
 }

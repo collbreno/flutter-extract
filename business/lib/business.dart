@@ -1,6 +1,4 @@
 library business;
 
-export 'src/actions/actions.dart';
-export 'src/middlewares/middlewares.dart';
-export 'src/models/models.dart';
-export 'src/reducers/app_reducer.dart';
+export 'src/core/_core.dart';
+export 'src/domain/_domain.dart';

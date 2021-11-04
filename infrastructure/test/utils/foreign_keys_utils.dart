@@ -1,99 +1,74 @@
+import 'package:business/business.dart';
+import 'package:business/fixtures.dart';
 import 'package:infrastructure/infrastructure.dart';
-import 'package:moor/moor.dart';
-
-import 'fixture_category.dart';
-import 'fixture_icon.dart';
-import 'fixture_payment_method.dart';
-import 'fixture_store.dart';
-import 'fixture_subcategory.dart';
-import 'fixture_tag.dart';
 
 class ForeignKeyUtils {
-  ForeignKeyUtils(this.database);
+  ForeignKeyUtils(this.db);
 
-  final AppDatabase database;
+  final AppDatabase db;
 
-  late final FixtureIcon fixIcon = FixtureIcon();
   late final FixtureCategory fixCategory = FixtureCategory();
   late final FixtureSubcategory fixSubcategory = FixtureSubcategory();
   late final FixturePaymentMethod fixPaymentMethod = FixturePaymentMethod();
   late final FixtureStore fixStore = FixtureStore();
   late final FixtureTag fixTag = FixtureTag();
 
-  Future<void> insertExpenseFKDependencies(ExpensesCompanion expense) async {
-    if (expense.subcategoryId.present) {
-      await _insertSubcategoryIfNeeded(expense.subcategoryId.value);
+  Future<void> insertExpenseFKDependencies(Expense expense) async {
+    await _insertSubcategoryIfNeeded(expense.subcategory);
+    await _insertPaymentMethodIfNeeded(expense.paymentMethod);
+    if (expense.store != null) {
+      await _insertStoreIfNeeded(expense.store!);
     }
-    if (expense.paymentMethodId.present) {
-      await _insertPaymentMethodIfNeeded(expense.paymentMethodId.value);
-    }
-    if (expense.storeId.present && expense.storeId.value != null) {
-      await _insertStoreIfNeeded(expense.storeId.value!);
-    }
+    await Future.wait([
+      for (var tag in expense.tags) _insertTagIfNeeded(tag),
+    ]);
   }
 
-  Future<void> insertCategoryFKDependencies(CategoriesCompanion category) async {
-    if (category.iconId.present) await _insertIconIfNeeded(category.iconId.value);
+  Future<void> insertSubcategoryFKDependencies(Subcategory subcategory) async {
+    await _insertCategoryIfNeeded(subcategory.parent);
   }
 
-  Future<void> insertSubcategoryFKDependencies(SubcategoriesCompanion subcategory) async {
-    if (subcategory.parentId.present) await _insertCategoryIfNeeded(subcategory.parentId.value);
-    if (subcategory.iconId.present) await _insertIconIfNeeded(subcategory.iconId.value);
-  }
-
-  Future<void> insertTagFKDependencies(TagsCompanion tag) async {
-    if (tag.iconId.present && tag.iconId.value != null) {
-      await _insertIconIfNeeded(tag.iconId.value!);
-    }
-  }
-
-  Future<void> insertPaymentMethodFKDependencies(PaymentMethodsCompanion paymentMethods) async {
-    if (paymentMethods.iconId.present && paymentMethods.iconId.value != null) {
-      await _insertIconIfNeeded(paymentMethods.iconId.value!);
-    }
-  }
-
-  Future<void> _insertIconIfNeeded(int iconId) async {
-    final iconFromDb = await database.iconDao.getIconById(iconId);
-    if (iconFromDb == null) {
-      final iconToInsert = fixIcon.icon1.copyWith(id: Value(iconId));
-      await database.iconDao.insertIcon(iconToInsert);
-    }
-  }
-
-  Future<void> _insertCategoryIfNeeded(int categoryId) async {
-    final categoryFromDb = await database.categoryDao.getCategoryById(categoryId);
+  Future<void> _insertCategoryIfNeeded(Category category) async {
+    final categoryFromDb = await (db.select(db.categories)
+          ..where((tbl) => tbl.id.equals(category.id)))
+        .getSingleOrNull();
     if (categoryFromDb == null) {
-      final categoryToInsert = fixCategory.category1.copyWith(id: Value(categoryId));
-      await insertCategoryFKDependencies(categoryToInsert);
-      await database.categoryDao.insertCategory(categoryToInsert);
+      await db.into(db.categories).insert(category.toEntity());
     }
   }
 
-  Future<void> _insertSubcategoryIfNeeded(int subcategoryId) async {
-    final subcategoryFromDb = await database.subcategoryDao.getSubcategoryById(subcategoryId);
+  Future<void> _insertSubcategoryIfNeeded(Subcategory subcategory) async {
+    final subcategoryFromDb = await (db.select(db.subcategories)
+          ..where((tbl) => tbl.id.equals(subcategory.id)))
+        .getSingleOrNull();
     if (subcategoryFromDb == null) {
-      final subcategoryToInsert = fixSubcategory.subcategory1.copyWith(id: Value(subcategoryId));
-      await insertSubcategoryFKDependencies(subcategoryToInsert);
-      await database.subcategoryDao.insertSubcategory(subcategoryToInsert);
+      await insertSubcategoryFKDependencies(subcategory);
+      await db.into(db.subcategories).insert(subcategory.toEntity());
     }
   }
 
-  Future<void> _insertStoreIfNeeded(int storeId) async {
-    final storeFromDb = await database.storeDao.getStoreById(storeId);
+  Future<void> _insertStoreIfNeeded(Store store) async {
+    final storeFromDb =
+        await (db.select(db.stores)..where((tbl) => tbl.id.equals(store.id))).getSingleOrNull();
     if (storeFromDb == null) {
-      final storeToInsert = fixStore.store1.copyWith(id: Value(storeId));
-      await database.storeDao.insertStore(storeToInsert);
+      await db.into(db.stores).insert(store.toEntity());
     }
   }
 
-  Future<void> _insertPaymentMethodIfNeeded(int paymentMethodId) async {
-    final paymentMethodFromDb =
-        await database.paymentMethodDao.getPaymentMethodById(paymentMethodId);
-    if (paymentMethodFromDb == null) {
-      final pmToInsert = fixPaymentMethod.paymentMethod1.copyWith(id: Value(paymentMethodId));
-      await insertPaymentMethodFKDependencies(pmToInsert);
-      await database.paymentMethodDao.insertPaymentMethod(pmToInsert);
+  Future<void> _insertTagIfNeeded(Tag tag) async {
+    final tagFromDb =
+        await (db.select(db.tags)..where((tbl) => tbl.id.equals(tag.id))).getSingleOrNull();
+    if (tagFromDb == null) {
+      await db.into(db.tags).insert(tag.toEntity());
+    }
+  }
+
+  Future<void> _insertPaymentMethodIfNeeded(PaymentMethod paymentMethod) async {
+    final pmFromDb = await (db.select(db.paymentMethods)
+          ..where((tbl) => tbl.id.equals(paymentMethod.id)))
+        .getSingleOrNull();
+    if (pmFromDb == null) {
+      await db.into(db.paymentMethods).insert(paymentMethod.toEntity());
     }
   }
 }
