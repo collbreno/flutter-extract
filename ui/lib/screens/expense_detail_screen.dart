@@ -82,7 +82,7 @@ class _ExpenseDetailScreenState extends State<ExpenseDetailScreen> {
                       return ListTile(
                         dense: true,
                         title: Align(
-                          child: TagChip.fromTag(widget.expense.tags[index]),
+                          child: TagChip.fromTag(widget.expense.tags.toList()[index]),
                         ),
                       );
                     },

@@ -40,7 +40,7 @@ class _ExpenseItemsDemoState extends State<ExpenseItemsDemo> {
         ),
       ),
       value: 2480,
-      tags: BuiltList([
+      tags: BuiltSet([
         Tag(id: '', name: 'Almoço', color: Colors.grey),
         Tag(id: '', name: 'Splid', color: Colors.grey, icon: Icons.horizontal_split),
         Tag(id: '', name: 'Fluminense', color: Colors.grey),
@@ -49,7 +49,7 @@ class _ExpenseItemsDemoState extends State<ExpenseItemsDemo> {
         Tag(id: '', name: 'Barney', color: Colors.grey),
       ]),
       store: Store(name: 'Santa Marta', id: 'a'),
-      files: BuiltList(['file1, file2, file3']),
+      files: BuiltSet(['file1, file2, file3']),
     );
 
     return Scaffold(
