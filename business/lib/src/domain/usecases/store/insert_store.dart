@@ -8,6 +8,6 @@ class InsertStoreUseCase extends UseCase<void, Store> {
 
   @override
   Future<Either<Failure, void>> call(Store store) {
-    return repository.insertStore(store);
+    return repository.insert(store);
   }
 }

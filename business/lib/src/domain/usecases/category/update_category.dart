@@ -9,6 +9,6 @@ class UpdateCategory extends UseCase<void, Category> {
 
   @override
   Future<Either<Failure, void>> call(Category category) {
-    return repository.updateCategory(category);
+    return repository.update(category);
   }
 }

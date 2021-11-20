@@ -20,13 +20,13 @@ void main() {
   test('should delete the payment method from repository', () async {
     final id = fix.paymentMethod1.id;
 
-    when(repository.deletePaymentMethodWithId(id)).thenAnswer((_) async => Right(Null));
+    when(repository.delete(id)).thenAnswer((_) async => Right(Null));
 
     final result = await useCase(id);
 
     expect(result, Right(Null));
 
-    verify(repository.deletePaymentMethodWithId(id));
+    verify(repository.delete(id));
     verifyNoMoreInteractions(repository);
   });
 
@@ -34,13 +34,13 @@ void main() {
     final failure = UnknownDatabaseFailure();
     final id = fix.paymentMethod1.id;
 
-    when(repository.deletePaymentMethodWithId(id)).thenAnswer((_) async => Left(failure));
+    when(repository.delete(id)).thenAnswer((_) async => Left(failure));
 
     final result = await useCase(id);
 
     expect(result, Left(failure));
 
-    verify(repository.deletePaymentMethodWithId(id));
+    verify(repository.delete(id));
     verifyNoMoreInteractions(repository);
   });
 }

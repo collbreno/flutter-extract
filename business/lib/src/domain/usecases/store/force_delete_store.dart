@@ -8,6 +8,6 @@ class ForceDeleteStoreUseCase extends UseCase<void, String> {
 
   @override
   Future<Either<Failure, void>> call(String id) {
-    return repository.deleteStoreWithId(id);
+    return repository.delete(id);
   }
 }

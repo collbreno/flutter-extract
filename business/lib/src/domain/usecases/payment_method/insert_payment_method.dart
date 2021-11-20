@@ -8,6 +8,6 @@ class InsertPaymentMethodUseCase extends UseCase<void, PaymentMethod> {
 
   @override
   Future<Either<Failure, void>> call(PaymentMethod paymentMethod) {
-    return repository.insertPaymentMethod(paymentMethod);
+    return repository.insert(paymentMethod);
   }
 }

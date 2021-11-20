@@ -9,6 +9,6 @@ class ForceDeleteTagWithId extends UseCase<void, String> {
 
   @override
   Future<Either<Failure, void>> call(String id) {
-    return repository.deleteTagWithId(id);
+    return repository.delete(id);
   }
 }

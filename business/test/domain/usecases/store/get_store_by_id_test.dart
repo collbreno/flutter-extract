@@ -20,13 +20,13 @@ void main() {
   test('should get the store from repository', () async {
     final expected = fix.store1;
 
-    when(repository.getStoreById(expected.id)).thenAnswer((_) async => Right(expected));
+    when(repository.getById(expected.id)).thenAnswer((_) async => Right(expected));
 
     final result = await useCase(expected.id);
 
     expect(result, Right(expected));
 
-    verify(repository.getStoreById(expected.id));
+    verify(repository.getById(expected.id));
     verifyNoMoreInteractions(repository);
   });
 
@@ -34,13 +34,13 @@ void main() {
     final id = 'test';
     final failure = UnknownDatabaseFailure();
 
-    when(repository.getStoreById(id)).thenAnswer((_) async => Left(failure));
+    when(repository.getById(id)).thenAnswer((_) async => Left(failure));
 
     final result = await useCase(id);
 
     expect(result, Left(failure));
 
-    verify(repository.getStoreById(id));
+    verify(repository.getById(id));
     verifyNoMoreInteractions(repository);
   });
 }

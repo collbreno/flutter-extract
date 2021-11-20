@@ -19,7 +19,7 @@ class CategoryRepository implements ICategoryRepository {
   }
 
   @override
-  Future<FailureOr<void>> deleteCategory(String categoryId) async {
+  Future<FailureOr<void>> delete(String categoryId) async {
     try {
       final query = db.delete(db.categories)..where((c) => c.id.equals(categoryId));
       final countDeleted = await query.go();
@@ -35,7 +35,7 @@ class CategoryRepository implements ICategoryRepository {
   }
 
   @override
-  Future<FailureOr<List<Category>>> getAllCategories() async {
+  Future<FailureOr<List<Category>>> getAll() async {
     try {
       final categories = await db.select(db.categories).get();
       if (categories.isNotEmpty) {
@@ -48,7 +48,7 @@ class CategoryRepository implements ICategoryRepository {
   }
 
   @override
-  Future<FailureOr<Category>> getCategoryById(String id) async {
+  Future<FailureOr<Category>> getById(String id) async {
     try {
       final query = db.select(db.categories)..where((c) => c.id.equals(id));
       final category = await query.getSingleOrNull();
@@ -64,7 +64,7 @@ class CategoryRepository implements ICategoryRepository {
   }
 
   @override
-  Future<FailureOr<void>> insertCategory(Category category) async {
+  Future<FailureOr<void>> insert(Category category) async {
     try {
       await db.into(db.categories).insert(category.toEntity());
       return Right(Null);
@@ -74,7 +74,7 @@ class CategoryRepository implements ICategoryRepository {
   }
 
   @override
-  Future<FailureOr<void>> updateCategory(Category category) async {
+  Future<FailureOr<void>> update(Category category) async {
     try {
       final result = await db.update(db.categories).replace(category.toEntity());
       if (result) {

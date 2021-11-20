@@ -8,6 +8,6 @@ class GetAllPaymentMethodsUseCase extends NoParamUseCase<List<PaymentMethod>> {
 
   @override
   Future<Either<Failure, List<PaymentMethod>>> call() {
-    return repository.getAllPaymentMethods();
+    return repository.getAll();
   }
 }

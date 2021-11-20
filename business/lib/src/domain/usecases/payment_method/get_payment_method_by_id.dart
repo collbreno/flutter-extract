@@ -8,6 +8,6 @@ class GetPaymentMethodByIdUseCase extends UseCase<PaymentMethod, String> {
 
   @override
   Future<Either<Failure, PaymentMethod>> call(String id) {
-    return repository.getPaymentMethodById(id);
+    return repository.getById(id);
   }
 }

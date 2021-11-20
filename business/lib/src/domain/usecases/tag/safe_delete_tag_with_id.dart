@@ -20,7 +20,7 @@ class SafeDeleteTagWithId extends UseCase<void, String> {
     if (usages > 0) {
       return Left(EntityBeingUsedFailure(usages));
     } else {
-      return await repository.deleteTagWithId(id);
+      return await repository.delete(id);
     }
   }
 }

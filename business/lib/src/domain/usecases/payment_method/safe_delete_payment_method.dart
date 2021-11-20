@@ -18,7 +18,7 @@ class SafeDeletePaymentMethodUseCase extends UseCase<void, String> {
     if (usages > 0) {
       return Left(EntityBeingUsedFailure(usages));
     } else {
-      return await repository.deletePaymentMethodWithId(id);
+      return await repository.delete(id);
     }
   }
 }

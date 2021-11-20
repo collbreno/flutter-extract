@@ -19,7 +19,7 @@ class PaymentMethodRepository implements IPaymentMethodRepository {
   }
 
   @override
-  Future<FailureOr<void>> deletePaymentMethodWithId(String paymentMethodId) async {
+  Future<FailureOr<void>> delete(String paymentMethodId) async {
     try {
       final query = db.delete(db.paymentMethods)..where((s) => s.id.equals(paymentMethodId));
       final countDeleted = await query.go();
@@ -35,7 +35,7 @@ class PaymentMethodRepository implements IPaymentMethodRepository {
   }
 
   @override
-  Future<FailureOr<List<PaymentMethod>>> getAllPaymentMethods() async {
+  Future<FailureOr<List<PaymentMethod>>> getAll() async {
     try {
       final paymentMethods = await db.select(db.paymentMethods).get();
       if (paymentMethods.isNotEmpty) {
@@ -51,7 +51,7 @@ class PaymentMethodRepository implements IPaymentMethodRepository {
   }
 
   @override
-  Future<FailureOr<PaymentMethod>> getPaymentMethodById(String id) async {
+  Future<FailureOr<PaymentMethod>> getById(String id) async {
     try {
       final query = db.select(db.paymentMethods)..where((s) => s.id.equals(id));
       final paymentMethod = await query.getSingleOrNull();
@@ -67,7 +67,7 @@ class PaymentMethodRepository implements IPaymentMethodRepository {
   }
 
   @override
-  Future<FailureOr<void>> insertPaymentMethod(PaymentMethod paymentMethod) async {
+  Future<FailureOr<void>> insert(PaymentMethod paymentMethod) async {
     try {
       await db.into(db.paymentMethods).insert(paymentMethod.toEntity());
       return Right(Null);
@@ -77,7 +77,7 @@ class PaymentMethodRepository implements IPaymentMethodRepository {
   }
 
   @override
-  Future<FailureOr<void>> updatePaymentMethod(PaymentMethod paymentMethod) async {
+  Future<FailureOr<void>> update(PaymentMethod paymentMethod) async {
     try {
       final result = await db.update(db.paymentMethods).replace(paymentMethod.toEntity());
       if (result) {

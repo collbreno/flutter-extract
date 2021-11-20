@@ -13,6 +13,6 @@ class InsertSubcategory extends UseCase<void, Subcategory> {
 
   @override
   Future<FailureOr<void>> call(Subcategory subcategory) async {
-    return subcategoryRepository.insertSubcategory(subcategory);
+    return subcategoryRepository.insert(subcategory);
   }
 }

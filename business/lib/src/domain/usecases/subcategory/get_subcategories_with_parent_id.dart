@@ -9,6 +9,6 @@ class GetSubcategoriesWithParentId extends UseCase<List<Subcategory>, String> {
 
   @override
   Future<FailureOr<List<Subcategory>>> call(String parentId) {
-    return repository.getSubcategoriesWithParentId(parentId);
+    return repository.getByParentId(parentId);
   }
 }

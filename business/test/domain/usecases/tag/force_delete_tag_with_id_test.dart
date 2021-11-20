@@ -21,13 +21,13 @@ void main() {
   test('should delete the tag from repository', () async {
     final id = fix.tag1.id;
 
-    when(repository.deleteTagWithId(id)).thenAnswer((_) async => Right(Null));
+    when(repository.delete(id)).thenAnswer((_) async => Right(Null));
 
     final result = await useCase(id);
 
     expect(result, Right(Null));
 
-    verify(repository.deleteTagWithId(id));
+    verify(repository.delete(id));
     verifyNoMoreInteractions(repository);
   });
 
@@ -35,13 +35,13 @@ void main() {
     final failure = UnknownDatabaseFailure();
     final id = fix.tag1.id;
 
-    when(repository.deleteTagWithId(id)).thenAnswer((_) async => Left(failure));
+    when(repository.delete(id)).thenAnswer((_) async => Left(failure));
 
     final result = await useCase(id);
 
     expect(result, Left(failure));
 
-    verify(repository.deleteTagWithId(id));
+    verify(repository.delete(id));
     verifyNoMoreInteractions(repository);
   });
 }

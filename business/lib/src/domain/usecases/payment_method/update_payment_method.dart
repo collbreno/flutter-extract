@@ -8,6 +8,6 @@ class UpdatePaymentMethodUseCase extends UseCase<void, PaymentMethod> {
 
   @override
   Future<Either<Failure, void>> call(PaymentMethod paymentMethod) {
-    return repository.updatePaymentMethod(paymentMethod);
+    return repository.update(paymentMethod);
   }
 }

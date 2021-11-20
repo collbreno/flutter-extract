@@ -21,26 +21,26 @@ void main() {
   test('should get all tags from repository', () async {
     final expected = [fix.tag1, fix.tag2];
 
-    when(repository.getAllTags()).thenAnswer((_) async => Right(expected));
+    when(repository.getAll()).thenAnswer((_) async => Right(expected));
 
     final result = await useCase();
 
     expect(result, Right(expected));
 
-    verify(repository.getAllTags());
+    verify(repository.getAll());
     verifyNoMoreInteractions(repository);
   });
 
   test('should return database failure when repository fails', () async {
     final failure = UnknownDatabaseFailure();
 
-    when(repository.getAllTags()).thenAnswer((_) async => Left(failure));
+    when(repository.getAll()).thenAnswer((_) async => Left(failure));
 
     final result = await useCase();
 
     expect(result, Left(failure));
 
-    verify(repository.getAllTags());
+    verify(repository.getAll());
     verifyNoMoreInteractions(repository);
   });
 }

@@ -20,13 +20,13 @@ void main() {
   test('should get the payment method from repository', () async {
     final expected = fix.paymentMethod1;
 
-    when(repository.getPaymentMethodById(expected.id)).thenAnswer((_) async => Right(expected));
+    when(repository.getById(expected.id)).thenAnswer((_) async => Right(expected));
 
     final result = await useCase(expected.id);
 
     expect(result, Right(expected));
 
-    verify(repository.getPaymentMethodById(expected.id));
+    verify(repository.getById(expected.id));
     verifyNoMoreInteractions(repository);
   });
 
@@ -34,13 +34,13 @@ void main() {
     final id = 'test';
     final failure = UnknownDatabaseFailure();
 
-    when(repository.getPaymentMethodById(id)).thenAnswer((_) async => Left(failure));
+    when(repository.getById(id)).thenAnswer((_) async => Left(failure));
 
     final result = await useCase(id);
 
     expect(result, Left(failure));
 
-    verify(repository.getPaymentMethodById(id));
+    verify(repository.getById(id));
     verifyNoMoreInteractions(repository);
   });
 }

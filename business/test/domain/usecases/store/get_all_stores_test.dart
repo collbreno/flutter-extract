@@ -20,26 +20,26 @@ void main() {
   test('should get all stores from repository', () async {
     final expected = [fix.store1, fix.store2];
 
-    when(repository.getAllStores()).thenAnswer((_) async => Right(expected));
+    when(repository.getAll()).thenAnswer((_) async => Right(expected));
 
     final result = await useCase();
 
     expect(result, Right(expected));
 
-    verify(repository.getAllStores());
+    verify(repository.getAll());
     verifyNoMoreInteractions(repository);
   });
 
   test('should return database failure when repository fails', () async {
     final failure = UnknownDatabaseFailure();
 
-    when(repository.getAllStores()).thenAnswer((_) async => Left(failure));
+    when(repository.getAll()).thenAnswer((_) async => Left(failure));
 
     final result = await useCase();
 
     expect(result, Left(failure));
 
-    verify(repository.getAllStores());
+    verify(repository.getAll());
     verifyNoMoreInteractions(repository);
   });
 }

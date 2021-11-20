@@ -18,7 +18,7 @@ class SafeDeleteStoreUseCase extends UseCase<void, String> {
     if (usages > 0) {
       return Left(EntityBeingUsedFailure(usages));
     } else {
-      return await repository.deleteStoreWithId(id);
+      return await repository.delete(id);
     }
   }
 }

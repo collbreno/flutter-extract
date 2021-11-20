@@ -20,13 +20,13 @@ void main() {
   test('should delete the store from repository', () async {
     final id = fix.store1.id;
 
-    when(repository.deleteStoreWithId(id)).thenAnswer((_) async => Right(Null));
+    when(repository.delete(id)).thenAnswer((_) async => Right(Null));
 
     final result = await useCase(id);
 
     expect(result, Right(Null));
 
-    verify(repository.deleteStoreWithId(id));
+    verify(repository.delete(id));
     verifyNoMoreInteractions(repository);
   });
 
@@ -34,13 +34,13 @@ void main() {
     final failure = UnknownDatabaseFailure();
     final id = fix.store1.id;
 
-    when(repository.deleteStoreWithId(id)).thenAnswer((_) async => Left(failure));
+    when(repository.delete(id)).thenAnswer((_) async => Left(failure));
 
     final result = await useCase(id);
 
     expect(result, Left(failure));
 
-    verify(repository.deleteStoreWithId(id));
+    verify(repository.delete(id));
     verifyNoMoreInteractions(repository);
   });
 }

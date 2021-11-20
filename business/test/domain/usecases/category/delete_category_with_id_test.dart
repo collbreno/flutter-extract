@@ -24,14 +24,14 @@ void main() {
     final id = fix.category1.id;
 
     when(repository.countUsages(id)).thenAnswer((_) async => Right(0));
-    when(repository.deleteCategory(id)).thenAnswer((_) async => Right(Null));
+    when(repository.delete(id)).thenAnswer((_) async => Right(Null));
 
     final result = await useCase(id);
 
     expect(result, Right(Null));
 
     verify(repository.countUsages(id));
-    verify(repository.deleteCategory(id));
+    verify(repository.delete(id));
     verifyNoMoreInteractions(repository);
   });
 
@@ -75,14 +75,14 @@ void main() {
       final failure = UnknownDatabaseFailure();
 
       when(repository.countUsages(id)).thenAnswer((_) async => Right(0));
-      when(repository.deleteCategory(id)).thenAnswer((_) async => Left(failure));
+      when(repository.delete(id)).thenAnswer((_) async => Left(failure));
 
       final result = await useCase(id);
 
       expect(result, Left(failure));
 
       verify(repository.countUsages(id));
-      verify(repository.deleteCategory(id));
+      verify(repository.delete(id));
       verifyNoMoreInteractions(repository);
     });
   });

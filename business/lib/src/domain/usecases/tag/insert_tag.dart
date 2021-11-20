@@ -9,6 +9,6 @@ class InsertTag extends UseCase<void, Tag> {
 
   @override
   Future<Either<Failure, void>> call(Tag tag) {
-    return repository.insertTag(tag);
+    return repository.insert(tag);
   }
 }

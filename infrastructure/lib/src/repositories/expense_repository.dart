@@ -9,7 +9,7 @@ class ExpenseRepository implements IExpenseRepository {
   ExpenseRepository(this.db);
 
   @override
-  Future<FailureOr<void>> deleteExpenseWithId(String expenseId) async {
+  Future<FailureOr<void>> delete(String expenseId) async {
     try {
       final query = db.delete(db.expenses)..where((e) => e.id.equals(expenseId));
       final countDeleted = await query.go();
@@ -25,7 +25,7 @@ class ExpenseRepository implements IExpenseRepository {
   }
 
   @override
-  Future<FailureOr<List<Expense>>> getAllExpenses({ExpenseFilter? filter}) async {
+  Future<FailureOr<List<Expense>>> getAll({ExpenseFilter? filter}) async {
     try {
       final expenses = await _mountExpenseQuery().get();
 
@@ -57,7 +57,7 @@ class ExpenseRepository implements IExpenseRepository {
   }
 
   @override
-  Future<FailureOr<Expense>> getExpenseById(String id) async {
+  Future<FailureOr<Expense>> getById(String id) async {
     try {
       final result =
           await (_mountExpenseQuery()..where(db.expenses.id.equals(id))).getSingleOrNull();
@@ -92,7 +92,7 @@ class ExpenseRepository implements IExpenseRepository {
   }
 
   @override
-  Future<FailureOr<void>> insertExpense(Expense expense) async {
+  Future<FailureOr<void>> insert(Expense expense) async {
     try {
       await db.into(db.expenses).insert(expense.toEntity());
       await Future.wait([
@@ -122,7 +122,7 @@ class ExpenseRepository implements IExpenseRepository {
   }
 
   @override
-  Future<FailureOr<void>> updateExpense(Expense expense) async {
+  Future<FailureOr<void>> update(Expense expense) async {
     try {
       final result = await db.update(db.expenses).replace(expense.toEntity());
       if (result) {

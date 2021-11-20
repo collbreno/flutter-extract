@@ -24,14 +24,14 @@ void main() {
     final id = fix.tag1.id;
 
     when(repository.countUsages(id)).thenAnswer((_) async => Right(0));
-    when(repository.deleteTagWithId(id)).thenAnswer((_) async => Right(Null));
+    when(repository.delete(id)).thenAnswer((_) async => Right(Null));
 
     final result = await useCase(id);
 
     expect(result, Right(Null));
 
     verify(repository.countUsages(id));
-    verify(repository.deleteTagWithId(id));
+    verify(repository.delete(id));
     verifyNoMoreInteractions(repository);
   });
 
@@ -75,14 +75,14 @@ void main() {
       final id = fix.tag1.id;
 
       when(repository.countUsages(id)).thenAnswer((_) async => Right(0));
-      when(repository.deleteTagWithId(id)).thenAnswer((_) async => Left(failure));
+      when(repository.delete(id)).thenAnswer((_) async => Left(failure));
 
       final result = await useCase(id);
 
       expect(result, Left(failure));
 
       verify(repository.countUsages(id));
-      verify(repository.deleteTagWithId(id));
+      verify(repository.delete(id));
       verifyNoMoreInteractions(repository);
     });
   });

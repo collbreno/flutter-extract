@@ -20,13 +20,13 @@ void main() {
   test('should insert the payment method on repository', () async {
     final paymentMethod = fix.paymentMethod1;
 
-    when(repository.insertPaymentMethod(paymentMethod)).thenAnswer((_) async => Right(Null));
+    when(repository.insert(paymentMethod)).thenAnswer((_) async => Right(Null));
 
     final result = await useCase(paymentMethod);
 
     expect(result, Right(Null));
 
-    verify(repository.insertPaymentMethod(paymentMethod));
+    verify(repository.insert(paymentMethod));
     verifyNoMoreInteractions(repository);
   });
 
@@ -34,13 +34,13 @@ void main() {
     final failure = UnknownDatabaseFailure();
     final paymentMethod = fix.paymentMethod1;
 
-    when(repository.insertPaymentMethod(paymentMethod)).thenAnswer((_) async => Left(failure));
+    when(repository.insert(paymentMethod)).thenAnswer((_) async => Left(failure));
 
     final result = await useCase(paymentMethod);
 
     expect(result, Left(failure));
 
-    verify(repository.insertPaymentMethod(paymentMethod));
+    verify(repository.insert(paymentMethod));
     verifyNoMoreInteractions(repository);
   });
 }

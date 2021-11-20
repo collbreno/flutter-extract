@@ -30,7 +30,7 @@ void main() {
   });
 
   test('Get all must return $NotFoundFailure when there is no items in database', () async {
-    final fromDb = await repository.getAllExpenses();
+    final fromDb = await repository.getAll();
 
     expect(fromDb, Left(NotFoundFailure()));
   });
@@ -42,7 +42,7 @@ void main() {
       final expense = fix.expense1;
 
       await fkUtils.insertExpenseFKDependencies(expense);
-      await repository.insertExpense(expense);
+      await repository.insert(expense);
 
       // Expected
       final expectedExpense = expense.toEntity();
@@ -74,9 +74,9 @@ void main() {
       final expense = fix.expense1;
 
       await fkUtils.insertExpenseFKDependencies(expense);
-      await repository.insertExpense(expense);
+      await repository.insert(expense);
 
-      final fromDb = await repository.getAllExpenses();
+      final fromDb = await repository.getAll();
 
       expect(fromDb, orderedRightEquals([expense]));
     });
@@ -89,17 +89,17 @@ void main() {
       await fkUtils.insertExpenseFKDependencies(expense1);
       await fkUtils.insertExpenseFKDependencies(expense2);
 
-      var result = await repository.insertExpense(expense1);
+      var result = await repository.insert(expense1);
       expect(result, Right(Null));
 
-      var fromDb = await repository.getAllExpenses();
+      var fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([expense1]));
 
-      result = await repository.insertExpense(expense2);
+      result = await repository.insert(expense2);
       expect(result, Left(UnknownDatabaseFailure()));
 
       // Database is not affected
-      fromDb = await repository.getAllExpenses();
+      fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([expense1]));
     });
   });
@@ -112,19 +112,19 @@ void main() {
       await fkUtils.insertExpenseFKDependencies(expense1);
       await fkUtils.insertExpenseFKDependencies(expense2);
 
-      final insert1 = await repository.insertExpense(expense1);
-      final insert2 = await repository.insertExpense(expense2);
+      final insert1 = await repository.insert(expense1);
+      final insert2 = await repository.insert(expense2);
 
       expect(insert1, Right(Null));
       expect(insert2, Right(Null));
 
-      var fromDb = await repository.getAllExpenses();
+      var fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([expense1, expense2]));
 
-      var result = await repository.deleteExpenseWithId(expense1.id);
+      var result = await repository.delete(expense1.id);
       expect(result, Right(Null));
 
-      fromDb = await repository.getAllExpenses();
+      fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([expense2]));
     });
 
@@ -132,17 +132,17 @@ void main() {
       final expense1 = fix.expense1;
 
       await fkUtils.insertExpenseFKDependencies(expense1);
-      final insert = await repository.insertExpense(expense1);
+      final insert = await repository.insert(expense1);
       expect(insert, Right(Null));
 
-      var fromDb = await repository.getAllExpenses();
+      var fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([expense1]));
 
-      var result = await repository.deleteExpenseWithId(uid.v4());
+      var result = await repository.delete(uid.v4());
       expect(result, Left(NothingToDeleteFailure()));
 
       // Database is not affected
-      fromDb = await repository.getAllExpenses();
+      fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([expense1]));
     });
   });
@@ -153,18 +153,18 @@ void main() {
       final expense2 = fix.expense2;
       await fkUtils.insertExpenseFKDependencies(expense1);
       await fkUtils.insertExpenseFKDependencies(expense2);
-      await repository.insertExpense(expense1);
-      await repository.insertExpense(expense2);
+      await repository.insert(expense1);
+      await repository.insert(expense2);
 
-      var result = await repository.getExpenseById(expense1.id);
+      var result = await repository.getById(expense1.id);
       expect(result, Right(expense1));
 
-      result = await repository.getExpenseById(expense2.id);
+      result = await repository.getById(expense2.id);
       expect(result, Right(expense2));
     });
 
     test('Query by id of an item that does not exist must return $NotFoundFailure', () async {
-      final result = await repository.getExpenseById(uid.v4());
+      final result = await repository.getById(uid.v4());
       expect(result, Left(NotFoundFailure()));
     });
   });
@@ -176,17 +176,17 @@ void main() {
     setUp(() async {
       await fkUtils.insertExpenseFKDependencies(expense1);
       await fkUtils.insertExpenseFKDependencies(expense2);
-      await repository.insertExpense(expense1);
-      await repository.insertExpense(expense2);
+      await repository.insert(expense1);
+      await repository.insert(expense2);
     });
 
     test('Should return normally when entity has changed', () async {
       final newDescription = 'New ${expense1.description}';
       final newExpense = expense1.rebuild((e) => e..description = newDescription);
-      final result = await repository.updateExpense(newExpense);
+      final result = await repository.update(newExpense);
       expect(result, Right(Null));
 
-      final fromDb = await repository.getAllExpenses();
+      final fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([newExpense, expense2]));
     });
 
@@ -197,10 +197,10 @@ void main() {
       expect(expense1.tags, isNot(newTags));
 
       final newExpense = expense1.rebuild((e) => e..tags = newTags.toBuilder());
-      final result = await repository.updateExpense(newExpense);
+      final result = await repository.update(newExpense);
       expect(result, Right(Null));
 
-      final fromDb = await repository.getAllExpenses();
+      final fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([newExpense, expense2]));
     });
 
@@ -211,19 +211,19 @@ void main() {
       expect(expense1.files, isNot(newFiles));
 
       final newExpense = expense1.rebuild((e) => e..files = newFiles.toBuilder());
-      final result = await repository.updateExpense(newExpense);
+      final result = await repository.update(newExpense);
       expect(result, Right(Null));
 
-      final fromDb = await repository.getAllExpenses();
+      final fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([newExpense, expense2]));
     });
 
     test('Should return $NotFoundFailure when entity does not exist', () async {
       final expense = fix.expense3;
-      final result = await repository.updateExpense(expense);
+      final result = await repository.update(expense);
       expect(result, Left(NotFoundFailure()));
 
-      final fromDb = await repository.getAllExpenses();
+      final fromDb = await repository.getAll();
       // Database is not affected
       expect(fromDb, orderedRightEquals([expense1, expense2]));
     });

@@ -21,14 +21,14 @@ void main() {
   test('should get the category from repository', () async {
     final expected = fix.category1;
 
-    when(repository.getCategoryById(expected.id))
+    when(repository.getById(expected.id))
         .thenAnswer((_) async => Right(expected));
 
     final result = await useCase(expected.id);
 
     expect(result, Right(expected));
 
-    verify(repository.getCategoryById(expected.id));
+    verify(repository.getById(expected.id));
     verifyNoMoreInteractions(repository);
   });
 
@@ -36,13 +36,13 @@ void main() {
     final id = 'test';
     final failure = UnknownDatabaseFailure();
 
-    when(repository.getCategoryById(id)).thenAnswer((_) async => Left(failure));
+    when(repository.getById(id)).thenAnswer((_) async => Left(failure));
 
     final result = await useCase(id);
 
     expect(result, Left(failure));
 
-    verify(repository.getCategoryById(id));
+    verify(repository.getById(id));
     verifyNoMoreInteractions(repository);
   });
 }

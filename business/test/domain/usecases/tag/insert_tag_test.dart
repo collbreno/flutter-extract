@@ -21,13 +21,13 @@ void main() {
   test('should insert the tag on repository', () async {
     final tag = fix.tag1;
 
-    when(repository.insertTag(tag)).thenAnswer((_) async => Right(Null));
+    when(repository.insert(tag)).thenAnswer((_) async => Right(Null));
 
     final result = await useCase(tag);
 
     expect(result, Right(Null));
 
-    verify(repository.insertTag(tag));
+    verify(repository.insert(tag));
     verifyNoMoreInteractions(repository);
   });
 
@@ -35,13 +35,13 @@ void main() {
     final failure = UnknownDatabaseFailure();
     final tag = fix.tag1;
 
-    when(repository.insertTag(tag)).thenAnswer((_) async => Left(failure));
+    when(repository.insert(tag)).thenAnswer((_) async => Left(failure));
 
     final result = await useCase(tag);
 
     expect(result, Left(failure));
 
-    verify(repository.insertTag(tag));
+    verify(repository.insert(tag));
     verifyNoMoreInteractions(repository);
   });
 }

@@ -19,7 +19,7 @@ class TagRepository implements ITagRepository {
   }
 
   @override
-  Future<FailureOr<void>> deleteTagWithId(String tagId) async {
+  Future<FailureOr<void>> delete(String tagId) async {
     try {
       final query = db.delete(db.tags)..where((t) => t.id.equals(tagId));
       final countDeleted = await query.go();
@@ -35,7 +35,7 @@ class TagRepository implements ITagRepository {
   }
 
   @override
-  Future<FailureOr<List<Tag>>> getAllTags() async {
+  Future<FailureOr<List<Tag>>> getAll() async {
     try {
       final tags = await db.select(db.tags).get();
       if (tags.isNotEmpty) {
@@ -51,7 +51,7 @@ class TagRepository implements ITagRepository {
   }
 
   @override
-  Future<FailureOr<Tag>> getTagById(String tagId) async {
+  Future<FailureOr<Tag>> getById(String tagId) async {
     try {
       final query = db.select(db.tags)..where((t) => t.id.equals(tagId));
       final tag = await query.getSingleOrNull();
@@ -67,7 +67,7 @@ class TagRepository implements ITagRepository {
   }
 
   @override
-  Future<FailureOr<void>> insertTag(Tag tag) async {
+  Future<FailureOr<void>> insert(Tag tag) async {
     try {
       await db.into(db.tags).insert(tag.toEntity());
       return Right(Null);
@@ -77,7 +77,7 @@ class TagRepository implements ITagRepository {
   }
 
   @override
-  Future<FailureOr<void>> updateTag(Tag tag) async {
+  Future<FailureOr<void>> update(Tag tag) async {
     try {
       final result = await db.update(db.tags).replace(tag.toEntity());
       if (result) {

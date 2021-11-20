@@ -9,6 +9,6 @@ class GetAllCategories extends NoParamUseCase<List<Category>> {
 
   @override
   Future<Either<Failure, List<Category>>> call() {
-    return repository.getAllCategories();
+    return repository.getAll();
   }
 }

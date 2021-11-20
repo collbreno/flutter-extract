@@ -8,6 +8,6 @@ class GetStoreByIdUseCase extends UseCase<Store, String> {
 
   @override
   Future<Either<Failure, Store>> call(String id) {
-    return repository.getStoreById(id);
+    return repository.getById(id);
   }
 }

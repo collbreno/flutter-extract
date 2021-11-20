@@ -9,6 +9,6 @@ class GetSubcategoryById extends UseCase<Subcategory, String> {
 
   @override
   Future<FailureOr<Subcategory>> call(String id) {
-    return repository.getSubcategoryById(id);
+    return repository.getById(id);
   }
 }

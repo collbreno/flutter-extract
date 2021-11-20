@@ -32,7 +32,7 @@ void main() {
   });
 
   test('Get all must return $NotFoundFailure when there is no items in database', () async {
-    final fromDb = await repository.getAllPaymentMethods();
+    final fromDb = await repository.getAll();
 
     expect(fromDb, Left(NotFoundFailure()));
   });
@@ -41,9 +41,9 @@ void main() {
     test('Successfully insertion', () async {
       final paymentMethod = fix.paymentMethod1;
 
-      await repository.insertPaymentMethod(paymentMethod);
+      await repository.insert(paymentMethod);
 
-      final fromDb = await repository.getAllPaymentMethods();
+      final fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([paymentMethod]));
     });
 
@@ -51,19 +51,19 @@ void main() {
       final id = uid.v4();
       final paymentMethod1 = fix.paymentMethod1.rebuild((t) => t.id = id);
 
-      var result = await repository.insertPaymentMethod(paymentMethod1);
+      var result = await repository.insert(paymentMethod1);
       expect(result, Right(Null));
 
-      var fromDb = await repository.getAllPaymentMethods();
+      var fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([paymentMethod1]));
 
       final paymentMethod2 = fix.paymentMethod2.rebuild((t) => t.id = id);
 
-      result = await repository.insertPaymentMethod(paymentMethod2);
+      result = await repository.insert(paymentMethod2);
       expect(result, Left(UnknownDatabaseFailure()));
 
       // Database is not affected
-      fromDb = await repository.getAllPaymentMethods();
+      fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([paymentMethod1]));
     });
   });
@@ -72,31 +72,31 @@ void main() {
     test('Simple deletion', () async {
       final paymentMethod1 = fix.paymentMethod1;
       final paymentMethod2 = fix.paymentMethod2;
-      await repository.insertPaymentMethod(paymentMethod1);
-      await repository.insertPaymentMethod(paymentMethod2);
+      await repository.insert(paymentMethod1);
+      await repository.insert(paymentMethod2);
 
-      var fromDb = await repository.getAllPaymentMethods();
+      var fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([paymentMethod1, paymentMethod2]));
 
-      var result = await repository.deletePaymentMethodWithId(paymentMethod1.id);
+      var result = await repository.delete(paymentMethod1.id);
       expect(result, Right(Null));
 
-      fromDb = await repository.getAllPaymentMethods();
+      fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([paymentMethod2]));
     });
 
     test('Deletion of an item that does not exist', () async {
       final paymentMethod1 = fix.paymentMethod1;
-      await repository.insertPaymentMethod(paymentMethod1);
+      await repository.insert(paymentMethod1);
 
-      var fromDb = await repository.getAllPaymentMethods();
+      var fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([paymentMethod1]));
 
-      var result = await repository.deletePaymentMethodWithId(uid.v4());
+      var result = await repository.delete(uid.v4());
       expect(result, Left(NothingToDeleteFailure()));
 
       // Database is not affected
-      fromDb = await repository.getAllPaymentMethods();
+      fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([paymentMethod1]));
     });
   });
@@ -105,18 +105,18 @@ void main() {
     test('Success case', () async {
       final paymentMethod1 = fix.paymentMethod1;
       final paymentMethod2 = fix.paymentMethod2;
-      await repository.insertPaymentMethod(paymentMethod1);
-      await repository.insertPaymentMethod(paymentMethod2);
+      await repository.insert(paymentMethod1);
+      await repository.insert(paymentMethod2);
 
-      var result = await repository.getPaymentMethodById(paymentMethod1.id);
+      var result = await repository.getById(paymentMethod1.id);
       expect(result, Right(paymentMethod1));
 
-      result = await repository.getPaymentMethodById(paymentMethod2.id);
+      result = await repository.getById(paymentMethod2.id);
       expect(result, Right(paymentMethod2));
     });
 
     test('Query by id of an item that does not exist must return $NotFoundFailure', () async {
-      final result = await repository.getPaymentMethodById(uid.v4());
+      final result = await repository.getById(uid.v4());
       expect(result, Left(NotFoundFailure()));
     });
   });
@@ -126,26 +126,26 @@ void main() {
     final paymentMethod2 = fix.paymentMethod2;
 
     setUp(() async {
-      await repository.insertPaymentMethod(paymentMethod1);
-      await repository.insertPaymentMethod(paymentMethod2);
+      await repository.insert(paymentMethod1);
+      await repository.insert(paymentMethod2);
     });
 
     test('Should return normally when entity has changed', () async {
       final newName = 'New ${paymentMethod1.name}';
       final newPaymentMethod = paymentMethod1.rebuild((t) => t..name = newName);
-      final result = await repository.updatePaymentMethod(newPaymentMethod);
+      final result = await repository.update(newPaymentMethod);
       expect(result, Right(Null));
 
-      final fromDb = await repository.getAllPaymentMethods();
+      final fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([newPaymentMethod, paymentMethod2]));
     });
 
     test('Should return $NotFoundFailure when entity does not exist', () async {
       final paymentMethod = fix.paymentMethod3;
-      final result = await repository.updatePaymentMethod(paymentMethod);
+      final result = await repository.update(paymentMethod);
       expect(result, Left(NotFoundFailure()));
 
-      final fromDb = await repository.getAllPaymentMethods();
+      final fromDb = await repository.getAll();
       // Database is not affected
       expect(fromDb, orderedRightEquals([paymentMethod1, paymentMethod2]));
     });
@@ -161,9 +161,9 @@ void main() {
 
     final paymentMethod3 = fix.paymentMethod3;
 
-    await repository.insertPaymentMethod(paymentMethod1);
-    await repository.insertPaymentMethod(paymentMethod2);
-    await repository.insertPaymentMethod(paymentMethod3);
+    await repository.insert(paymentMethod1);
+    await repository.insert(paymentMethod2);
+    await repository.insert(paymentMethod3);
     await fkUtils.insertExpenseFKDependencies(expense1);
     await fkUtils.insertExpenseFKDependencies(expense2);
     await fkUtils.insertExpenseFKDependencies(expense3);

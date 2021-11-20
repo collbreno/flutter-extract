@@ -9,6 +9,6 @@ class GetAllSubcategories extends NoParamUseCase<List<Subcategory>> {
 
   @override
   Future<FailureOr<List<Subcategory>>> call() {
-    return repository.getAllSubcategories();
+    return repository.getAll();
   }
 }

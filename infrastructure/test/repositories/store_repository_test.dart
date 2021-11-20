@@ -33,7 +33,7 @@ void main() {
   });
 
   test('Get all must return $NotFoundFailure when there is no items in database', () async {
-    final fromDb = await repository.getAllStores();
+    final fromDb = await repository.getAll();
 
     expect(fromDb, Left(NotFoundFailure()));
   });
@@ -42,9 +42,9 @@ void main() {
     test('Successfully insertion', () async {
       final store = fix.store1;
 
-      await repository.insertStore(store);
+      await repository.insert(store);
 
-      final fromDb = await repository.getAllStores();
+      final fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([store]));
     });
 
@@ -52,19 +52,19 @@ void main() {
       final id = uid.v4();
       final store1 = fix.store1.rebuild((s) => s.id = id);
 
-      var result = await repository.insertStore(store1);
+      var result = await repository.insert(store1);
       expect(result, Right(Null));
 
-      var fromDb = await repository.getAllStores();
+      var fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([store1]));
 
       final store2 = fix.store2.rebuild((s) => s.id = id);
 
-      result = await repository.insertStore(store2);
+      result = await repository.insert(store2);
       expect(result, Left(UnknownDatabaseFailure()));
 
       // Database is not affected
-      fromDb = await repository.getAllStores();
+      fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([store1]));
     });
   });
@@ -73,31 +73,31 @@ void main() {
     test('Simple deletion', () async {
       final store1 = fix.store1;
       final store2 = fix.store2;
-      await repository.insertStore(store1);
-      await repository.insertStore(store2);
+      await repository.insert(store1);
+      await repository.insert(store2);
 
-      var fromDb = await repository.getAllStores();
+      var fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([store1, store2]));
 
-      var result = await repository.deleteStoreWithId(store1.id);
+      var result = await repository.delete(store1.id);
       expect(result, Right(Null));
 
-      fromDb = await repository.getAllStores();
+      fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([store2]));
     });
 
     test('Deletion of an item that does not exist', () async {
       final store1 = fix.store1;
-      await repository.insertStore(store1);
+      await repository.insert(store1);
 
-      var fromDb = await repository.getAllStores();
+      var fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([store1]));
 
-      var result = await repository.deleteStoreWithId(uid.v4());
+      var result = await repository.delete(uid.v4());
       expect(result, Left(NothingToDeleteFailure()));
 
       // Database is not affected
-      fromDb = await repository.getAllStores();
+      fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([store1]));
     });
   });
@@ -106,18 +106,18 @@ void main() {
     test('Success case', () async {
       final store1 = fix.store1;
       final store2 = fix.store2;
-      await repository.insertStore(store1);
-      await repository.insertStore(store2);
+      await repository.insert(store1);
+      await repository.insert(store2);
 
-      var result = await repository.getStoreById(store1.id);
+      var result = await repository.getById(store1.id);
       expect(result, Right(store1));
 
-      result = await repository.getStoreById(store2.id);
+      result = await repository.getById(store2.id);
       expect(result, Right(store2));
     });
 
     test('Query by id of an item that does not exist must return $NotFoundFailure', () async {
-      final result = await repository.getStoreById(uid.v4());
+      final result = await repository.getById(uid.v4());
       expect(result, Left(NotFoundFailure()));
     });
   });
@@ -127,26 +127,26 @@ void main() {
     final store2 = fix.store2;
 
     setUp(() async {
-      await repository.insertStore(store1);
-      await repository.insertStore(store2);
+      await repository.insert(store1);
+      await repository.insert(store2);
     });
 
     test('Should return normally when entity has changed', () async {
       final newName = 'New ${store1.name}';
       final newStore = store1.rebuild((s) => s..name = newName);
-      final result = await repository.updateStore(newStore);
+      final result = await repository.update(newStore);
       expect(result, Right(Null));
 
-      final fromDb = await repository.getAllStores();
+      final fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([newStore, store2]));
     });
 
     test('Should return $NotFoundFailure when entity does not exist', () async {
       final store = fix.store3;
-      final result = await repository.updateStore(store);
+      final result = await repository.update(store);
       expect(result, Left(NotFoundFailure()));
 
-      final fromDb = await repository.getAllStores();
+      final fromDb = await repository.getAll();
       // Database is not affected
       expect(fromDb, orderedRightEquals([store1, store2]));
     });
@@ -162,9 +162,9 @@ void main() {
 
     final store3 = fix.store3;
 
-    await repository.insertStore(store1);
-    await repository.insertStore(store2);
-    await repository.insertStore(store3);
+    await repository.insert(store1);
+    await repository.insert(store2);
+    await repository.insert(store3);
     await fkUtils.insertExpenseFKDependencies(expense1);
     await fkUtils.insertExpenseFKDependencies(expense2);
     await fkUtils.insertExpenseFKDependencies(expense3);

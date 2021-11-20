@@ -20,13 +20,13 @@ void main() {
   test('should insert the store on repository', () async {
     final store = fix.store1;
 
-    when(repository.insertStore(store)).thenAnswer((_) async => Right(Null));
+    when(repository.insert(store)).thenAnswer((_) async => Right(Null));
 
     final result = await useCase(store);
 
     expect(result, Right(Null));
 
-    verify(repository.insertStore(store));
+    verify(repository.insert(store));
     verifyNoMoreInteractions(repository);
   });
 
@@ -34,13 +34,13 @@ void main() {
     final failure = UnknownDatabaseFailure();
     final store = fix.store1;
 
-    when(repository.insertStore(store)).thenAnswer((_) async => Left(failure));
+    when(repository.insert(store)).thenAnswer((_) async => Left(failure));
 
     final result = await useCase(store);
 
     expect(result, Left(failure));
 
-    verify(repository.insertStore(store));
+    verify(repository.insert(store));
     verifyNoMoreInteractions(repository);
   });
 }

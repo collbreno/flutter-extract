@@ -23,13 +23,13 @@ void main() {
   test('should insert the category on repository', () async {
     final category = fix.category1;
 
-    when(repository.insertCategory(category)).thenAnswer((_) async => Right(Null));
+    when(repository.insert(category)).thenAnswer((_) async => Right(Null));
 
     final result = await useCase(category);
 
     expect(result, Right(Null));
 
-    verify(repository.insertCategory(category));
+    verify(repository.insert(category));
     verifyNoMoreInteractions(repository);
   });
 
@@ -37,13 +37,13 @@ void main() {
     final failure = UnknownDatabaseFailure();
     final category = fix.category1;
 
-    when(repository.insertCategory(category)).thenAnswer((_) async => Left(failure));
+    when(repository.insert(category)).thenAnswer((_) async => Left(failure));
 
     final result = await useCase(category);
 
     expect(result, Left(failure));
 
-    verify(repository.insertCategory(category));
+    verify(repository.insert(category));
     verifyNoMoreInteractions(repository);
   });
 }

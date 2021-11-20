@@ -8,6 +8,6 @@ class UpdateStoreUseCase extends UseCase<void, Store> {
 
   @override
   Future<Either<Failure, void>> call(Store store) {
-    return repository.updateStore(store);
+    return repository.update(store);
   }
 }

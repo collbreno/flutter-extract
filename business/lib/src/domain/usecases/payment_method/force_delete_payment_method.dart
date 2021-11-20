@@ -8,6 +8,6 @@ class ForceDeletePaymentMethodUseCase extends UseCase<void, String> {
 
   @override
   Future<Either<Failure, void>> call(String id) {
-    return repository.deletePaymentMethodWithId(id);
+    return repository.delete(id);
   }
 }

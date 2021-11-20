@@ -8,6 +8,6 @@ class GetAllStoresUseCase extends NoParamUseCase<List<Store>> {
 
   @override
   Future<Either<Failure, List<Store>>> call() {
-    return repository.getAllStores();
+    return repository.getAll();
   }
 }

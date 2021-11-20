@@ -35,7 +35,7 @@ void main() {
   });
 
   test('Get all must return $NotFoundFailure when there is no items in database', () async {
-    final fromDb = await repository.getAllTags();
+    final fromDb = await repository.getAll();
 
     expect(fromDb, Left(NotFoundFailure()));
   });
@@ -44,9 +44,9 @@ void main() {
     test('Successfully insertion', () async {
       final tag = fix.tag1;
 
-      await repository.insertTag(tag);
+      await repository.insert(tag);
 
-      final fromDb = await repository.getAllTags();
+      final fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([tag]));
     });
 
@@ -54,19 +54,19 @@ void main() {
       final id = uid.v4();
       final tag1 = fix.tag1.rebuild((t) => t.id = id);
 
-      var result = await repository.insertTag(tag1);
+      var result = await repository.insert(tag1);
       expect(result, Right(Null));
 
-      var fromDb = await repository.getAllTags();
+      var fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([tag1]));
 
       final tag2 = fix.tag2.rebuild((t) => t.id = id);
 
-      result = await repository.insertTag(tag2);
+      result = await repository.insert(tag2);
       expect(result, Left(UnknownDatabaseFailure()));
 
       // Database is not affected
-      fromDb = await repository.getAllTags();
+      fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([tag1]));
     });
   });
@@ -75,34 +75,34 @@ void main() {
     test('Simple deletion', () async {
       final tag1 = fix.tag1;
       final tag2 = fix.tag2;
-      final insert1 = await repository.insertTag(tag1);
-      final insert2 = await repository.insertTag(tag2);
+      final insert1 = await repository.insert(tag1);
+      final insert2 = await repository.insert(tag2);
 
       expect(insert1, Right(Null));
       expect(insert2, Right(Null));
 
-      var fromDb = await repository.getAllTags();
+      var fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([tag1, tag2]));
 
-      var result = await repository.deleteTagWithId(tag1.id);
+      var result = await repository.delete(tag1.id);
       expect(result, Right(Null));
 
-      fromDb = await repository.getAllTags();
+      fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([tag2]));
     });
 
     test('Deletion of an item that does not exist', () async {
       final tag1 = fix.tag1;
-      await repository.insertTag(tag1);
+      await repository.insert(tag1);
 
-      var fromDb = await repository.getAllTags();
+      var fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([tag1]));
 
-      var result = await repository.deleteTagWithId(uid.v4());
+      var result = await repository.delete(uid.v4());
       expect(result, Left(NothingToDeleteFailure()));
 
       // Database is not affected
-      fromDb = await repository.getAllTags();
+      fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([tag1]));
     });
   });
@@ -111,18 +111,18 @@ void main() {
     test('Success case', () async {
       final tag1 = fix.tag1;
       final tag2 = fix.tag2;
-      await repository.insertTag(tag1);
-      await repository.insertTag(tag2);
+      await repository.insert(tag1);
+      await repository.insert(tag2);
 
-      var result = await repository.getTagById(tag1.id);
+      var result = await repository.getById(tag1.id);
       expect(result, Right(tag1));
 
-      result = await repository.getTagById(tag2.id);
+      result = await repository.getById(tag2.id);
       expect(result, Right(tag2));
     });
 
     test('Query by id of an item that does not exist must return $NotFoundFailure', () async {
-      final result = await repository.getTagById(uid.v4());
+      final result = await repository.getById(uid.v4());
       expect(result, Left(NotFoundFailure()));
     });
   });
@@ -132,26 +132,26 @@ void main() {
     final tag2 = fix.tag2;
 
     setUp(() async {
-      await repository.insertTag(tag1);
-      await repository.insertTag(tag2);
+      await repository.insert(tag1);
+      await repository.insert(tag2);
     });
 
     test('Should return normally when entity has changed', () async {
       final newName = 'New ${tag1.name}';
       final newTag = tag1.rebuild((t) => t..name = newName);
-      final result = await repository.updateTag(newTag);
+      final result = await repository.update(newTag);
       expect(result, Right(Null));
 
-      final fromDb = await repository.getAllTags();
+      final fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([newTag, tag2]));
     });
 
     test('Should return $NotFoundFailure when entity does not exist', () async {
       final tag = fix.tag3;
-      final result = await repository.updateTag(tag);
+      final result = await repository.update(tag);
       expect(result, Left(NotFoundFailure()));
 
-      final fromDb = await repository.getAllTags();
+      final fromDb = await repository.getAll();
       // Database is not affected
       expect(fromDb, orderedRightEquals([tag1, tag2]));
     });
@@ -167,9 +167,9 @@ void main() {
 
     final tag3 = fix.tag3;
 
-    await repository.insertTag(tag1);
-    await repository.insertTag(tag2);
-    await repository.insertTag(tag3);
+    await repository.insert(tag1);
+    await repository.insert(tag2);
+    await repository.insert(tag3);
     await fkUtils.insertExpenseFKDependencies(expense1);
     await fkUtils.insertExpenseFKDependencies(expense2);
     await fkUtils.insertExpenseFKDependencies(expense3);

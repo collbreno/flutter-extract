@@ -13,7 +13,7 @@ class StoreRepository implements IStoreRepository {
   /// Returns [NothingToDeleteFailure] when there is no store with the given id.
   /// Returns [UnknownDatabaseFailure] when datasource fails.
   @override
-  Future<FailureOr<void>> deleteStoreWithId(String id) async {
+  Future<FailureOr<void>> delete(String id) async {
     try {
       final query = db.delete(db.stores)..where((s) => s.id.equals(id));
       final countDeleted = await query.go();
@@ -33,7 +33,7 @@ class StoreRepository implements IStoreRepository {
   /// Returns [NotFoundFailure] when there are no stores.
   /// Returns [UnknownDatabaseFailure] when datasource fails.
   @override
-  Future<FailureOr<List<Store>>> getAllStores() async {
+  Future<FailureOr<List<Store>>> getAll() async {
     try {
       final stores = await db.select(db.stores).get();
       if (stores.isNotEmpty) {
@@ -55,7 +55,7 @@ class StoreRepository implements IStoreRepository {
   /// Returns [UnknownDatabaseFailure] when datasource fails.
 
   @override
-  Future<FailureOr<Store>> getStoreById(String id) async {
+  Future<FailureOr<Store>> getById(String id) async {
     try {
       final query = db.select(db.stores)..where((s) => s.id.equals(id));
       final store = await query.getSingleOrNull();
@@ -74,7 +74,7 @@ class StoreRepository implements IStoreRepository {
   /// Returns void when succeeded.
   /// Returns [UnknownDatabaseFailure] when datasource fails.
   @override
-  Future<FailureOr<void>> insertStore(Store store) async {
+  Future<FailureOr<void>> insert(Store store) async {
     try {
       await db.into(db.stores).insert(store.toEntity());
       return Right(Null);
@@ -87,7 +87,7 @@ class StoreRepository implements IStoreRepository {
   /// Returns true when updated and false when nothing changed.
   /// Returns [UnknownDatabaseFailure] when datasource fails.
   @override
-  Future<FailureOr<void>> updateStore(Store store) async {
+  Future<FailureOr<void>> update(Store store) async {
     try {
       final result = await db.update(db.stores).replace(store.toEntity());
       if (result) {

@@ -9,6 +9,6 @@ class GetTagById extends UseCase<Tag, String> {
 
   @override
   Future<Either<Failure, Tag>> call(String id) {
-    return repository.getTagById(id);
+    return repository.getById(id);
   }
 }

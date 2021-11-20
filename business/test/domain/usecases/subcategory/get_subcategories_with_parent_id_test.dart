@@ -21,14 +21,14 @@ void main() {
     final parentId = fix.subcategory1.parent.id;
     final expected = [fix.subcategory1];
 
-    when(repository.getSubcategoriesWithParentId(parentId))
+    when(repository.getByParentId(parentId))
         .thenAnswer((_) async => Right(expected));
 
     final result = await useCase(parentId);
 
     expect(result, Right(expected));
 
-    verify(repository.getSubcategoriesWithParentId(parentId));
+    verify(repository.getByParentId(parentId));
     verifyNoMoreInteractions(repository);
   });
 
@@ -36,13 +36,13 @@ void main() {
     final parentId = fix.subcategory1.parent.id;
     final failure = UnknownDatabaseFailure();
 
-    when(repository.getSubcategoriesWithParentId(parentId)).thenAnswer((_) async => Left(failure));
+    when(repository.getByParentId(parentId)).thenAnswer((_) async => Left(failure));
 
     final result = await useCase(parentId);
 
     expect(result, Left(failure));
 
-    verify(repository.getSubcategoriesWithParentId(parentId));
+    verify(repository.getByParentId(parentId));
     verifyNoMoreInteractions(repository);
   });
 }

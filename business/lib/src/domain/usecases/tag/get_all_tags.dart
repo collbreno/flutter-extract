@@ -9,6 +9,6 @@ class GetAllTags extends NoParamUseCase<List<Tag>> {
 
   @override
   Future<Either<Failure, List<Tag>>> call() {
-    return repository.getAllTags();
+    return repository.getAll();
   }
 }

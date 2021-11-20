@@ -25,13 +25,13 @@ void main() {
   test('should insert the subcategory on repository', () async {
     final subcategory = fix.subcategory1;
 
-    when(subcategoryRepository.insertSubcategory(subcategory)).thenAnswer((_) async => Right(Null));
+    when(subcategoryRepository.insert(subcategory)).thenAnswer((_) async => Right(Null));
 
     final result = await useCase(subcategory);
 
     expect(result, Right(Null));
 
-    verify(subcategoryRepository.insertSubcategory(subcategory));
+    verify(subcategoryRepository.insert(subcategory));
     verifyNoMoreInteractions(categoryRepository);
     verifyNoMoreInteractions(subcategoryRepository);
   });
@@ -43,14 +43,14 @@ void main() {
       final failure = UnknownDatabaseFailure();
       final subcategory = fix.subcategory1;
 
-      when(subcategoryRepository.insertSubcategory(subcategory))
+      when(subcategoryRepository.insert(subcategory))
           .thenAnswer((_) async => Left(failure));
 
       final result = await useCase(subcategory);
 
       expect(result, Left(failure));
 
-      verify(subcategoryRepository.insertSubcategory(subcategory));
+      verify(subcategoryRepository.insert(subcategory));
       verifyNoMoreInteractions(categoryRepository);
       verifyNoMoreInteractions(subcategoryRepository);
     });

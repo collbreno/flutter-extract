@@ -29,7 +29,7 @@ void main() {
   });
 
   test('Get all must return $NotFoundFailure when there is no items in database', () async {
-    final fromDb = await repository.getAllCategories();
+    final fromDb = await repository.getAll();
 
     expect(fromDb, Left(NotFoundFailure()));
   });
@@ -38,9 +38,9 @@ void main() {
     test('Successfully insertion', () async {
       final category = fix.category1;
 
-      await repository.insertCategory(category);
+      await repository.insert(category);
 
-      final fromDb = await repository.getAllCategories();
+      final fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([category]));
     });
 
@@ -48,19 +48,19 @@ void main() {
       final id = uid.v4();
       final category1 = fix.category1.rebuild((s) => s.id = id);
 
-      var result = await repository.insertCategory(category1);
+      var result = await repository.insert(category1);
       expect(result, Right(Null));
 
-      var fromDb = await repository.getAllCategories();
+      var fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([category1]));
 
       final category2 = fix.category2.rebuild((s) => s.id = id);
 
-      result = await repository.insertCategory(category2);
+      result = await repository.insert(category2);
       expect(result, Left(UnknownDatabaseFailure()));
 
       // Database is not affected
-      fromDb = await repository.getAllCategories();
+      fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([category1]));
     });
   });
@@ -69,33 +69,33 @@ void main() {
     test('Simple deletion', () async {
       final category1 = fix.category1;
       final category2 = fix.category2;
-      await repository.insertCategory(category1);
-      await repository.insertCategory(category2);
+      await repository.insert(category1);
+      await repository.insert(category2);
 
-      var fromDb = await repository.getAllCategories();
+      var fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([category1, category2]));
 
-      var result = await repository.deleteCategory(category1.id);
+      var result = await repository.delete(category1.id);
       expect(result, Right(Null));
 
-      fromDb = await repository.getAllCategories();
+      fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([category2]));
     });
 
     test('Deletion of an item that does not exist', () async {
       final category1 = fix.category1;
-      await repository.insertCategory(category1);
+      await repository.insert(category1);
 
-      var fromDb = await repository.getAllCategories();
+      var fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([category1]));
 
       final idToDelete = uid.v4();
       expect(idToDelete, isNot(category1.id));
-      var result = await repository.deleteCategory(idToDelete);
+      var result = await repository.delete(idToDelete);
       expect(result, Left(NothingToDeleteFailure()));
 
       // Database is not affected
-      fromDb = await repository.getAllCategories();
+      fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([category1]));
     });
   });
@@ -104,18 +104,18 @@ void main() {
     test('Success case', () async {
       final category1 = fix.category1;
       final category2 = fix.category2;
-      await repository.insertCategory(category1);
-      await repository.insertCategory(category2);
+      await repository.insert(category1);
+      await repository.insert(category2);
 
-      var result = await repository.getCategoryById(category1.id);
+      var result = await repository.getById(category1.id);
       expect(result, Right(category1));
 
-      result = await repository.getCategoryById(category2.id);
+      result = await repository.getById(category2.id);
       expect(result, Right(category2));
     });
 
     test('Query by id of an item that does not exist must return $NotFoundFailure', () async {
-      final result = await repository.getCategoryById(uid.v4());
+      final result = await repository.getById(uid.v4());
       expect(result, Left(NotFoundFailure()));
     });
   });
@@ -125,26 +125,26 @@ void main() {
     final category2 = fix.category2;
 
     setUp(() async {
-      await repository.insertCategory(category1);
-      await repository.insertCategory(category2);
+      await repository.insert(category1);
+      await repository.insert(category2);
     });
 
     test('Should return normally when entity has changed', () async {
       final newName = 'New ${category1.name}';
       final newCategory = category1.rebuild((s) => s..name = newName);
-      final result = await repository.updateCategory(newCategory);
+      final result = await repository.update(newCategory);
       expect(result, Right(Null));
 
-      final fromDb = await repository.getAllCategories();
+      final fromDb = await repository.getAll();
       expect(fromDb, orderedRightEquals([newCategory, category2]));
     });
 
     test('Should return $NotFoundFailure when entity does not exist', () async {
       final category = fix.category3;
-      final result = await repository.updateCategory(category);
+      final result = await repository.update(category);
       expect(result, Left(NotFoundFailure()));
 
-      final fromDb = await repository.getAllCategories();
+      final fromDb = await repository.getAll();
       // Database is not affected
       expect(fromDb, orderedRightEquals([category1, category2]));
     });
@@ -160,9 +160,9 @@ void main() {
 
     final category3 = fix.category3;
 
-    await repository.insertCategory(category1);
-    await repository.insertCategory(category2);
-    await repository.insertCategory(category3);
+    await repository.insert(category1);
+    await repository.insert(category2);
+    await repository.insert(category3);
     await database.into(database.subcategories).insert(subcategory1);
     await database.into(database.subcategories).insert(subcategory2);
     await database.into(database.subcategories).insert(subcategory3);
