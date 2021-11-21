@@ -1,14 +1,19 @@
 import 'package:business/business.dart';
+import 'package:business/fixtures.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ui/bloc/category_list_cubit.dart';
 import 'package:ui/common/list_tile_utils.dart';
 
 class CategoryListScreen extends StatelessWidget {
-  const CategoryListScreen({Key? key}) : super(key: key);
+  CategoryListScreen({Key? key}) : super(key: key);
+
+  late final _bloc;
 
   @override
   Widget build(BuildContext context) {
+    _bloc = CategoryListCubit(context.read<GetAllCategories>());
     return Scaffold(
       appBar: AppBar(
         title: Text("Categorias"),
@@ -19,6 +24,7 @@ class CategoryListScreen extends StatelessWidget {
 
   Widget _buildBody() {
     return BlocBuilder<CategoryListCubit, CategoryListState>(
+      bloc: _bloc,
       builder: (context, state) {
         if (state is CategoryListLoaded)
           return _buildList(state.categories);
@@ -43,10 +49,20 @@ class CategoryListScreen extends StatelessWidget {
   }
 
   Widget _buildError(Failure error) {
-    return Text("Algo deu errado");
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text("Algo deu errado"),
+        SizedBox(height: 20),
+        OutlinedButton(
+          onPressed: _bloc.loadCategories,
+          child: Text("Recarregar"),
+        ),
+      ],
+    );
   }
 
   Widget _buildLoading() {
-    return CircularProgressIndicator();
+    return Center(child: CircularProgressIndicator());
   }
 }

@@ -113,7 +113,8 @@ class _FilePickerDialogState extends State<FilePickerDialog> {
                               });
                             },
                             onTap: () {
-                              OpenFile.open(platformFile.path);
+                              if (platformFile.path != null)
+                                OpenFile.open(platformFile.path!);
                             },
                             child: ListTile(
                               leading: Thumbnail(

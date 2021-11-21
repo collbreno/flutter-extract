@@ -38,6 +38,8 @@ dependencies:
   animated_theme_switcher: ^2.0.1-nullsafety.0
   business:
     path: ../business
+  infrastructure:
+    path: ../infrastructure
   lottie: ^1.0.1
   money2: ^2.2.1
 

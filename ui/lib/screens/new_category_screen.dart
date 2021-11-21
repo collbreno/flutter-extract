@@ -1,8 +1,12 @@
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
+import 'package:business/business.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ui/bloc/new_category_cubit.dart';
 import 'package:ui/common/list_tile_form_fields.dart';
 import 'package:ui/common/toggle_buttons_form_field.dart';
 import 'package:ui/services/color_service.dart';
+import 'package:provider/provider.dart';
 
 class NewCategoryScreen extends StatefulWidget {
   @override
@@ -14,9 +18,15 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   final _sizedBoxKey = GlobalKey();
   final _parentKey = GlobalKey();
   late bool _showParent;
+  late final NewCategoryCubit _bloc;
 
   @override
   void initState() {
+    _bloc = NewCategoryCubit(
+      insertCategory: context.read<InsertCategory>(),
+      updateCategory: context.read<UpdateCategory>(),
+      // updateCategory: context.read<Up>()
+    );
     super.initState();
     _showParent = false;
   }
@@ -53,9 +63,30 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            OutlinedButton(onPressed: () {}, child: Text('Draft')),
-                            SizedBox(width: 12),
-                            ElevatedButton(onPressed: () {}, child: Text('Save')),
+                            ElevatedButton(
+                              onPressed: () {
+                                _bloc.submit(
+                                  id: null,
+                                  name: "Teste",
+                                  color: Colors.blue,
+                                  icon: Icons.directions_bus_filled,
+                                  parent: null,
+                                );
+                              },
+                              child: BlocBuilder(
+                                bloc: _bloc,
+                                builder: (context, state) {
+                                  if (state is NewCategoryInitial)
+                                    return Text("Save");
+                                  else if (state is NewCategoryError)
+                                    return Text("Erro");
+                                  else if (state is NewCategoryLoading)
+                                    return Text("Carregando");
+                                  else
+                                    throw ArgumentError();
+                                },
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -66,18 +97,6 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
             ),
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildButton() {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 30, right: 20),
-      child: ElevatedButton(
-        onPressed: () {
-          _formKey.currentState?.validate();
-        },
-        child: Text("Confirmar"),
       ),
     );
   }

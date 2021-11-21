@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ui/navigation/page_transitions.dart';
+import 'package:ui/screens/category_list_screen.dart';
 import 'package:ui/screens/new_category_screen.dart';
 import 'package:ui/screens/new_expense_screen.dart';
 import 'package:ui/screens/new_store_screen.dart';
@@ -42,6 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).push(
@@ -52,6 +54,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
                 child: Text("Adicionar Categoria"),
               ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    AndroidTransition(
+                      CategoryListScreen(),
+                    ),
+                  );
+                },
+                child: Text("Ver Categorias"),
+              ),
+              SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).push(
@@ -62,6 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
                 child: Text("Adicionar Tag"),
               ),
+              SizedBox(height: 20),
               ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).push(

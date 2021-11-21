@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   moor: ^4.2.1
+  moor_flutter: ^4.0.0
   uuid: ^3.0.4
   mockito: ^5.0.8
   dartz: ^0.10.0-nullsafety.2
