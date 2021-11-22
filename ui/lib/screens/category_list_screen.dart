@@ -13,7 +13,7 @@ class CategoryListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _bloc = CategoryListCubit(context.read<GetAllCategories>());
+    _bloc = CategoryListCubit(context.read<GetCategoriesUseCase>());
     return Scaffold(
       appBar: AppBar(
         title: Text("Categorias"),

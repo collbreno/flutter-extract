@@ -49,8 +49,8 @@ List<Provider> _createProviders(AppDatabase db) {
   final categoryRepo = CategoryRepository(db);
 
   return [
-    Provider<InsertCategory>(create: (_) => InsertCategory(categoryRepo)),
-    Provider<UpdateCategory>(create: (_) => UpdateCategory(categoryRepo)),
-    Provider<GetAllCategories>(create: (_) => GetAllCategories(categoryRepo))
+    Provider<InsertCategoryUseCase>(create: (_) => InsertCategoryUseCase(categoryRepo)),
+    Provider<UpdateCategoryUseCase>(create: (_) => UpdateCategoryUseCase(categoryRepo)),
+    Provider<GetCategoriesUseCase>(create: (_) => GetCategoriesUseCase(categoryRepo))
   ];
 }

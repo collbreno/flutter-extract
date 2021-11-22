@@ -23,8 +23,8 @@ class _NewCategoryScreenState extends State<NewCategoryScreen> {
   @override
   void initState() {
     _bloc = NewCategoryCubit(
-      insertCategory: context.read<InsertCategory>(),
-      updateCategory: context.read<UpdateCategory>(),
+      insertCategory: context.read<InsertCategoryUseCase>(),
+      updateCategory: context.read<UpdateCategoryUseCase>(),
       // updateCategory: context.read<Up>()
     );
     super.initState();

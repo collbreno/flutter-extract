@@ -1,5 +1,4 @@
-import 'package:business/src/core/_core.dart';
-import 'package:business/src/domain/_domain.dart';
+import 'package:business/business.dart';
 
 abstract class ISubcategoryRepository {
   Future<FailureOr<List<Subcategory>>> getAll();
