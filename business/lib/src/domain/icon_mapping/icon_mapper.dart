@@ -4,6 +4,14 @@ import 'package:flutter/material.dart';
 class IconMapper {
   IconMapper._();
 
+  static Iterable<IconData> getAll() {
+    return MaterialIconsMap.iconMap.keys;
+  }
+
+  static bool isSupported(IconData icon) {
+    return MaterialIconsMap.iconMap.containsKey(icon);
+  }
+
   static String getIconFamily(IconData icon) {
     return icon.fontFamily!;
   }
@@ -14,7 +22,7 @@ class IconMapper {
 
   static IconData getIcon({required String name, required String family}) {
     if (family == 'MaterialIcons') {
-      return MaterialIconsMap.iconRevserMap[name]!;
+      return MaterialIconsMap.iconReverseMap[name]!;
     } else {
       throw Exception('Icon Family not supporter');
     }

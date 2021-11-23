@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ui/navigation/page_transitions.dart';
 import 'package:ui/screens/category_list_screen.dart';
-import 'package:ui/screens/new_category_screen.dart';
+import 'package:ui/screens/category_form_screen.dart';
 import 'package:ui/screens/new_expense_screen.dart';
 import 'package:ui/screens/new_store_screen.dart';
 import 'package:ui/screens/new_tag_screen.dart';

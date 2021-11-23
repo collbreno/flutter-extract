@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 class MaterialIconsMap {
   MaterialIconsMap._();
 
-  static final iconMap = {
+  static final iconMap = <IconData, String>{
     Icons.ac_unit_sharp: 'ac_unit_sharp',
     Icons.ac_unit_outlined: 'ac_unit_outlined',
     Icons.access_alarm_sharp: 'access_alarm_sharp',
@@ -3657,7 +3657,7 @@ class MaterialIconsMap {
     Icons.zoom_out_map_outlined: 'zoom_out_map_outlined',
     Icons.zoom_out_rounded: 'zoom_out_rounded',
   };
-  static final iconRevserMap = {
+  static final iconReverseMap = <String, IconData>{
     'ac_unit_sharp': Icons.ac_unit_sharp,
     'ac_unit_outlined': Icons.ac_unit_outlined,
     'access_alarm_sharp': Icons.access_alarm_sharp,

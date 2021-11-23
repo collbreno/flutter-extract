@@ -15,6 +15,7 @@ class NotNullValidator<T> {
   final String fieldName;
 
   NotNullValidator(this.fieldName);
+
   String? call(T? item) => item != null ? null : '$fieldName é obrigatório';
 }
 
@@ -273,6 +274,7 @@ class MoneyFormField extends FormField<int> {
 
 class ListTileTextFormField extends FormField<String> {
   ListTileTextFormField({
+    Key? key,
     int? minLines,
     int? maxLines = 1,
     FormFieldValidator<String>? validator,
@@ -283,30 +285,35 @@ class ListTileTextFormField extends FormField<String> {
     TextInputType? keyboardType,
     String? labelText,
     String? hintText,
+    String? errorText,
     ValueChanged<String>? onChanged,
-  }) : super(builder: (formState) {
-          return Builder(
-            builder: (ctx) => ListTile(
-              horizontalTitleGap: _horizontalTitleGap,
-              leading: leading,
-              title: TextFormField(
-                onChanged: onChanged,
-                focusNode: focusNode,
-                keyboardType: keyboardType,
-                maxLines: maxLines,
-                minLines: minLines,
-                validator: validator,
-                onSaved: onSaved,
-                initialValue: initialValue,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: hintText,
-                  labelText: labelText,
+  }) : super(
+          key: key,
+          validator: validator,
+          onSaved: onSaved,
+          initialValue: initialValue,
+          builder: (formState) {
+            return Builder(
+              builder: (ctx) => ListTile(
+                horizontalTitleGap: _horizontalTitleGap,
+                leading: leading,
+                title: TextField(
+                  onChanged: onChanged,
+                  focusNode: focusNode,
+                  keyboardType: keyboardType,
+                  maxLines: maxLines,
+                  minLines: minLines,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: hintText,
+                    labelText: labelText,
+                    errorText: formState.errorText,
+                  ),
                 ),
               ),
-            ),
-          );
-        });
+            );
+          },
+        );
 }
 
 class _OuterListTile extends StatelessWidget {
