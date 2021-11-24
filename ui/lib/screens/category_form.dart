@@ -110,20 +110,25 @@ class _NameInput extends StatelessWidget {
           onChanged: context.read<CategoryFormCubit>().onNameChanged,
           leading: Icon(Icons.edit),
           hintText: "Insira o nome",
-          errorText: _getErrorText(state.name.error),
+          errorText: _getErrorText(state.name),
         );
       },
     );
   }
 
-  String? _getErrorText(CategoryNameFormzInputValidationError? error) {
-    if (error == null) return null;
-    if (error == CategoryNameFormzInputValidationError.empty) return "Não pode ser vazio";
-    if (error == CategoryNameFormzInputValidationError.tooLong)
-      return "Deve ter tamanho máximo de $CATEGORY_NAME_MAX";
-    if (error == CategoryNameFormzInputValidationError.tooShort)
-      return "Deve ter tamanho mínimo de $CATEGORY_NAME_MIN";
-    throw ArgumentError();
+  String? _getErrorText(CategoryNameFormzInput input) {
+    if (input.invalid) {
+      final error = input.error;
+      if (error == null) return null;
+      if (error == CategoryNameFormzInputValidationError.empty) return "Não pode ser vazio";
+      if (error == CategoryNameFormzInputValidationError.tooLong)
+        return "Deve ter tamanho máximo de $CATEGORY_NAME_MAX";
+      if (error == CategoryNameFormzInputValidationError.tooShort)
+        return "Deve ter tamanho mínimo de $CATEGORY_NAME_MIN";
+      throw ArgumentError();
+    } else {
+      return null;
+    }
   }
 }
 
@@ -138,7 +143,7 @@ class _ColorInput extends StatelessWidget {
       builder: (context, state) {
         return PickerInputField<Color>(
           key: inputKey,
-          errorText: state.color.error != null ? "Inválido" : null,
+          errorText: state.color.invalid ? "Inválido" : null,
           onChanged: context.read<CategoryFormCubit>().onColorChanged,
           columns: 5,
           items: ColorService.colors.keys,
@@ -178,7 +183,7 @@ class _IconInput extends StatelessWidget {
       builder: (context, state) {
         return PickerInputField<IconData>(
           key: inputKey,
-          errorText: state.icon.error != null ? "Inválido" : null,
+          errorText: state.icon.invalid ? "Inválido" : null,
           onChanged: context.read<CategoryFormCubit>().onIconChanged,
           items: IconMapper.getAll().toList(),
           columns: 5,

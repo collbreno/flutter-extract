@@ -26,7 +26,7 @@ class CategoryFormCubit extends Cubit<CategoryFormState> {
   void onNameChanged(String value) {
     final name = CategoryNameFormzInput.dirty(value);
     emit(state.copyWith(
-      name: name,
+      name: name.valid ? name : CategoryNameFormzInput.pure(value),
       status: Formz.validate([name, state.color, state.icon]),
     ));
   }
@@ -34,7 +34,7 @@ class CategoryFormCubit extends Cubit<CategoryFormState> {
   void onIconChanged(IconData? value) {
     final icon = IconFormzInput.dirty(value);
     emit(state.copyWith(
-      icon: icon,
+      icon: icon.valid ? icon : IconFormzInput.pure(value),
       status: Formz.validate([state.name, state.color, icon]),
     ));
   }
@@ -42,14 +42,22 @@ class CategoryFormCubit extends Cubit<CategoryFormState> {
   void onColorChanged(Color? value) {
     final color = ColorFormzInput.dirty(value);
     emit(state.copyWith(
-      color: color,
+      color: color.valid ? color : ColorFormzInput.pure(value),
       status: Formz.validate([state.name, color, state.icon]),
     ));
   }
 
   void onSubmitted() {
-    print('on submitted');
-    _validate();
+    final name = CategoryNameFormzInput.dirty(state.name.value);
+    final color = ColorFormzInput.dirty(state.color.value);
+    final icon = IconFormzInput.dirty(state.icon.value);
+
+    emit(state.copyWith(
+      name: name,
+      color: color,
+      icon: icon,
+      status: Formz.validate([name, color, icon]),
+    ));
 
     if (state.status.isValid) _submit();
   }
@@ -89,9 +97,5 @@ class CategoryFormCubit extends Cubit<CategoryFormState> {
   void _onSuccess(void _) {
     emit(state.copyWith(status: FormzStatus.submissionSuccess));
     emit(CategoryFormState());
-  }
-
-  void _validate() {
-    emit(state.copyWith(status: Formz.validate([state.name, state.color, state.icon])));
   }
 }
