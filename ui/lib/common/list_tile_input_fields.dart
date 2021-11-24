@@ -23,6 +23,7 @@ class PickerInputField<T> extends StatefulWidget {
   final bool enabled;
   final int columns;
   final T? initialValue;
+  final VoidCallback? onTap;
 
   const PickerInputField({
     Key? key,
@@ -38,6 +39,7 @@ class PickerInputField<T> extends StatefulWidget {
     this.leading,
     this.enabled = true,
     this.columns = 1,
+    this.onTap,
   }) : super(key: key);
 
   @override
@@ -72,6 +74,7 @@ class PickerInputFieldState<T> extends State<PickerInputField<T>> {
       enabled: widget.enabled,
       leading: widget.leading,
       onTap: () async {
+        widget.onTap?.call();
         final result = await showPickerDialog(
           context: context,
           pickerDialog: PickerDialog.single(

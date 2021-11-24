@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:business/business.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -47,19 +49,27 @@ class CategoryForm extends StatelessWidget {
   }
 
   Widget _buildForm(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-        SliverList(
-          delegate: SliverChildListDelegate(
-            [
-              _NameInput(inputKey: _nameKey),
-              _ColorInput(inputKey: _colorKey),
-              _IconInput(inputKey: _iconKey),
+    return BlocBuilder<CategoryFormCubit, CategoryFormState>(
+      builder: (context, state) {
+        return AbsorbPointer(
+          absorbing: state.status.isSubmissionInProgress,
+          child: CustomScrollView(
+            slivers: [
+              SliverList(
+                delegate: SliverChildListDelegate(
+                  [
+                    if (state.status.isSubmissionInProgress) LinearProgressIndicator(),
+                    _NameInput(inputKey: _nameKey),
+                    _ColorInput(inputKey: _colorKey),
+                    _IconInput(inputKey: _iconKey),
+                  ],
+                ),
+              ),
+              _SaveButton(),
             ],
           ),
-        ),
-        _SaveButton(),
-      ],
+        );
+      },
     );
   }
 }
@@ -69,30 +79,22 @@ class _SaveButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CategoryFormCubit, CategoryFormState>(
-      builder: (context, state) {
-        return SliverFillRemaining(
-          hasScrollBody: false,
-          child: Align(
-            alignment: Alignment.bottomRight,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                onPressed: state.status.isSubmissionInProgress
-                    ? null
-                    : context.read<CategoryFormCubit>().onSubmitted,
-                child: _buildContent(state.status),
-              ),
-            ),
+    return SliverFillRemaining(
+      hasScrollBody: false,
+      child: Align(
+        alignment: Alignment.bottomRight,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton(
+            onPressed: () {
+              FocusScope.of(context).unfocus();
+              context.read<CategoryFormCubit>().onSubmitted();
+            },
+            child: Text("Save"),
           ),
-        );
-      },
+        ),
+      ),
     );
-  }
-
-  Widget _buildContent(FormzStatus status) {
-    if (status.isSubmissionInProgress) return CircularProgressIndicator();
-    return Text("Save");
   }
 }
 
@@ -148,6 +150,7 @@ class _ColorInput extends StatelessWidget {
           columns: 5,
           items: ColorService.colors.keys,
           leading: Icon(Icons.color_lens),
+          onTap: () => FocusScope.of(context).unfocus(),
           dialogItemBuilder: (color) {
             return Container(
               decoration: ShapeDecoration(
@@ -189,6 +192,7 @@ class _IconInput extends StatelessWidget {
           columns: 5,
           onSearch: (icon, text) => IconMapper.getIconName(icon).contains(text),
           leading: Icon(Icons.color_lens),
+          onTap: () => FocusScope.of(context).unfocus(),
           dialogItemBuilder: (icon) {
             return Container(
               child: Icon(icon),
