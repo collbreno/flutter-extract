@@ -1,7 +1,13 @@
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:flutter/material.dart';
+import 'package:ui/navigation/page_transitions.dart';
+import 'package:ui/navigation/screen.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatelessWidget implements Screen {
+  static Route route() {
+    return AndroidTransition(SettingsScreen());
+  }
+
   SettingsScreen();
 
   final moonIcon = Icon(

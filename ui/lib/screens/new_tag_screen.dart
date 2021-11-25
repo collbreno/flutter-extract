@@ -2,9 +2,15 @@ import 'package:business/business.dart';
 import 'package:flutter/material.dart';
 import 'package:ui/common/list_tile_form_fields.dart';
 import 'package:ui/common/tag_chip.dart';
+import 'package:ui/navigation/page_transitions.dart';
+import 'package:ui/navigation/screen.dart';
 import 'package:ui/services/color_service.dart';
 
-class NewTagScreen extends StatefulWidget {
+class NewTagScreen extends StatefulWidget implements Screen {
+  static Route route() {
+    return AndroidTransition(NewTagScreen());
+  }
+
   const NewTagScreen({Key? key}) : super(key: key);
 
   @override

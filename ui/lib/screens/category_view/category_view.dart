@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ui/screens/category_form.dart';
-import 'package:ui/screens/category_form_screen.dart';
+import 'package:ui/screens/category_form/category_form.dart';
+import 'package:ui/screens/category_form/category_form_screen.dart';
 import 'package:ui/screens/category_view/bloc/category_view_cubit.dart';
 
 enum _Actions { delete, edit }
@@ -36,7 +36,7 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
                   PopupMenuButton<_Actions>(
                     onSelected: (action) {
                       if (action == _Actions.edit)
-                        Navigator.of(context).push(NewCategoryScreen.route(state.category.data));
+                        Navigator.of(context).push(CategoryFormScreen.route(state.category.data));
                       // TODO: Implementar delete
                     },
                     itemBuilder: (context) {

@@ -4,8 +4,13 @@ import 'package:money2/money2.dart';
 import 'package:ui/common/list_tile_form_fields.dart';
 import 'package:ui/common/list_tile_utils.dart';
 import 'package:ui/common/tag_chip.dart';
+import 'package:ui/navigation/page_transitions.dart';
+import 'package:ui/navigation/screen.dart';
 
-class NewExpenseScreen extends StatefulWidget {
+class NewExpenseScreen extends StatefulWidget implements Screen {
+  static Route route() {
+    return AndroidTransition(NewExpenseScreen());
+  }
   final Expense? expenseToEdit;
 
   const NewExpenseScreen({

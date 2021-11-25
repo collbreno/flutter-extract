@@ -1,8 +1,15 @@
 import 'package:business/business.dart';
 import 'package:flutter/material.dart';
 import 'package:ui/common/list_tile_form_fields.dart';
+import 'package:ui/navigation/page_transitions.dart';
+import 'package:ui/navigation/screen.dart';
 
-class NewStoreScreen extends StatefulWidget {
+class NewStoreScreen extends StatefulWidget implements Screen {
+  static Route route() {
+    return AndroidTransition(NewStoreScreen());
+  }
+
+
   final Expense? expenseToEdit;
 
   const NewStoreScreen({

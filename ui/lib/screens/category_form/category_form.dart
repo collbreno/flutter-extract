@@ -21,41 +21,46 @@ class CategoryForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<CategoryFormCubit, CategoryFormState>(
-      child: _buildForm(context),
-      listener: (context, state) {
-        if (state.status.isSubmissionFailure) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text("Algo deu errado"),
-                backgroundColor: Colors.red,
-              ),
-            );
-        } else if (state.status.isSubmissionSuccess) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text("Criado com sucesso"),
-                behavior: SnackBarBehavior.floating,
-                action: SnackBarAction(
-                  label: "Abrir",
-                  onPressed: () => Navigator.of(context).push(
-                    CategoryViewScreen.route(state.id),
-                  ),
-                ),
-              ),
-            );
-        } else if (state.status.isPure) {
-          print('state mudou e é puro');
-          _nameKey.currentState?.didChange(state.name.value);
-          _colorKey.currentState?.didChange(state.color.value);
-          _iconKey.currentState?.didChange(state.icon.value);
-        }
-      },
+    return Scaffold(
+      appBar: _AppBar(),
+      body: BlocListener<CategoryFormCubit, CategoryFormState>(
+        child: _buildForm(context),
+        listener: _listener,
+      ),
     );
+  }
+
+  void _listener(BuildContext context, CategoryFormState state) {
+    if (state.status.isSubmissionFailure) {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text("Algo deu errado"),
+            backgroundColor: Colors.red,
+          ),
+        );
+    } else if (state.status.isSubmissionSuccess) {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text("Salvo com sucesso"),
+            behavior: SnackBarBehavior.floating,
+            action: SnackBarAction(
+              label: "Abrir",
+              onPressed: () => Navigator.of(context).push(
+                CategoryViewScreen.route(state.id),
+              ),
+            ),
+          ),
+        );
+    } else if (state.status.isPure) {
+      print('state mudou e é puro');
+      _nameKey.currentState?.didChange(state.name.value);
+      _colorKey.currentState?.didChange(state.color.value);
+      _iconKey.currentState?.didChange(state.icon.value);
+    }
   }
 
   Widget _buildForm(BuildContext context) {
@@ -82,6 +87,24 @@ class CategoryForm extends StatelessWidget {
       },
     );
   }
+}
+
+class _AppBar extends StatelessWidget implements PreferredSizeWidget {
+  const _AppBar({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CategoryFormCubit, CategoryFormState>(
+      builder: (context, state) {
+        return AppBar(
+          title: state.id.isEmpty ? Text("Nova Categoria") : Text("Editar Categoria"),
+        );
+      },
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
 class _SaveButton extends StatelessWidget {
