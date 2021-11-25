@@ -4,7 +4,7 @@ import 'package:formz/formz.dart';
 enum ColorFormzInputValidationError { empty }
 
 class ColorFormzInput extends FormzInput<Color?, ColorFormzInputValidationError> {
-  const ColorFormzInput.pure([Color? value]) : super.pure(null);
+  const ColorFormzInput.pure([Color? value]) : super.pure(value);
 
   const ColorFormzInput.dirty([Color? value]) : super.dirty(value);
 

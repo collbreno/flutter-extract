@@ -3,8 +3,8 @@ import 'package:business/fixtures.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ui/bloc/category_list_cubit.dart';
-import 'package:ui/common/list_tile_utils.dart';
+import 'package:ui/screens/category_list/bloc/category_list_cubit.dart';
+import 'package:ui/screens/category_view/category_view_screen.dart';
 
 class CategoryListScreen extends StatelessWidget {
   CategoryListScreen({Key? key}) : super(key: key);
@@ -43,7 +43,11 @@ class CategoryListScreen extends StatelessWidget {
       itemCount: categories.length,
       itemBuilder: (context, index) {
         final category = categories[index];
-        return CategoryListTile(category);
+        return ListTile(
+          title: Text(category.name),
+          leading: Icon(category.icon, color: category.color),
+          onTap: () => Navigator.of(context).push(CategoryViewScreen.route(category.id)),
+        );
       },
     );
   }

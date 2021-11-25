@@ -2,14 +2,14 @@ part of 'category_form_cubit.dart';
 
 class CategoryFormState extends Equatable {
   final FormzStatus status;
-  final UidFormzInput id;
+  final String id;
   final CategoryNameFormzInput name;
   final IconFormzInput icon;
   final ColorFormzInput color;
 
   const CategoryFormState({
     this.status = FormzStatus.pure,
-    this.id = const UidFormzInput.pure(),
+    this.id = '',
     this.name = const CategoryNameFormzInput.pure(),
     this.icon = const IconFormzInput.pure(),
     this.color = const ColorFormzInput.pure(),
@@ -17,14 +17,14 @@ class CategoryFormState extends Equatable {
 
   CategoryFormState.fromCategory(Category category)
       : status = FormzStatus.pure,
-        id = UidFormzInput.pure(category.id),
+        id = category.id,
         name = CategoryNameFormzInput.pure(category.name),
         color = ColorFormzInput.pure(category.color),
         icon = IconFormzInput.pure(category.icon);
 
   CategoryFormState copyWith({
     FormzStatus? status,
-    UidFormzInput? id,
+    String? id,
     CategoryNameFormzInput? name,
     IconFormzInput? icon,
     ColorFormzInput? color,

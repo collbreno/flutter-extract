@@ -9,6 +9,7 @@ import 'package:formz/formz.dart';
 import 'package:ui/common/list_tile_form_fields.dart';
 import 'package:ui/common/list_tile_input_fields.dart';
 import 'package:ui/models/_models.dart';
+import 'package:ui/screens/category_view/category_view_screen.dart';
 import 'package:ui/services/color_service.dart';
 
 class CategoryForm extends StatelessWidget {
@@ -27,7 +28,7 @@ class CategoryForm extends StatelessWidget {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
-              const SnackBar(
+              SnackBar(
                 content: Text("Algo deu errado"),
                 backgroundColor: Colors.red,
               ),
@@ -36,7 +37,16 @@ class CategoryForm extends StatelessWidget {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
-              const SnackBar(content: Text("Criado com sucesso")),
+              SnackBar(
+                content: Text("Criado com sucesso"),
+                behavior: SnackBarBehavior.floating,
+                action: SnackBarAction(
+                  label: "Abrir",
+                  onPressed: () => Navigator.of(context).push(
+                    CategoryViewScreen.route(state.id),
+                  ),
+                ),
+              ),
             );
         } else if (state.status.isPure) {
           print('state mudou e é puro');
@@ -109,6 +119,7 @@ class _NameInput extends StatelessWidget {
       builder: (context, state) {
         return TextInputField(
           key: inputKey,
+          initialValue: state.name.value,
           onChanged: context.read<CategoryFormCubit>().onNameChanged,
           leading: Icon(Icons.edit),
           hintText: "Insira o nome",
@@ -145,6 +156,7 @@ class _ColorInput extends StatelessWidget {
       builder: (context, state) {
         return PickerInputField<Color>(
           key: inputKey,
+          initialValue: state.color.value,
           errorText: state.color.invalid ? "Inválido" : null,
           onChanged: context.read<CategoryFormCubit>().onColorChanged,
           columns: 5,
@@ -186,6 +198,7 @@ class _IconInput extends StatelessWidget {
       builder: (context, state) {
         return PickerInputField<IconData>(
           key: inputKey,
+          initialValue: state.icon.value,
           errorText: state.icon.invalid ? "Inválido" : null,
           onChanged: context.read<CategoryFormCubit>().onIconChanged,
           items: IconMapper.getAll().toList(),

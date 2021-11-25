@@ -5,7 +5,7 @@ import 'package:formz/formz.dart';
 enum IconFormzInputValidationError { empty, invalid }
 
 class IconFormzInput extends FormzInput<IconData?, IconFormzInputValidationError> {
-  const IconFormzInput.pure([IconData? value]) : super.pure(null);
+  const IconFormzInput.pure([IconData? value]) : super.pure(value);
 
   const IconFormzInput.dirty([IconData? value]) : super.dirty(value);
 

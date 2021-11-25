@@ -35,6 +35,7 @@ dependencies:
   receive_sharing_intent: ^1.4.5
   expressions: ^0.2.2
   open_file: ^3.2.1
+  shimmer: ^2.0.0
   intl: ^0.17.0
   animated_theme_switcher: ^2.0.1-nullsafety.0
   business:

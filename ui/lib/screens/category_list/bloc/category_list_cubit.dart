@@ -12,6 +12,7 @@ class CategoryListCubit extends Cubit<CategoryListState> {
   }
 
   void loadCategories() async {
+    print('carregabdo categorias');
     emit(CategoryListLoading());
 
     final result = await _getCategories();

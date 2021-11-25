@@ -5,16 +5,17 @@ import 'package:formz/formz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:ui/models/_models.dart';
 import 'package:ui/models/color_formz_input.dart';
+import 'package:ui/screens/category_list/bloc/category_list_cubit.dart';
+import 'package:ui/screens/category_view/bloc/category_view_cubit.dart';
 import 'package:uuid/uuid.dart';
 import 'package:dartz/dartz.dart';
 
 part 'category_form_state.dart';
 
 class CategoryFormCubit extends Cubit<CategoryFormState> {
-  final uid = Uuid();
+  final _uid = Uuid();
   final UseCase<void, Category> _insertCategory;
   final UseCase<void, Category> _updateCategory;
-
   CategoryFormCubit({
     required UseCase<void, Category> insertCategory,
     required UseCase<void, Category> updateCategory,
@@ -66,22 +67,20 @@ class CategoryFormCubit extends Cubit<CategoryFormState> {
     print('submit');
     emit(state.copyWith(status: FormzStatus.submissionInProgress));
 
-    late final Either<Failure, void> result;
+    late final UseCase<void, Category> useCase;
 
-    if (state.id.value.isEmpty)
-      result = await _insertCategory(Category(
-        id: uid.v4(),
-        color: state.color.value!,
-        icon: state.icon.value!,
-        name: state.name.value,
-      ));
-    else
-      result = await _updateCategory(Category(
-        id: state.id.value,
-        color: state.color.value!,
-        icon: state.icon.value!,
-        name: state.name.value,
-      ));
+    if (state.id.isEmpty) {
+      emit(state.copyWith(id: _uid.v4()));
+      useCase = _insertCategory;
+    } else {
+      useCase = _updateCategory;
+    }
+    final result = await useCase(Category(
+      id: state.id,
+      color: state.color.value!,
+      icon: state.icon.value!,
+      name: state.name.value,
+    ));
 
     result.fold(
       _onFailed,

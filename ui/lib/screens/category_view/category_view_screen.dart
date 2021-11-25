@@ -1,0 +1,31 @@
+import 'package:business/business.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ui/navigation/page_transitions.dart';
+import 'package:ui/navigation/screen.dart';
+import 'package:ui/screens/category_view/bloc/category_view_cubit.dart';
+import 'package:ui/screens/category_view/category_view.dart';
+
+class CategoryViewScreen extends StatelessWidget implements Screen {
+  static Route route(String categoryId) {
+    return AndroidTransition(CategoryViewScreen(categoryId));
+  }
+
+  final String categoryId;
+
+  const CategoryViewScreen(
+    this.categoryId, {
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => CategoryViewCubit(
+        getCategoryById: context.read<GetCategoryByIdUseCase>(),
+        categoryId: categoryId,
+      ),
+      child: CategoryView(),
+    );
+  }
+}

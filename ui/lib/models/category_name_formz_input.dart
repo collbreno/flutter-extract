@@ -8,7 +8,7 @@ enum CategoryNameFormzInputValidationError {
 }
 
 class CategoryNameFormzInput extends FormzInput<String, CategoryNameFormzInputValidationError> {
-  const CategoryNameFormzInput.pure([String value = '']) : super.pure('');
+  const CategoryNameFormzInput.pure([String value = '']) : super.pure(value);
 
   const CategoryNameFormzInput.dirty([String value = '']) : super.dirty(value);
 

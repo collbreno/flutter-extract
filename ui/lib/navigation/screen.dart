@@ -1,1 +1,3 @@
-abstract class Screen {}
+import 'package:flutter/material.dart';
+
+abstract class Screen extends Widget {}

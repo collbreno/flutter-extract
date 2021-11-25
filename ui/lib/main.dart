@@ -51,6 +51,7 @@ List<Provider> _createProviders(AppDatabase db) {
   return [
     Provider<InsertCategoryUseCase>(create: (_) => InsertCategoryUseCase(categoryRepo)),
     Provider<UpdateCategoryUseCase>(create: (_) => UpdateCategoryUseCase(categoryRepo)),
-    Provider<GetCategoriesUseCase>(create: (_) => GetCategoriesUseCase(categoryRepo))
+    Provider<GetCategoriesUseCase>(create: (_) => GetCategoriesUseCase(categoryRepo)),
+    Provider<GetCategoryByIdUseCase>(create: (_) => GetCategoryByIdUseCase(categoryRepo)),
   ];
 }
