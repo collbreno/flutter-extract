@@ -13,10 +13,13 @@ class CategoryView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _AppBar(),
-      body: ListView(
-        children: [
-          _CategoryListTile(),
-        ],
+      body: RefreshIndicator(
+        onRefresh: () async => context.read<CategoryViewCubit>().loadCategory(),
+        child: ListView(
+          children: [
+            _CategoryListTile(),
+          ],
+        ),
       ),
     );
   }

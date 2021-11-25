@@ -34,16 +34,19 @@ class _List extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: categories.length,
-      itemBuilder: (context, index) {
-        final category = categories[index];
-        return ListTile(
-          title: Text(category.name),
-          leading: Icon(category.icon, color: category.color),
-          onTap: () => Navigator.of(context).push(CategoryViewScreen.route(category.id)),
-        );
-      },
+    return RefreshIndicator(
+      onRefresh: () async => context.read<CategoryListCubit>().loadCategories(),
+      child: ListView.builder(
+        itemCount: categories.length,
+        itemBuilder: (context, index) {
+          final category = categories[index];
+          return ListTile(
+            title: Text(category.name),
+            leading: Icon(category.icon, color: category.color),
+            onTap: () => Navigator.of(context).push(CategoryViewScreen.route(category.id)),
+          );
+        },
+      ),
     );
   }
 }
