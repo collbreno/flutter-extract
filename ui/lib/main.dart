@@ -5,7 +5,6 @@ import 'package:infrastructure/infrastructure.dart';
 import 'package:provider/provider.dart';
 import 'package:ui/common/app_theme.dart';
 import 'package:ui/screens/home/home_screen.dart';
-import 'package:moor/moor.dart';
 import 'package:moor_flutter/moor_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
@@ -47,11 +46,23 @@ Future<AppDatabase> _openDatabase() async {
 
 List<Provider> _createProviders(AppDatabase db) {
   final categoryRepo = CategoryRepository(db);
+  final subcategoryRepo = SubcategoryRepository(db);
 
   return [
+    // category use cases
     Provider<InsertCategoryUseCase>(create: (_) => InsertCategoryUseCase(categoryRepo)),
     Provider<UpdateCategoryUseCase>(create: (_) => UpdateCategoryUseCase(categoryRepo)),
     Provider<GetCategoriesUseCase>(create: (_) => GetCategoriesUseCase(categoryRepo)),
     Provider<GetCategoryByIdUseCase>(create: (_) => GetCategoryByIdUseCase(categoryRepo)),
+
+    // subcategory use cases
+    Provider<InsertSubcategoryUseCase>(create: (_) => InsertSubcategoryUseCase(subcategoryRepo)),
+    Provider<UpdateSubcategoryUseCase>(create: (_) => UpdateSubcategoryUseCase(subcategoryRepo)),
+    Provider<DeleteSubcategoryUseCase>(create: (_) => DeleteSubcategoryUseCase(subcategoryRepo)),
+    Provider<GetSubcategoryByIdUseCase>(create: (_) => GetSubcategoryByIdUseCase(subcategoryRepo)),
+    Provider<GetSubcategoriesUseCase>(create: (_) => GetSubcategoriesUseCase(subcategoryRepo)),
+    Provider<GetSubcategoriesFromParentUseCase>(
+      create: (_) => GetSubcategoriesFromParentUseCase(subcategoryRepo),
+    ),
   ];
 }
