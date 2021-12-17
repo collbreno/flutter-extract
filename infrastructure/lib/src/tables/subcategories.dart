@@ -1,5 +1,5 @@
 import 'package:infrastructure/infrastructure.dart';
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 @DataClassName('SubcategoryEntity')
 class Subcategories extends Table {

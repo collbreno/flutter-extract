@@ -1,11 +1,10 @@
 import 'package:business/business.dart';
 import 'package:business/fixtures.dart';
 import 'package:dartz/dartz.dart';
+import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:infrastructure/infrastructure.dart';
 import 'package:infrastructure/src/repositories/expense_repository.dart';
-import 'package:moor/ffi.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:uuid/uuid.dart';
 
 import '../matchers/either_matcher.dart';
@@ -19,12 +18,8 @@ void main() {
   final fix = FixtureExpense();
   final fixTags = FixtureTag();
 
-  setUpAll(() {
-    sqfliteFfiInit();
-  });
-
   setUp(() {
-    database = AppDatabase(VmDatabase.memory());
+    database = AppDatabase(NativeDatabase.memory());
     repository = ExpenseRepository(database);
     fkUtils = ForeignKeyUtils(database);
   });

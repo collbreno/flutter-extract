@@ -1,7 +1,7 @@
 import 'package:business/business.dart';
 import 'package:dartz/dartz.dart';
 import 'package:infrastructure/infrastructure.dart';
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 class ExpenseRepository implements IExpenseRepository {
   final AppDatabase db;
@@ -148,7 +148,7 @@ class ExpenseRepository implements IExpenseRepository {
     final tags = await (db
             .select(db.expenseTags)
             .join([innerJoin(db.tags, db.tags.id.equalsExp(db.expenseTags.tagId))])
-              ..where(db.expenseTags.expenseId.isIn(expenseIds)))
+          ..where(db.expenseTags.expenseId.isIn(expenseIds)))
         .get();
     final expenseIdToTags = <String, List<Tag>>{};
     for (var row in tags) {

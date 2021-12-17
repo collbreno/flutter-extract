@@ -9,20 +9,18 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  moor: ^4.2.1
-  moor_flutter: ^4.0.0
-  uuid: ^3.0.4
-  mockito: ^5.0.8
+  drift: ^1.1.0
+  sqlite3_flutter_libs: ^0.5.0
   dartz: ^0.10.0-nullsafety.2
   business:
     path: ../business
 
 
 dev_dependencies:
-  sqflite_common_ffi: ^2.0.0
+  uuid: ^3.0.5
+  mockito: ^5.0.16
+  drift_dev: ^1.1.0
   flutter_test:
     sdk: flutter
-  pedantic: ^1.11.0
   test: ^1.16.5
-  build_runner: ^2.0.3
-  moor_generator: ^4.2.1
+  build_runner: ^2.1.5

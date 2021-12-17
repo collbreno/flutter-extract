@@ -1,7 +1,7 @@
 import 'package:business/business.dart';
 import 'package:dartz/dartz.dart';
 import 'package:infrastructure/infrastructure.dart';
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 
 class SubcategoryRepository implements ISubcategoryRepository {
   final AppDatabase db;

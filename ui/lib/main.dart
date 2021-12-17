@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:business/business.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +7,6 @@ import 'package:infrastructure/infrastructure.dart';
 import 'package:provider/provider.dart';
 import 'package:ui/common/app_theme.dart';
 import 'package:ui/screens/home/home_screen.dart';
-import 'package:moor_flutter/moor_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 
@@ -41,7 +42,7 @@ class MyApp extends StatelessWidget {
 Future<AppDatabase> _openDatabase() async {
   final documents = await getTemporaryDirectory();
   final path = join(documents.path, 'database.sqlite');
-  return AppDatabase(FlutterQueryExecutor(path: path));
+  return AppDatabase.fromFile(File(path));
 }
 
 List<Provider> _createProviders(AppDatabase db) {

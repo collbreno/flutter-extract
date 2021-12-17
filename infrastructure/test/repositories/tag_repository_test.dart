@@ -4,8 +4,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:infrastructure/infrastructure.dart';
 import 'package:infrastructure/src/repositories/tag_repository.dart';
-import 'package:moor/ffi.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:drift/native.dart';
 import 'package:uuid/uuid.dart';
 
 import '../matchers/either_matcher.dart';
@@ -20,12 +19,8 @@ void main() {
   final fixExpenses = FixtureExpense();
   final fixDate = FixtureDateTime();
 
-  setUpAll(() {
-    sqfliteFfiInit();
-  });
-
   setUp(() {
-    database = AppDatabase(VmDatabase.memory());
+    database = AppDatabase(NativeDatabase.memory());
     repository = TagRepository(database);
     fkUtils = ForeignKeyUtils(database);
 

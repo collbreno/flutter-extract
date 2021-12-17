@@ -9,15 +9,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  built_value: ^8.0.4
   built_collection: ^5.0.0
-  equatable: ^2.0.2
+  built_value: ^8.0.4
   dartz: ^0.10.0-nullsafety.2
+  equatable: ^2.0.2
   flutter_redux: ^0.8.2
   mockito: ^5.0.8
+  path_provider: ^2.0.2
   redux: ^5.0.0
   uuid: ^3.0.4
-  path_provider: ^2.0.2
 
 dev_dependencies:
   flutter_test:

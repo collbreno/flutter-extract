@@ -3,8 +3,7 @@ import 'package:business/fixtures.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:infrastructure/infrastructure.dart';
-import 'package:moor/ffi.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:drift/native.dart';
 import 'package:uuid/uuid.dart';
 
 import '../matchers/either_matcher.dart';
@@ -19,12 +18,8 @@ void main() {
   final fixExpense = FixtureExpense();
   final fixCategory = FixtureCategory();
 
-  setUpAll(() {
-    sqfliteFfiInit();
-  });
-
   setUp(() {
-    database = AppDatabase(VmDatabase.memory());
+    database = AppDatabase(NativeDatabase.memory());
     repository = SubcategoryRepository(database);
     fkUtils = ForeignKeyUtils(database);
     addTearDown(() async {
