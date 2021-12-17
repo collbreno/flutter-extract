@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:business/business.dart';
 import 'package:dartz/dartz.dart';
 import 'package:infrastructure/infrastructure.dart';
@@ -61,6 +63,23 @@ class CategoryRepository implements ICategoryRepository {
     } on Exception {
       return Left(UnknownDatabaseFailure());
     }
+  }
+
+  @override
+  Stream<FailureOr<Category>> watchById(String id) {
+    final query = db.select(db.categories)..where((c) => c.id.equals(id));
+    return query.watchSingleOrNull().transform(StreamTransformer.fromHandlers(
+          handleData: (data, sink) {
+            if (data == null) {
+              sink.add(Left(NotFoundFailure()));
+            } else {
+              sink.add(Right(data.toModel()));
+            }
+          },
+          handleError: (error, stackTrace, sink) {
+            sink.add(Left(UnknownDatabaseFailure()));
+          },
+        ));
   }
 
   @override

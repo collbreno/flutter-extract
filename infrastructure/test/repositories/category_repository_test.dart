@@ -2,6 +2,7 @@ import 'package:business/business.dart';
 import 'package:business/fixtures.dart';
 import 'package:dartz/dartz.dart';
 import 'package:drift/native.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:infrastructure/infrastructure.dart';
 import 'package:uuid/uuid.dart';
@@ -95,7 +96,7 @@ void main() {
     });
   });
 
-  group('Query by id', () {
+  group('Get by id', () {
     test('Success case', () async {
       final category1 = fix.category1;
       final category2 = fix.category2;
@@ -112,6 +113,63 @@ void main() {
     test('Query by id of an item that does not exist must return $NotFoundFailure', () async {
       final result = await repository.getById(uid.v4());
       expect(result, Left(NotFoundFailure()));
+    });
+  });
+
+  group('Watch by id', () {
+    test('Simple case', () async {
+      final category = fix.category1;
+
+      await repository.insert(category);
+
+      final result = await repository.watchById(category.id).first;
+
+      expect(result, Right(category));
+    });
+
+    test('Query by id of an item that does not exist must return $NotFoundFailure', () async {
+      final result = await repository.watchById(uid.v4()).first;
+      expect(result, Left(NotFoundFailure()));
+    });
+
+    test('Updation must emit a new category', () async {
+      final category1 = fix.category1;
+      final category2 = category1.rebuild((p0) => p0.name = 'New category');
+      final category3 = category2.rebuild((p0) => p0.color = Color(Colors.amber.value));
+
+      await repository.insert(category1);
+
+      final expectation = expectLater(
+        repository.watchById(category1.id),
+        emitsInOrder([
+          Right(category1),
+          Right(category2),
+          Right(category3),
+        ]),
+      );
+
+      await repository.update(category2);
+      await repository.update(category3);
+
+      await expectation;
+    });
+
+    test('Deletion must emit a new failure', () async {
+      final category = fix.category1;
+
+      await repository.insert(category);
+
+      final expectation = expectLater(
+        repository.watchById(category.id),
+        emitsInOrder([
+          Right(category),
+          Left(NotFoundFailure()),
+        ]),
+      );
+
+      await repository.delete(category.id);
+
+      await expectation;
     });
   });
 
