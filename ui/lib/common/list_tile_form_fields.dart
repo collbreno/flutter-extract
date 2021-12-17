@@ -264,7 +264,7 @@ class MoneyFormField extends FormField<int> {
                 },
                 suffixIcon: suffixIcon,
                 child: formState.value != null
-                    ? Text(Money.fromInt(formState.value!, code: currency.code).toString())
+                    ? Text(Money.fromInt(formState.value!, currency).toString())
                     : Text(hintText),
               ),
             );
