@@ -1,7 +1,7 @@
 import 'package:business/business.dart';
 import 'package:dartz/dartz.dart';
 
-class GetExpenseByIdUseCase extends UseCase<Expense, String> {
+class GetExpenseByIdUseCase extends FutureUseCase<Expense, String> {
   GetExpenseByIdUseCase();
 
   @override

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ui/navigation/page_transitions.dart';
 import 'package:ui/navigation/screen.dart';
-import 'package:ui/screens/category_view/bloc/category_view_cubit.dart';
+import 'package:ui/bloc/category_view_cubit.dart';
 import 'package:ui/screens/category_view/category_view.dart';
 
 class CategoryViewScreen extends StatelessWidget implements Screen {

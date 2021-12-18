@@ -1,7 +1,7 @@
 import 'package:business/business.dart';
 import 'package:dartz/dartz.dart';
 
-class ForceDeleteStoreUseCase extends UseCase<void, String> {
+class ForceDeleteStoreUseCase extends FutureUseCase<void, String> {
   final IStoreRepository repository;
 
   ForceDeleteStoreUseCase(this.repository);

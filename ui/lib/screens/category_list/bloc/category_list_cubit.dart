@@ -5,7 +5,7 @@ import 'package:equatable/equatable.dart';
 part 'category_list_state.dart';
 
 class CategoryListCubit extends Cubit<CategoryListState> {
-  final NoParamUseCase<List<Category>> _getCategories;
+  final NoParamFutureUseCase<List<Category>> _getCategories;
 
   CategoryListCubit(this._getCategories) : super(CategoryListInitial()) {
     loadCategories();

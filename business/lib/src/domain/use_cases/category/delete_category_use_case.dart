@@ -1,7 +1,7 @@
 import 'package:business/business.dart';
 import 'package:dartz/dartz.dart';
 
-class DeleteCategoryUseCase extends UseCase<void, String> {
+class DeleteCategoryUseCase extends FutureUseCase<void, String> {
   final ICategoryRepository repository;
 
   DeleteCategoryUseCase(this.repository);

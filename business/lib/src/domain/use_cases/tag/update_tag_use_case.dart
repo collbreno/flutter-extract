@@ -1,7 +1,7 @@
 import 'package:business/business.dart';
 import 'package:dartz/dartz.dart';
 
-class UpdateTagUseCase extends UseCase<void, Tag> {
+class UpdateTagUseCase extends FutureUseCase<void, Tag> {
   final ITagRepository repository;
 
   UpdateTagUseCase(this.repository);

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ui/screens/category_form/category_form.dart';
 import 'package:ui/screens/category_form/category_form_screen.dart';
-import 'package:ui/screens/category_view/bloc/category_view_cubit.dart';
+import 'package:ui/bloc/category_view_cubit.dart';
 
 enum _Actions { delete, edit }
 

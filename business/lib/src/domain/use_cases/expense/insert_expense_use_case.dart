@@ -1,7 +1,7 @@
 import 'package:business/business.dart';
 import 'package:dartz/dartz.dart';
 
-class InsertExpenseUseCase extends UseCase<void, Expense> {
+class InsertExpenseUseCase extends FutureUseCase<void, Expense> {
   InsertExpenseUseCase();
 
   @override

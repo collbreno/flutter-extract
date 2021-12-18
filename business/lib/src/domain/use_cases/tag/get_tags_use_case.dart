@@ -1,7 +1,7 @@
 import 'package:business/business.dart';
 import 'package:dartz/dartz.dart';
 
-class GetTagsUseCase extends NoParamUseCase<List<Tag>> {
+class GetTagsUseCase extends NoParamFutureUseCase<List<Tag>> {
   final ITagRepository repository;
 
   GetTagsUseCase(this.repository);

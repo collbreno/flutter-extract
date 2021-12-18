@@ -1,7 +1,7 @@
 import 'package:business/business.dart';
 import 'package:dartz/dartz.dart';
 
-class GetPaymentMethodsUseCase extends NoParamUseCase<List<PaymentMethod>> {
+class GetPaymentMethodsUseCase extends NoParamFutureUseCase<List<PaymentMethod>> {
   final IPaymentMethodRepository repository;
 
   GetPaymentMethodsUseCase(this.repository);

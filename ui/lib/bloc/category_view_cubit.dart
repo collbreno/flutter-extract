@@ -7,10 +7,10 @@ import 'package:flutter/material.dart';
 part 'category_view_state.dart';
 
 class CategoryViewCubit extends Cubit<CategoryViewState> {
-  final UseCase<Category, String> _getCategoryById;
+  final FutureUseCase<Category, String> _getCategoryById;
 
   CategoryViewCubit({
-    required UseCase<Category, String> getCategoryById,
+    required FutureUseCase<Category, String> getCategoryById,
     required String categoryId,
   })  : _getCategoryById = getCategoryById,
         super(CategoryViewState(categoryId)) {

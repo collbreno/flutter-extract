@@ -1,9 +1,13 @@
 import 'package:business/src/core/_core.dart';
 
-abstract class UseCase<T, P> {
+abstract class StreamUseCase<T, P> {
+  Stream<FailureOr<T>> call(P param);
+}
+
+abstract class FutureUseCase<T, P> {
   Future<FailureOr<T>> call(P param);
 }
 
-abstract class NoParamUseCase<T> {
+abstract class NoParamFutureUseCase<T> {
   Future<FailureOr<T>> call();
 }

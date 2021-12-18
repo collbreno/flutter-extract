@@ -1,7 +1,7 @@
 import 'package:business/business.dart';
 import 'package:dartz/dartz.dart';
 
-class GetExpensesUseCase extends UseCase<List<Expense>, ExpenseFilter> {
+class GetExpensesUseCase extends FutureUseCase<List<Expense>, ExpenseFilter> {
   GetExpensesUseCase();
 
   @override

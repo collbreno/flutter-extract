@@ -1,7 +1,7 @@
 import 'package:business/src/core/_core.dart';
 import 'package:dartz/dartz.dart';
 
-class DeleteExpenseUseCase extends UseCase<void, String> {
+class DeleteExpenseUseCase extends FutureUseCase<void, String> {
   DeleteExpenseUseCase();
 
   @override

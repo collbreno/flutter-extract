@@ -1,7 +1,7 @@
 import 'package:business/src/core/_core.dart';
 import 'package:dartz/dartz.dart';
 
-class GetValueSpentUseCase extends UseCase<int, ExpenseFilter> {
+class GetValueSpentUseCase extends FutureUseCase<int, ExpenseFilter> {
   GetValueSpentUseCase();
 
   @override

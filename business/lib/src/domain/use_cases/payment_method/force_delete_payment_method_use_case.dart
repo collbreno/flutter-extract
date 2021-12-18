@@ -1,7 +1,7 @@
 import 'package:business/business.dart';
 import 'package:dartz/dartz.dart';
 
-class ForceDeletePaymentMethodUseCase extends UseCase<void, String> {
+class ForceDeletePaymentMethodUseCase extends FutureUseCase<void, String> {
   final IPaymentMethodRepository repository;
 
   ForceDeletePaymentMethodUseCase(this.repository);

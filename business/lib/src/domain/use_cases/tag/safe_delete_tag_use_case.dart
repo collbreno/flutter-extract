@@ -1,7 +1,7 @@
 import 'package:business/business.dart';
 import 'package:dartz/dartz.dart';
 
-class SafeDeleteTagUseCase extends UseCase<void, String> {
+class SafeDeleteTagUseCase extends FutureUseCase<void, String> {
   final ITagRepository repository;
 
   SafeDeleteTagUseCase(this.repository);

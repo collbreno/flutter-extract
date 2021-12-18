@@ -1,7 +1,7 @@
 import 'package:business/business.dart';
 import 'package:dartz/dartz.dart';
 
-class UpdateCategoryUseCase extends UseCase<void, Category> {
+class UpdateCategoryUseCase extends FutureUseCase<void, Category> {
   final ICategoryRepository repository;
 
   UpdateCategoryUseCase(this.repository);

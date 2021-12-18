@@ -1,7 +1,7 @@
 import 'package:business/business.dart';
 import 'package:business/src/domain/repositories/subcategory_repository.dart';
 
-class GetSubcategoryByIdUseCase extends UseCase<Subcategory, String> {
+class GetSubcategoryByIdUseCase extends FutureUseCase<Subcategory, String> {
   final ISubcategoryRepository repository;
 
   GetSubcategoryByIdUseCase(this.repository);

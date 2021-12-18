@@ -9,7 +9,7 @@ import 'package:ui/navigation/page_transitions.dart';
 import 'package:ui/navigation/screen.dart';
 import 'package:ui/screens/category_form/category_form.dart';
 import 'package:ui/screens/category_list/bloc/category_list_cubit.dart';
-import 'package:ui/screens/category_view/bloc/category_view_cubit.dart';
+import 'package:ui/bloc/category_view_cubit.dart';
 import 'package:ui/services/color_service.dart';
 import 'package:provider/provider.dart';
 

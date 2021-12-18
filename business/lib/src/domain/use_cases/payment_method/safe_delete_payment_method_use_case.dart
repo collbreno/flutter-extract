@@ -1,7 +1,7 @@
 import 'package:business/business.dart';
 import 'package:dartz/dartz.dart';
 
-class SafeDeletePaymentMethodUseCase extends UseCase<void, String> {
+class SafeDeletePaymentMethodUseCase extends FutureUseCase<void, String> {
   final IPaymentMethodRepository repository;
 
   SafeDeletePaymentMethodUseCase(this.repository);

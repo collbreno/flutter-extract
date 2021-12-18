@@ -1,7 +1,7 @@
 import 'package:business/business.dart';
 import 'package:dartz/dartz.dart';
 
-class GetStoresUseCase extends NoParamUseCase<List<Store>> {
+class GetStoresUseCase extends NoParamFutureUseCase<List<Store>> {
   final IStoreRepository repository;
 
   GetStoresUseCase(this.repository);

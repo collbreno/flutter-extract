@@ -2,7 +2,7 @@ import 'package:business/src/core/_core.dart';
 import 'package:business/src/domain/repositories/subcategory_repository.dart';
 import 'package:dartz/dartz.dart';
 
-class DeleteSubcategoryUseCase extends UseCase<void, String> {
+class DeleteSubcategoryUseCase extends FutureUseCase<void, String> {
   final ISubcategoryRepository repository;
 
   DeleteSubcategoryUseCase(this.repository);

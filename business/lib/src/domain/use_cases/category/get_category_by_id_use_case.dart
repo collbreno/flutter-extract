@@ -1,7 +1,7 @@
 import 'package:business/business.dart';
 import 'package:dartz/dartz.dart';
 
-class GetCategoryByIdUseCase extends UseCase<Category, String> {
+class GetCategoryByIdUseCase extends FutureUseCase<Category, String> {
   final ICategoryRepository repository;
 
   GetCategoryByIdUseCase(this.repository);

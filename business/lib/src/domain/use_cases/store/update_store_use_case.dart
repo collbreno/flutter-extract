@@ -1,7 +1,7 @@
 import 'package:business/business.dart';
 import 'package:dartz/dartz.dart';
 
-class UpdateStoreUseCase extends UseCase<void, Store> {
+class UpdateStoreUseCase extends FutureUseCase<void, Store> {
   final IStoreRepository repository;
 
   UpdateStoreUseCase(this.repository);

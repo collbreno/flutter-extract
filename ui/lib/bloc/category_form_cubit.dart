@@ -6,7 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:ui/models/_models.dart';
 import 'package:ui/models/color_formz_input.dart';
 import 'package:ui/screens/category_list/bloc/category_list_cubit.dart';
-import 'package:ui/screens/category_view/bloc/category_view_cubit.dart';
+import 'package:ui/bloc/category_view_cubit.dart';
 import 'package:uuid/uuid.dart';
 import 'package:dartz/dartz.dart';
 
@@ -14,11 +14,11 @@ part 'category_form_state.dart';
 
 class CategoryFormCubit extends Cubit<CategoryFormState> {
   final _uid = Uuid();
-  final UseCase<void, Category> _insertCategory;
-  final UseCase<void, Category> _updateCategory;
+  final FutureUseCase<void, Category> _insertCategory;
+  final FutureUseCase<void, Category> _updateCategory;
   CategoryFormCubit({
-    required UseCase<void, Category> insertCategory,
-    required UseCase<void, Category> updateCategory,
+    required FutureUseCase<void, Category> insertCategory,
+    required FutureUseCase<void, Category> updateCategory,
     Category? category,
   })  : _insertCategory = insertCategory,
         _updateCategory = updateCategory,
@@ -67,7 +67,7 @@ class CategoryFormCubit extends Cubit<CategoryFormState> {
     print('submit');
     emit(state.copyWith(status: FormzStatus.submissionInProgress));
 
-    late final UseCase<void, Category> useCase;
+    late final FutureUseCase<void, Category> useCase;
 
     if (state.id.isEmpty) {
       emit(state.copyWith(id: _uid.v4()));

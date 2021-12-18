@@ -1,7 +1,7 @@
 import 'package:business/business.dart';
 import 'package:dartz/dartz.dart';
 
-class InsertPaymentMethodUseCase extends UseCase<void, PaymentMethod> {
+class InsertPaymentMethodUseCase extends FutureUseCase<void, PaymentMethod> {
   final IPaymentMethodRepository repository;
 
   InsertPaymentMethodUseCase(this.repository);
