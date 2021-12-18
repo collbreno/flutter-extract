@@ -4,15 +4,15 @@ class CategoryViewState extends Equatable {
   final String id;
   final AsyncSnapshot<Category> category;
 
-  CategoryViewState(this.id) : category = AsyncSnapshot.nothing();
+  CategoryViewState.initial(this.id) : category = AsyncSnapshot.nothing();
 
-  CategoryViewState._({
+  CategoryViewState({
     required this.id,
     required this.category,
   });
 
   CategoryViewState copyWith({AsyncSnapshot<Category>? category}) {
-    return CategoryViewState._(
+    return CategoryViewState(
       id: id,
       category: category ?? this.category,
     );

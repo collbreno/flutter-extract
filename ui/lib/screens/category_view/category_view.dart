@@ -75,10 +75,11 @@ class _CategoryListTile extends StatelessWidget {
       builder: (context, state) {
         if (state.category.connectionState == ConnectionState.waiting) {
           return Center(
-              child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CircularProgressIndicator(),
-          ));
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CircularProgressIndicator(),
+            ),
+          );
         }
         if (state.category.hasData) {
           final category = state.category.data!;

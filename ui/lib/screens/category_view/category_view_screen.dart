@@ -22,7 +22,7 @@ class CategoryViewScreen extends StatelessWidget implements Screen {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => CategoryViewCubit(
-        getCategoryById: context.read<GetCategoryByIdUseCase>(),
+        watchCategoryById: context.read<WatchCategoryByIdUseCase>(),
         categoryId: categoryId,
       ),
       child: CategoryView(),

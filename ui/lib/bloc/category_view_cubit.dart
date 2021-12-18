@@ -7,26 +7,26 @@ import 'package:flutter/material.dart';
 part 'category_view_state.dart';
 
 class CategoryViewCubit extends Cubit<CategoryViewState> {
-  final FutureUseCase<Category, String> _getCategoryById;
+  final StreamUseCase<Category, String> _watchCategoryById;
 
   CategoryViewCubit({
-    required FutureUseCase<Category, String> getCategoryById,
+    required StreamUseCase<Category, String> watchCategoryById,
     required String categoryId,
-  })  : _getCategoryById = getCategoryById,
-        super(CategoryViewState(categoryId)) {
+  })  : _watchCategoryById = watchCategoryById,
+        super(CategoryViewState.initial(categoryId)) {
     loadCategory();
   }
 
   void loadCategory() async {
     emit(state.copyWith(category: AsyncSnapshot.waiting()));
 
-    final result = await _getCategoryById(state.id);
-
-    result.fold(
-      (error) =>
-          emit(state.copyWith(category: AsyncSnapshot.withError(ConnectionState.done, error))),
-      (category) =>
-          emit(state.copyWith(category: AsyncSnapshot.withData(ConnectionState.done, category))),
-    );
+    _watchCategoryById(state.id).listen((result) {
+      result.fold(
+        (error) =>
+            emit(state.copyWith(category: AsyncSnapshot.withError(ConnectionState.done, error))),
+        (category) =>
+            emit(state.copyWith(category: AsyncSnapshot.withData(ConnectionState.done, category))),
+      );
+    });
   }
 }
