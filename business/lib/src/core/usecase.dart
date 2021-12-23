@@ -4,6 +4,10 @@ abstract class StreamUseCase<T, P> {
   Stream<FailureOr<T>> call(P param);
 }
 
+abstract class NoParamStreamUseCase<T> {
+  Stream<FailureOr<T>> call();
+}
+
 abstract class FutureUseCase<T, P> {
   Future<FailureOr<T>> call(P param);
 }
