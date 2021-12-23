@@ -1,9 +1,9 @@
 import 'package:business/business.dart';
 
-class WatchAllCategoriesUseCase extends NoParamStreamUseCase<List<Category>> {
+class WatchCategoriesUseCase extends NoParamStreamUseCase<List<Category>> {
   final ICategoryRepository repository;
 
-  WatchAllCategoriesUseCase(this.repository);
+  WatchCategoriesUseCase(this.repository);
 
   @override
   Stream<FailureOr<List<Category>>> call() {

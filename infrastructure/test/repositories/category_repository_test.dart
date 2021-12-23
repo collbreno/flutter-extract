@@ -7,8 +7,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:infrastructure/infrastructure.dart';
 import 'package:uuid/uuid.dart';
 
-import '../matchers/either_matcher.dart';
-
 void main() {
   final uid = Uuid();
   late CategoryRepository repository;

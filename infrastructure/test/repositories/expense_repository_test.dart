@@ -7,7 +7,6 @@ import 'package:infrastructure/infrastructure.dart';
 import 'package:infrastructure/src/repositories/expense_repository.dart';
 import 'package:uuid/uuid.dart';
 
-import '../matchers/either_matcher.dart';
 import '../utils/foreign_keys_utils.dart';
 
 void main() {

@@ -9,25 +9,22 @@ import '../subcategory/_mock.mocks.dart';
 void main() {
   final fix = FixtureCategory();
   late ICategoryRepository repository;
-  late WatchAllCategoriesUseCase useCase;
+  late WatchCategoriesUseCase useCase;
 
   setUp(() {
     repository = MockICategoryRepository();
-    useCase = WatchAllCategoriesUseCase(repository);
+    useCase = WatchCategoriesUseCase(repository);
   });
 
   test('should return the stream from repository', () async {
     final category1 = fix.category1;
     final category2 = fix.category2;
 
-    final expected1 = [category1];
-    final expected2 = [category1, category2];
-
     when(repository.watchAll()).thenAnswer((_) {
       return Stream.fromIterable([
         Left(NotFoundFailure()),
-        Right(expected1),
-        Right(expected2),
+        Right([category1]),
+        Right([category1, category2]),
       ]);
     });
 
@@ -35,8 +32,8 @@ void main() {
       useCase(),
       emitsInOrder([
         Left(NotFoundFailure()),
-        Right(expected1),
-        Right(expected2),
+        orderedRightEquals([category1]),
+        orderedRightEquals([category1, category2]),
       ]),
     );
 

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ui/screens/category_form/category_form.dart';
-import 'package:ui/screens/category_form/category_form_screen.dart';
 import 'package:ui/bloc/category_view_cubit.dart';
+import 'package:ui/screens/category_form/category_form_screen.dart';
 
 enum _Actions { delete, edit }
 
@@ -13,13 +12,10 @@ class CategoryView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _AppBar(),
-      body: RefreshIndicator(
-        onRefresh: () async => context.read<CategoryViewCubit>().loadCategory(),
-        child: ListView(
-          children: [
-            _CategoryListTile(),
-          ],
-        ),
+      body: ListView(
+        children: [
+          _CategoryListTile(),
+        ],
       ),
     );
   }

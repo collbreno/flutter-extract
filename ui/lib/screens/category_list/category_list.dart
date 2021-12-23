@@ -1,7 +1,8 @@
 import 'package:business/business.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ui/screens/category_list/bloc/category_list_cubit.dart';
+import 'package:ui/bloc/category_list_cubit.dart';
+import 'package:ui/screens/category_form/category_form_screen.dart';
 import 'package:ui/screens/category_view/category_view_screen.dart';
 
 class CategoryList extends StatelessWidget {
@@ -23,6 +24,10 @@ class CategoryList extends StatelessWidget {
             throw ArgumentError();
         },
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.of(context).push(CategoryFormScreen.route()),
+        child: Icon(Icons.add),
+      ),
     );
   }
 }
@@ -34,19 +39,16 @@ class _List extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: () async => context.read<CategoryListCubit>().loadCategories(),
-      child: ListView.builder(
-        itemCount: categories.length,
-        itemBuilder: (context, index) {
-          final category = categories[index];
-          return ListTile(
-            title: Text(category.name),
-            leading: Icon(category.icon, color: category.color),
-            onTap: () => Navigator.of(context).push(CategoryViewScreen.route(category.id)),
-          );
-        },
-      ),
+    return ListView.builder(
+      itemCount: categories.length,
+      itemBuilder: (context, index) {
+        final category = categories[index];
+        return ListTile(
+          title: Text(category.name),
+          leading: Icon(category.icon, color: category.color),
+          onTap: () => Navigator.of(context).push(CategoryViewScreen.route(category.id)),
+        );
+      },
     );
   }
 }
@@ -71,4 +73,3 @@ class _Error extends StatelessWidget {
     );
   }
 }
-

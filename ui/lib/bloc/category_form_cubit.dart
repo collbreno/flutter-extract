@@ -1,14 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:business/business.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:formz/formz.dart';
-import 'package:equatable/equatable.dart';
 import 'package:ui/models/_models.dart';
-import 'package:ui/models/color_formz_input.dart';
-import 'package:ui/screens/category_list/bloc/category_list_cubit.dart';
-import 'package:ui/bloc/category_view_cubit.dart';
 import 'package:uuid/uuid.dart';
-import 'package:dartz/dartz.dart';
 
 part 'category_form_state.dart';
 
@@ -16,6 +12,7 @@ class CategoryFormCubit extends Cubit<CategoryFormState> {
   final _uid = Uuid();
   final FutureUseCase<void, Category> _insertCategory;
   final FutureUseCase<void, Category> _updateCategory;
+
   CategoryFormCubit({
     required FutureUseCase<void, Category> insertCategory,
     required FutureUseCase<void, Category> updateCategory,

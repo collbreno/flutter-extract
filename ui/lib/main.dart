@@ -4,11 +4,11 @@ import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:business/business.dart';
 import 'package:flutter/material.dart';
 import 'package:infrastructure/infrastructure.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:ui/common/app_theme.dart';
 import 'package:ui/screens/home/home_screen.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,6 +56,7 @@ List<Provider> _createProviders(AppDatabase db) {
     Provider<GetCategoriesUseCase>(create: (_) => GetCategoriesUseCase(categoryRepo)),
     Provider<GetCategoryByIdUseCase>(create: (_) => GetCategoryByIdUseCase(categoryRepo)),
     Provider<WatchCategoryByIdUseCase>(create: (_) => WatchCategoryByIdUseCase(categoryRepo)),
+    Provider<WatchCategoriesUseCase>(create: (_) => WatchCategoriesUseCase(categoryRepo)),
 
     // subcategory use cases
     Provider<InsertSubcategoryUseCase>(create: (_) => InsertSubcategoryUseCase(subcategoryRepo)),

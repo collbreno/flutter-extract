@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:flutter/foundation.dart';
 import 'package:test/test.dart';
 
 Matcher orderedRightEquals(List expected) => _OrderedRightEquals(expected);

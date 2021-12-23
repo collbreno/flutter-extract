@@ -1,13 +1,12 @@
 import 'package:business/business.dart';
 import 'package:business/fixtures.dart';
 import 'package:dartz/dartz.dart';
+import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:infrastructure/infrastructure.dart';
 import 'package:infrastructure/src/repositories/tag_repository.dart';
-import 'package:drift/native.dart';
 import 'package:uuid/uuid.dart';
 
-import '../matchers/either_matcher.dart';
 import '../utils/foreign_keys_utils.dart';
 
 void main() {
