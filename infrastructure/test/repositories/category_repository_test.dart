@@ -173,6 +173,115 @@ void main() {
     });
   });
 
+  group('Watch all', () {
+    test('Simple case', () async {
+      final category = fix.category1;
+
+      await repository.insert(category);
+
+      final result = await repository.watchAll().first;
+
+      expect(result, orderedRightEquals([category]));
+    });
+
+    test('Must return $NotFoundFailure when there is no categories', () async {
+      final result = await repository.watchAll().first;
+      expect(result, Left(NotFoundFailure()));
+    });
+
+    test('First insertion must emit a new list', () async {
+      final category = fix.category1;
+
+      final expectation = expectLater(
+        repository.watchAll(),
+        emitsInOrder([
+          Left(NotFoundFailure()),
+          orderedRightEquals([category]),
+        ]),
+      );
+
+      await repository.insert(category);
+
+      await expectation;
+    });
+
+    test('Updation must emit a new list', () async {
+      final category = fix.category1;
+      final newCategory = category.rebuild((p0) => p0.name = 'New Category');
+
+      await repository.insert(category);
+
+      final expectation = expectLater(
+        repository.watchAll(),
+        emitsInOrder([
+          orderedRightEquals([category]),
+          orderedRightEquals([newCategory]),
+        ]),
+      );
+
+      await repository.update(newCategory);
+
+      await expectation;
+    });
+
+    test('Insertion must emit a new list', () async {
+      final category1 = fix.category1;
+      final category2 = fix.category2;
+
+      await repository.insert(category1);
+
+      final expectation = expectLater(
+        repository.watchAll(),
+        emitsInOrder([
+          orderedRightEquals([category1]),
+          orderedRightEquals([category1, category2]),
+        ]),
+      );
+
+      await repository.insert(category2);
+
+      await expectation;
+    });
+
+    test('Deletion must emit a new list', () async {
+      final category1 = fix.category1;
+      final category2 = fix.category2;
+
+      await repository.insert(category1);
+      await repository.insert(category2);
+
+      final expectation = expectLater(
+        repository.watchAll(),
+        emitsInOrder([
+          orderedRightEquals([category1, category2]),
+          orderedRightEquals([category1]),
+        ]),
+      );
+
+      await repository.delete(category2.id);
+
+      await expectation;
+    });
+
+    test('Deletion of the last item must emit $NotFoundFailure', () async {
+      final category1 = fix.category1;
+
+      await repository.insert(category1);
+
+      final expectation = expectLater(
+        repository.watchAll(),
+        emitsInOrder([
+          orderedRightEquals([category1]),
+          Left(NotFoundFailure()),
+        ]),
+      );
+
+      await repository.delete(category1.id);
+
+      await expectation;
+    });
+  });
+
   group('Update', () {
     final category1 = fix.category1;
     final category2 = fix.category2;

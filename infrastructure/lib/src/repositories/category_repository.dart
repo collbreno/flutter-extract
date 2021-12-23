@@ -83,6 +83,23 @@ class CategoryRepository implements ICategoryRepository {
   }
 
   @override
+  Stream<FailureOr<List<Category>>> watchAll() {
+    final query = db.select(db.categories);
+    return query.watch().transform(StreamTransformer.fromHandlers(
+          handleData: (data, sink) {
+            if (data.isEmpty) {
+              sink.add(Left(NotFoundFailure()));
+            } else {
+              sink.add(Right(data.map((e) => e.toModel()).toList()));
+            }
+          },
+          handleError: (error, stackTrace, sink) {
+            sink.add(Left(UnknownDatabaseFailure()));
+          },
+        ));
+  }
+
+  @override
   Future<FailureOr<void>> insert(Category category) async {
     try {
       await db.into(db.categories).insert(category.toEntity());
