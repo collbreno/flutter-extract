@@ -68,7 +68,7 @@ abstract class EntityFormCubit<T> extends Cubit<EntityFormState> {
 
     result.fold(
       _onFailed,
-      (_) => _onSuccess,
+      (_) => _onSuccess(),
     );
   }
 

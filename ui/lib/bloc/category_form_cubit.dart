@@ -1,97 +1,40 @@
-import 'package:bloc/bloc.dart';
+import 'package:built_collection/src/list.dart';
 import 'package:business/business.dart';
-import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
-import 'package:formz/formz.dart';
+import 'package:ui/bloc/entity_form_cubit.dart';
 import 'package:ui/models/_models.dart';
-import 'package:uuid/uuid.dart';
 
-part 'category_form_state.dart';
-
-class CategoryFormCubit extends Cubit<CategoryFormState> {
-  final _uid = Uuid();
-  final FutureUseCase<void, Category> _insertCategory;
-  final FutureUseCase<void, Category> _updateCategory;
-
+class CategoryFormCubit extends EntityFormCubit<Category> {
   CategoryFormCubit({
     required FutureUseCase<void, Category> insertCategory,
     required FutureUseCase<void, Category> updateCategory,
     Category? category,
-  })  : _insertCategory = insertCategory,
-        _updateCategory = updateCategory,
-        super(category == null ? CategoryFormState() : CategoryFormState.fromCategory(category));
+  }) : super(
+          insertUseCase: insertCategory,
+          updateUseCase: updateCategory,
+          id: category?.id ?? '',
+          inputs: _getDefaultInputs(category),
+        );
 
-  void onNameChanged(String value) {
-    final name = CategoryNameFormzInput.dirty(value);
-    emit(state.copyWith(
-      name: name.valid ? name : CategoryNameFormzInput.pure(value),
-      status: Formz.validate([name, state.color, state.icon]),
-    ));
+  static BuiltList<FormzInputSuper> _getDefaultInputs(Category? category) {
+    return BuiltList([
+      CategoryNameFormzInput.pure(category?.name ?? ''),
+      IconFormzInput.pure(category?.icon),
+      ColorFormzInput.pure(category?.color),
+    ]);
   }
 
-  void onIconChanged(IconData? value) {
-    final icon = IconFormzInput.dirty(value);
-    emit(state.copyWith(
-      icon: icon.valid ? icon : IconFormzInput.pure(value),
-      status: Formz.validate([state.name, state.color, icon]),
-    ));
+  @override
+  BuiltList<FormzInputSuper> getDefaultInputs() {
+    return _getDefaultInputs(null);
   }
 
-  void onColorChanged(Color? value) {
-    final color = ColorFormzInput.dirty(value);
-    emit(state.copyWith(
-      color: color.valid ? color : ColorFormzInput.pure(value),
-      status: Formz.validate([state.name, color, state.icon]),
-    ));
-  }
-
-  void onSubmitted() {
-    final name = CategoryNameFormzInput.dirty(state.name.value);
-    final color = ColorFormzInput.dirty(state.color.value);
-    final icon = IconFormzInput.dirty(state.icon.value);
-
-    emit(state.copyWith(
-      name: name,
-      color: color,
-      icon: icon,
-      status: Formz.validate([name, color, icon]),
-    ));
-
-    if (state.status.isValid) _submit();
-  }
-
-  void _submit() async {
-    print('submit');
-    emit(state.copyWith(status: FormzStatus.submissionInProgress));
-
-    late final FutureUseCase<void, Category> useCase;
-
-    if (state.id.isEmpty) {
-      emit(state.copyWith(id: _uid.v4()));
-      useCase = _insertCategory;
-    } else {
-      useCase = _updateCategory;
-    }
-    final result = await useCase(Category(
-      id: state.id,
-      color: state.color.value!,
-      icon: state.icon.value!,
-      name: state.name.value,
-    ));
-
-    result.fold(
-      _onFailed,
-      _onSuccess,
+  @override
+  Category mapInputsToEntity(String id) {
+    return Category(
+      id: id,
+      icon: state.inputs.singleWithType<IconFormzInput>().value!,
+      color: state.inputs.singleWithType<ColorFormzInput>().value!,
+      name: state.inputs.singleWithType<CategoryNameFormzInput>().value,
     );
-  }
-
-  void _onFailed(Failure error) {
-    // TODO: show error
-    emit(state.copyWith(status: FormzStatus.submissionFailure));
-  }
-
-  void _onSuccess(void _) {
-    emit(state.copyWith(status: FormzStatus.submissionSuccess));
-    emit(CategoryFormState());
   }
 }

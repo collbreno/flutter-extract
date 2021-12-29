@@ -3,10 +3,10 @@ import 'dart:ui';
 import 'package:business/business.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:formz/formz.dart';
 import 'package:infrastructure/infrastructure.dart';
 import 'package:ui/bloc/category_form_cubit.dart';
-import 'package:formz/formz.dart';
-import 'package:ui/common/list_tile_form_fields.dart';
+import 'package:ui/bloc/entity_form_cubit.dart';
 import 'package:ui/common/list_tile_input_fields.dart';
 import 'package:ui/models/_models.dart';
 import 'package:ui/screens/category_view/category_view_screen.dart';
@@ -23,14 +23,14 @@ class CategoryForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _AppBar(),
-      body: BlocListener<CategoryFormCubit, CategoryFormState>(
+      body: BlocListener<CategoryFormCubit, EntityFormState>(
         child: _buildForm(context),
         listener: _listener,
       ),
     );
   }
 
-  void _listener(BuildContext context, CategoryFormState state) {
+  void _listener(BuildContext context, EntityFormState state) {
     if (state.status.isSubmissionFailure) {
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
@@ -57,14 +57,14 @@ class CategoryForm extends StatelessWidget {
         );
     } else if (state.status.isPure) {
       print('state mudou e é puro');
-      _nameKey.currentState?.didChange(state.name.value);
-      _colorKey.currentState?.didChange(state.color.value);
-      _iconKey.currentState?.didChange(state.icon.value);
+      _nameKey.currentState?.didChange(state.inputs.singleWithType<CategoryNameFormzInput>().value);
+      _colorKey.currentState?.didChange(state.inputs.singleWithType<ColorFormzInput>().value);
+      _iconKey.currentState?.didChange(state.inputs.singleWithType<IconFormzInput>().value);
     }
   }
 
   Widget _buildForm(BuildContext context) {
-    return BlocBuilder<CategoryFormCubit, CategoryFormState>(
+    return BlocBuilder<CategoryFormCubit, EntityFormState>(
       builder: (context, state) {
         return AbsorbPointer(
           absorbing: state.status.isSubmissionInProgress,
@@ -94,7 +94,7 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CategoryFormCubit, CategoryFormState>(
+    return BlocBuilder<CategoryFormCubit, EntityFormState>(
       builder: (context, state) {
         return AppBar(
           title: state.id.isEmpty ? Text("Nova Categoria") : Text("Editar Categoria"),
@@ -138,15 +138,16 @@ class _NameInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CategoryFormCubit, CategoryFormState>(
+    return BlocBuilder<CategoryFormCubit, EntityFormState>(
       builder: (context, state) {
         return TextInputField(
           key: inputKey,
-          initialValue: state.name.value,
-          onChanged: context.read<CategoryFormCubit>().onNameChanged,
+          initialValue: state.inputs.singleWithType<CategoryNameFormzInput>().value,
+          onChanged: (value) =>
+              context.read<CategoryFormCubit>().onFieldChanged(CategoryNameFormzInput, value),
           leading: Icon(Icons.edit),
           hintText: "Insira o nome",
-          errorText: _getErrorText(state.name),
+          errorText: _getErrorText(state.inputs.singleWithType<CategoryNameFormzInput>()),
         );
       },
     );
@@ -175,13 +176,14 @@ class _ColorInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CategoryFormCubit, CategoryFormState>(
+    return BlocBuilder<CategoryFormCubit, EntityFormState>(
       builder: (context, state) {
         return PickerInputField<Color>(
           key: inputKey,
-          initialValue: state.color.value,
-          errorText: state.color.invalid ? "Inválido" : null,
-          onChanged: context.read<CategoryFormCubit>().onColorChanged,
+          initialValue: state.inputs.singleWithType<ColorFormzInput>().value,
+          errorText: state.inputs.singleWithType<ColorFormzInput>().invalid ? "Inválido" : null,
+          onChanged: (value) =>
+              context.read<CategoryFormCubit>().onFieldChanged(ColorFormzInput, value),
           columns: 5,
           items: ColorService.colors.keys,
           leading: Icon(Icons.color_lens),
@@ -217,13 +219,14 @@ class _IconInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CategoryFormCubit, CategoryFormState>(
+    return BlocBuilder<CategoryFormCubit, EntityFormState>(
       builder: (context, state) {
         return PickerInputField<IconData>(
           key: inputKey,
-          initialValue: state.icon.value,
-          errorText: state.icon.invalid ? "Inválido" : null,
-          onChanged: context.read<CategoryFormCubit>().onIconChanged,
+          initialValue: state.inputs.singleWithType<IconFormzInput>().value,
+          errorText: state.inputs.singleWithType<IconFormzInput>().invalid ? "Inválido" : null,
+          onChanged: (value) =>
+              context.read<CategoryFormCubit>().onFieldChanged(IconFormzInput, value),
           items: IconMapper.getAll().toList(),
           columns: 5,
           onSearch: (icon, text) => IconMapper.getIconName(icon).contains(text),
