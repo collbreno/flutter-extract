@@ -10,6 +10,10 @@ class InputFieldWidget {
   InputFieldWidget({required this.child, this.prefixIcon});
 }
 
+abstract class InputFieldState<T, E extends StatefulWidget> extends State<E> {
+  void didChange(T value);
+}
+
 class PickerInputField<T> extends StatefulWidget {
   final Iterable<T> items;
   final Widget Function(T) dialogItemBuilder;
@@ -46,7 +50,7 @@ class PickerInputField<T> extends StatefulWidget {
   State<PickerInputField<T>> createState() => PickerInputFieldState<T>();
 }
 
-class PickerInputFieldState<T> extends State<PickerInputField<T>> {
+class PickerInputFieldState<T> extends InputFieldState<T?, PickerInputField<T>> {
   late T? _value;
 
   @override
@@ -68,9 +72,7 @@ class PickerInputFieldState<T> extends State<PickerInputField<T>> {
       labelText: widget.labelText,
       suffixIcon: Icon(Icons.arrow_drop_down),
       prefixIcon: _value != null ? widget.inputFieldWidgetBuilder(_value!).prefixIcon : null,
-      child: _value != null
-          ? widget.inputFieldWidgetBuilder(_value!).child
-          : Text(widget.hintText),
+      child: _value != null ? widget.inputFieldWidgetBuilder(_value!).child : Text(widget.hintText),
       enabled: widget.enabled,
       leading: widget.leading,
       onTap: () async {
@@ -124,7 +126,7 @@ class TextInputField extends StatefulWidget {
   State<TextInputField> createState() => TextInputFieldState();
 }
 
-class TextInputFieldState extends State<TextInputField> {
+class TextInputFieldState extends InputFieldState<String, TextInputField> {
   late final TextEditingController _controller;
 
   @override

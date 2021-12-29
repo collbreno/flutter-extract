@@ -29,14 +29,22 @@ abstract class EntityFormCubit<T> extends Cubit<EntityFormState> {
     if (!state.inputs.any((e) => e.runtimeType == type)) {
       throw Exception('${this.runtimeType} does not have a field of type $type');
     }
-    final dirty = state.inputs.singleWhere((e) => e.runtimeType == type).dirtyConstructor(value);
-    final others = state.inputs.rebuild((e) => e.removeWhere((e) => e.runtimeType == type));
+
+    final index = state.inputs.indexWhere((p0) => p0.runtimeType == type);
+    final dirty = state.inputs.elementAt(index).dirtyConstructor(value);
+
     emit(
       state.copyWith(
-        inputs: others.rebuild(
-          (e) => e.add(dirty.valid ? dirty : (dirty).pureConstructor(value)),
+        inputs: state.inputs.rebuild(
+          (e) => e.replaceRange(
+            index,
+            index + 1,
+            [dirty.valid ? dirty : (dirty).pureConstructor(value)],
+          ),
         ),
-        status: Formz.validate(others.rebuild((e) => e.add(dirty)).toList()),
+        status: Formz.validate(
+          state.inputs.rebuild((e) => e.replaceRange(index, index + 1, [dirty])).toList(),
+        ),
       ),
     );
   }
