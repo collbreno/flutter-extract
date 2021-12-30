@@ -2,7 +2,7 @@ import 'package:business/business.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ui/bloc/category_list_cubit.dart';
-import 'package:ui/screens/category_form/category_form_screen.dart';
+import 'package:ui/screens/category_form_screen.dart';
 import 'package:ui/screens/category_view/category_view_screen.dart';
 
 class CategoryList extends StatelessWidget {

@@ -2,9 +2,9 @@ import 'package:business/business.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ui/bloc/store_form_cubit.dart';
+import 'package:ui/common/form/entity_form_builder.dart';
 import 'package:ui/navigation/page_transitions.dart';
 import 'package:ui/navigation/screen.dart';
-import 'package:ui/screens/store_form/store_form.dart';
 
 class StoreFormScreen extends StatelessWidget implements Screen {
   final Store? store;
@@ -23,7 +23,11 @@ class StoreFormScreen extends StatelessWidget implements Screen {
         updateStore: context.read<UpdateStoreUseCase>(),
         store: store,
       ),
-      child: StoreForm(),
+      child: EntityFormBuilder<StoreFormCubit>(
+        onOpenEntity: (value) {},
+        titleWhenCreating: 'Nova Loja',
+        titleWhenEditing: 'Editar Loja',
+      ),
     );
   }
 }

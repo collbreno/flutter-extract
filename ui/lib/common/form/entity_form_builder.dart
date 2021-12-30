@@ -10,10 +10,14 @@ class EntityFormBuilder<T extends EntityFormCubit> extends StatelessWidget {
   final _keyCreator = _KeyCreator();
   final Map<Type, GlobalObjectKey<InputFieldState>> _inputKeys = {};
   final ValueSetter<String> onOpenEntity;
+  final String titleWhenCreating;
+  final String titleWhenEditing;
 
   EntityFormBuilder({
     Key? key,
     required this.onOpenEntity,
+    required this.titleWhenEditing,
+    required this.titleWhenCreating,
   }) : super(key: key);
 
   GlobalObjectKey<InputFieldState> _getKey(Type type) {
@@ -22,10 +26,19 @@ class EntityFormBuilder<T extends EntityFormCubit> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<T, EntityFormState>(
-      listenWhen: (previous, current) => previous.status != current.status,
-      listener: _listener,
-      child: _buildForm(),
+    return Scaffold(
+      appBar: AppBar(
+        title: BlocBuilder<T, EntityFormState>(
+          builder: (context, state) => Text(
+            state.id.isEmpty ? titleWhenCreating : titleWhenEditing,
+          ),
+        ),
+      ),
+      body: BlocListener<T, EntityFormState>(
+        listenWhen: (previous, current) => previous.status != current.status,
+        listener: _listener,
+        child: _buildForm(),
+      ),
     );
   }
 

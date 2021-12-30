@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ui/navigation/screen.dart';
-import 'package:ui/screens/category_form/category_form_screen.dart';
+import 'package:ui/screens/category_form_screen.dart';
 import 'package:ui/screens/category_list/category_list_screen.dart';
 import 'package:ui/screens/new_expense_screen.dart';
 import 'package:ui/screens/new_tag_screen.dart';
 import 'package:ui/screens/settings_screen.dart';
-import 'package:ui/screens/store_form/store_form_screen.dart';
+import 'package:ui/screens/store_form_screen.dart';
 
 class HomeScreen extends StatelessWidget implements Screen {
   const HomeScreen({Key? key}) : super(key: key);
