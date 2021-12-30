@@ -27,7 +27,7 @@ class CategoryFormScreen extends StatelessWidget implements Screen {
       ),
       child: EntityFormBuilder<CategoryFormCubit>(
         titleWhenEditing: 'Editar Categoria',
-        titleWhenCreating: 'Nova Categoria',
+        titleWhenCreating: 'Criar Categoria',
         onOpenEntity: (id) => Navigator.of(context).push(CategoryViewScreen.route(id)),
       ),
     );

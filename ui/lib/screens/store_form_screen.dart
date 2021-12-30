@@ -25,7 +25,7 @@ class StoreFormScreen extends StatelessWidget implements Screen {
       ),
       child: EntityFormBuilder<StoreFormCubit>(
         onOpenEntity: (value) {},
-        titleWhenCreating: 'Nova Loja',
+        titleWhenCreating: 'Criar Loja',
         titleWhenEditing: 'Editar Loja',
       ),
     );

@@ -20,13 +20,17 @@ class InputFieldBuilder<T extends EntityFormCubit> extends StatelessWidget {
     final type = input.runtimeType;
 
     if (type == IconFormzInput) {
-      return IconInputBuilder<T>(inputKey: inputKey);
+      return IconInputBuilder<T, IconFormzInput>(inputKey: inputKey);
+    } else if (type == NullableIconFormzInput) {
+      return IconInputBuilder<T, NullableIconFormzInput>(inputKey: inputKey);
     } else if (type == ColorFormzInput) {
       return ColorInputBuilder<T>(inputKey: inputKey);
     } else if (type == CategoryNameFormzInput) {
       return TextInputBuilder<T, CategoryNameFormzInput>(inputKey: inputKey);
     } else if (type == StoreNameFormzInput) {
       return TextInputBuilder<T, StoreNameFormzInput>(inputKey: inputKey);
+    } else if (type == TagNameFormzInput) {
+      return TextInputBuilder<T, TagNameFormzInput>(inputKey: inputKey);
     }
 
     throw Exception('InputBuilder not defined for input of type $type');

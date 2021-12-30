@@ -1,17 +1,17 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:business/business.dart';
 import 'package:ui/bloc/entity_form_cubit.dart';
-import 'package:built_collection/built_collection.dart';
 import 'package:ui/models/_models.dart';
 
 class TagFormCubit extends EntityFormCubit<Tag> {
   TagFormCubit({
-    required FutureUseCase<void, Tag> insert,
-    required FutureUseCase<void, Tag> update,
+    required FutureUseCase<void, Tag> insertTag,
+    required FutureUseCase<void, Tag> updateTag,
     Tag? tag,
   }) : super(
           id: tag?.id ?? '',
-          insertUseCase: insert,
-          updateUseCase: update,
+          insertUseCase: insertTag,
+          updateUseCase: updateTag,
           inputs: _getDefaultInputs(tag),
         );
 
@@ -19,7 +19,7 @@ class TagFormCubit extends EntityFormCubit<Tag> {
     return BuiltList([
       TagNameFormzInput.pure(tag?.name ?? ''),
       ColorFormzInput.pure(tag?.color),
-      IconFormzInput.pure(tag?.icon),
+      NullableIconFormzInput.pure(tag?.icon),
     ]);
   }
 
@@ -34,7 +34,7 @@ class TagFormCubit extends EntityFormCubit<Tag> {
       id: id,
       color: state.inputs.singleWithType<ColorFormzInput>().value!,
       name: state.inputs.singleWithType<TagNameFormzInput>().value,
-      icon: state.inputs.singleWithType<IconFormzInput>().value,
+      icon: state.inputs.singleWithType<NullableIconFormzInput>().value,
     );
   }
 }

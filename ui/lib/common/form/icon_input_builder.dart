@@ -5,7 +5,8 @@ import 'package:ui/bloc/entity_form_cubit.dart';
 import 'package:ui/common/list_tile_input_fields.dart';
 import 'package:ui/models/icon_formz_input.dart';
 
-class IconInputBuilder<T extends EntityFormCubit> extends StatelessWidget {
+class IconInputBuilder<T extends EntityFormCubit, E extends FormzInputSuper>
+    extends StatelessWidget {
   final Key inputKey;
 
   const IconInputBuilder({Key? key, required this.inputKey}) : super(key: key);
@@ -14,10 +15,10 @@ class IconInputBuilder<T extends EntityFormCubit> extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<T, EntityFormState>(
       builder: (context, state) {
-        final input = state.inputs.singleWithType<IconFormzInput>();
+        final input = state.inputs.singleWithType<E>();
         return PickerInputField<IconData>(
           key: inputKey,
-          onChanged: (value) => context.read<T>().onFieldChanged(IconFormzInput, value),
+          onChanged: (value) => context.read<T>().onFieldChanged(E, value),
           items: IconMapper.getAll().toList(),
           initialValue: input.value,
           errorText: input.invalid ? "Inválido" : null,

@@ -58,6 +58,7 @@ List<Provider> _createProviders(AppDatabase db) {
   final categoryRepo = CategoryRepository(db);
   final subcategoryRepo = SubcategoryRepository(db);
   final storeRepo = StoreRepository(db);
+  final tagRepo = TagRepository(db);
 
   return [
     // category use cases
@@ -80,5 +81,9 @@ List<Provider> _createProviders(AppDatabase db) {
     // store use cases
     Provider<InsertStoreUseCase>(create: (_) => InsertStoreUseCase(storeRepo)),
     Provider<UpdateStoreUseCase>(create: (_) => UpdateStoreUseCase(storeRepo)),
+
+    // tag use cases
+    Provider<InsertTagUseCase>(create: (_) => InsertTagUseCase(tagRepo)),
+    Provider<UpdateTagUseCase>(create: (_) => UpdateTagUseCase(tagRepo)),
   ];
 }

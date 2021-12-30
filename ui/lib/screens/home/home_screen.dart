@@ -1,12 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ui/navigation/screen.dart';
 import 'package:ui/screens/category_form_screen.dart';
 import 'package:ui/screens/category_list/category_list_screen.dart';
 import 'package:ui/screens/new_expense_screen.dart';
-import 'package:ui/screens/new_tag_screen.dart';
 import 'package:ui/screens/settings_screen.dart';
 import 'package:ui/screens/store_form_screen.dart';
+import 'package:ui/screens/tag_form_screen.dart';
 
 class HomeScreen extends StatelessWidget implements Screen {
   const HomeScreen({Key? key}) : super(key: key);
@@ -23,7 +22,7 @@ class HomeScreen extends StatelessWidget implements Screen {
             DrawerHeader(
               child: SizedBox(),
               decoration: BoxDecoration(
-                color: Theme.of(context).accentColor,
+                color: Theme.of(context).primaryColor,
               ),
             ),
             ListTile(
@@ -57,7 +56,7 @@ class HomeScreen extends StatelessWidget implements Screen {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).push(NewTagScreen.route());
+                  Navigator.of(context).push(TagFormScreen.route());
                 },
                 child: Text("Adicionar Tag"),
               ),
