@@ -25,6 +25,8 @@ class InputFieldBuilder<T extends EntityFormCubit> extends StatelessWidget {
       return ColorInputBuilder<T>(inputKey: inputKey);
     } else if (type == CategoryNameFormzInput) {
       return TextInputBuilder<T, CategoryNameFormzInput>(inputKey: inputKey);
+    } else if (type == StoreNameFormzInput) {
+      return TextInputBuilder<T, StoreNameFormzInput>(inputKey: inputKey);
     }
 
     throw Exception('InputBuilder not defined for input of type $type');
