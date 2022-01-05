@@ -7,36 +7,36 @@ import 'package:mockito/mockito.dart';
 import '_mock.mocks.dart';
 
 void main() {
-  final fix = FixtureCategory();
-  late ICategoryRepository repository;
-  late WatchCategoryByIdUseCase useCase;
+  final fix = FixturePaymentMethod();
+  late IPaymentMethodRepository repository;
+  late WatchPaymentMethodByIdUseCase useCase;
 
   setUp(() {
-    repository = MockICategoryRepository();
-    useCase = WatchCategoryByIdUseCase(repository);
+    repository = MockIPaymentMethodRepository();
+    useCase = WatchPaymentMethodByIdUseCase(repository);
   });
 
   test('should return the stream from repository', () async {
-    final category = fix.category1;
+    final paymentMethod = fix.paymentMethod1;
 
-    when(repository.watchById(category.id)).thenAnswer((_) {
+    when(repository.watchById(paymentMethod.id)).thenAnswer((_) {
       return Stream.fromIterable([
-        Right(category),
+        Right(paymentMethod),
         Left(NotFoundFailure()),
       ]);
     });
 
     final expectation = expectLater(
-      useCase(category.id),
+      useCase(paymentMethod.id),
       emitsInOrder([
-        Right(category),
+        Right(paymentMethod),
         Left(NotFoundFailure()),
       ]),
     );
 
     await expectation;
 
-    verify(repository.watchById(category.id));
+    verify(repository.watchById(paymentMethod.id));
     verifyNoMoreInteractions(repository);
   });
 }

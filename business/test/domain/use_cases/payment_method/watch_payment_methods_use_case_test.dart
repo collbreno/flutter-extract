@@ -7,24 +7,24 @@ import 'package:mockito/mockito.dart';
 import '_mock.mocks.dart';
 
 void main() {
-  final fix = FixtureCategory();
-  late ICategoryRepository repository;
-  late WatchCategoriesUseCase useCase;
+  final fix = FixturePaymentMethod();
+  late IPaymentMethodRepository repository;
+  late WatchPaymentMethodsUseCase useCase;
 
   setUp(() {
-    repository = MockICategoryRepository();
-    useCase = WatchCategoriesUseCase(repository);
+    repository = MockIPaymentMethodRepository();
+    useCase = WatchPaymentMethodsUseCase(repository);
   });
 
   test('should return the stream from repository', () async {
-    final category1 = fix.category1;
-    final category2 = fix.category2;
+    final paymentMethod1 = fix.paymentMethod1;
+    final paymentMethod2 = fix.paymentMethod2;
 
     when(repository.watchAll()).thenAnswer((_) {
       return Stream.fromIterable([
         Left(NotFoundFailure()),
-        Right([category1]),
-        Right([category1, category2]),
+        Right([paymentMethod1]),
+        Right([paymentMethod1, paymentMethod2]),
       ]);
     });
 
@@ -32,8 +32,8 @@ void main() {
       useCase(),
       emitsInOrder([
         Left(NotFoundFailure()),
-        orderedRightEquals([category1]),
-        orderedRightEquals([category1, category2]),
+        orderedRightEquals([paymentMethod1]),
+        orderedRightEquals([paymentMethod1, paymentMethod2]),
       ]),
     );
 

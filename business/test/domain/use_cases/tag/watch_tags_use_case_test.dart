@@ -7,36 +7,37 @@ import 'package:mockito/mockito.dart';
 import '_mock.mocks.dart';
 
 void main() {
-  final fix = FixtureCategory();
-  late ICategoryRepository repository;
-  late WatchCategoryByIdUseCase useCase;
+  final fix = FixtureTag();
+  late ITagRepository repository;
+  late WatchTagsUseCase useCase;
 
   setUp(() {
-    repository = MockICategoryRepository();
-    useCase = WatchCategoryByIdUseCase(repository);
+    repository = MockITagRepository();
+    useCase = WatchTagsUseCase(repository);
   });
 
   test('should return the stream from repository', () async {
-    final category = fix.category1;
+    final tag1 = fix.tag1;
+    final tag2 = fix.tag2;
 
-    when(repository.watchById(category.id)).thenAnswer((_) {
+    when(repository.watchAll()).thenAnswer((_) {
       return Stream.fromIterable([
-        Right(category),
         Left(NotFoundFailure()),
+        Right([tag1]),
+        Right([tag1, tag2]),
       ]);
     });
 
-    final expectation = expectLater(
-      useCase(category.id),
+    await expectLater(
+      useCase(),
       emitsInOrder([
-        Right(category),
         Left(NotFoundFailure()),
+        orderedRightEquals([tag1]),
+        orderedRightEquals([tag1, tag2]),
       ]),
     );
 
-    await expectation;
-
-    verify(repository.watchById(category.id));
+    verify(repository.watchAll());
     verifyNoMoreInteractions(repository);
   });
 }
