@@ -85,5 +85,7 @@ List<Provider> _createProviders(AppDatabase db) {
     // tag use cases
     Provider<InsertTagUseCase>(create: (_) => InsertTagUseCase(tagRepo)),
     Provider<UpdateTagUseCase>(create: (_) => UpdateTagUseCase(tagRepo)),
+    Provider<WatchTagsUseCase>(create: (_) => WatchTagsUseCase(tagRepo)),
+    Provider<WatchTagByIdUseCase>(create: (_) => WatchTagByIdUseCase(tagRepo)),
   ];
 }

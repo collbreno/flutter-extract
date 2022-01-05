@@ -2,9 +2,9 @@ import 'package:business/business.dart';
 import 'package:business/fixtures.dart';
 import 'package:dartz/dartz.dart';
 import 'package:drift/native.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:infrastructure/infrastructure.dart';
-import 'package:infrastructure/src/repositories/tag_repository.dart';
 import 'package:uuid/uuid.dart';
 
 import '../utils/foreign_keys_utils.dart';
@@ -118,6 +118,172 @@ void main() {
     test('Query by id of an item that does not exist must return $NotFoundFailure', () async {
       final result = await repository.getById(uid.v4());
       expect(result, Left(NotFoundFailure()));
+    });
+  });
+
+  group('Watch by id', () {
+    test('Simple case', () async {
+      final tag = fix.tag1;
+
+      await repository.insert(tag);
+
+      final result = await repository.watchById(tag.id).first;
+
+      expect(result, Right(tag));
+    });
+
+    test('Query by id of an item that does not exist must return $NotFoundFailure', () async {
+      final result = await repository.watchById(uid.v4()).first;
+      expect(result, Left(NotFoundFailure()));
+    });
+
+    test('Updation must emit a new tag', () async {
+      final tag1 = fix.tag1;
+      final tag2 = tag1.rebuild((p0) => p0.name = 'New tag');
+      final tag3 = tag2.rebuild((p0) => p0.color = Color(Colors.amber.value));
+
+      await repository.insert(tag1);
+
+      final expectation = expectLater(
+        repository.watchById(tag1.id),
+        emitsInOrder([
+          Right(tag1),
+          Right(tag2),
+          Right(tag3),
+        ]),
+      );
+
+      await repository.update(tag2);
+      await repository.update(tag3);
+
+      await expectation;
+    });
+
+    test('Deletion must emit a new failure', () async {
+      final tag = fix.tag1;
+
+      await repository.insert(tag);
+
+      final expectation = expectLater(
+        repository.watchById(tag.id),
+        emitsInOrder([
+          Right(tag),
+          Left(NotFoundFailure()),
+        ]),
+      );
+
+      await repository.delete(tag.id);
+
+      await expectation;
+    });
+  });
+
+  group('Watch all', () {
+    test('Simple case', () async {
+      final tag = fix.tag1;
+
+      await repository.insert(tag);
+
+      final result = await repository.watchAll().first;
+
+      expect(result, orderedRightEquals([tag]));
+    });
+
+    test('Must return $NotFoundFailure when there is no tags', () async {
+      final result = await repository.watchAll().first;
+      expect(result, Left(NotFoundFailure()));
+    });
+
+    test('First insertion must emit a new list', () async {
+      final tag = fix.tag1;
+
+      final expectation = expectLater(
+        repository.watchAll(),
+        emitsInOrder([
+          Left(NotFoundFailure()),
+          orderedRightEquals([tag]),
+        ]),
+      );
+
+      await repository.insert(tag);
+
+      await expectation;
+    });
+
+    test('Updation must emit a new list', () async {
+      final tag = fix.tag1;
+      final newTag = tag.rebuild((p0) => p0.name = 'New Tag');
+
+      await repository.insert(tag);
+
+      final expectation = expectLater(
+        repository.watchAll(),
+        emitsInOrder([
+          orderedRightEquals([tag]),
+          orderedRightEquals([newTag]),
+        ]),
+      );
+
+      await repository.update(newTag);
+
+      await expectation;
+    });
+
+    test('Insertion must emit a new list', () async {
+      final tag1 = fix.tag1;
+      final tag2 = fix.tag2;
+
+      await repository.insert(tag1);
+
+      final expectation = expectLater(
+        repository.watchAll(),
+        emitsInOrder([
+          orderedRightEquals([tag1]),
+          orderedRightEquals([tag1, tag2]),
+        ]),
+      );
+
+      await repository.insert(tag2);
+
+      await expectation;
+    });
+
+    test('Deletion must emit a new list', () async {
+      final tag1 = fix.tag1;
+      final tag2 = fix.tag2;
+
+      await repository.insert(tag1);
+      await repository.insert(tag2);
+
+      final expectation = expectLater(
+        repository.watchAll(),
+        emitsInOrder([
+          orderedRightEquals([tag1, tag2]),
+          orderedRightEquals([tag1]),
+        ]),
+      );
+
+      await repository.delete(tag2.id);
+
+      await expectation;
+    });
+
+    test('Deletion of the last item must emit $NotFoundFailure', () async {
+      final tag1 = fix.tag1;
+
+      await repository.insert(tag1);
+
+      final expectation = expectLater(
+        repository.watchAll(),
+        emitsInOrder([
+          orderedRightEquals([tag1]),
+          Left(NotFoundFailure()),
+        ]),
+      );
+
+      await repository.delete(tag1.id);
+
+      await expectation;
     });
   });
 

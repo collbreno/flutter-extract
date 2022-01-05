@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:business/business.dart';
 import 'package:dartz/dartz.dart';
 import 'package:infrastructure/infrastructure.dart';
@@ -51,6 +53,20 @@ class TagRepository implements ITagRepository {
   }
 
   @override
+  Stream<FailureOr<List<Tag>>> watchAll() {
+    final query = db.select(db.tags);
+    return query.watch().transform(StreamTransformer.fromHandlers(handleData: (data, sink) {
+          if (data.isEmpty) {
+            return sink.add(Left(NotFoundFailure()));
+          } else {
+            sink.add(Right(data.map((e) => e.toModel()).toList()));
+          }
+        }, handleError: (error, stackTrace, sink) {
+          sink.add(Left(UnknownDatabaseFailure()));
+        }));
+  }
+
+  @override
   Future<FailureOr<Tag>> getById(String tagId) async {
     try {
       final query = db.select(db.tags)..where((t) => t.id.equals(tagId));
@@ -64,6 +80,23 @@ class TagRepository implements ITagRepository {
     } on Exception {
       return Left(UnknownDatabaseFailure());
     }
+  }
+
+  @override
+  Stream<FailureOr<Tag>> watchById(String tagId) {
+    final query = db.select(db.tags)..where((t) => t.id.equals(tagId));
+    return query.watchSingleOrNull().transform(StreamTransformer.fromHandlers(
+          handleData: (data, sink) {
+            if (data == null) {
+              sink.add(Left(NotFoundFailure()));
+            } else {
+              sink.add(Right(data.toModel()));
+            }
+          },
+          handleError: (error, stackTrace, sink) {
+            sink.add(Left(UnknownDatabaseFailure()));
+          },
+        ));
   }
 
   @override

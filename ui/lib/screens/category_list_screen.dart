@@ -27,10 +27,17 @@ class CategoryListScreen extends StatelessWidget implements Screen {
         onEditItem: (item) => Navigator.of(context).push((CategoryFormScreen.route(item))),
         itemBuilder: (context, item, selected) {
           return ListTile(
-            title: Text(item.name),
-            selected: selected,
-            leading: Icon(item.icon, color: item.color),
-          );
+              title: Text(item.name),
+              selected: selected,
+              leading: Icon(item.icon, color: item.color),
+              trailing: AnimatedScale(
+                duration: Duration(milliseconds: 100),
+                scale: selected ? 1 : 0,
+                child: Icon(
+                  Icons.check,
+                  key: ValueKey(item.id),
+                ),
+              ));
         },
       ),
     );

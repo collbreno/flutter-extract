@@ -48,6 +48,12 @@ class StoreRepository implements IStoreRepository {
     }
   }
 
+  @override
+  Stream<FailureOr<List<Store>>> watchAll() {
+    // TODO: implement watchAll
+    throw UnimplementedError();
+  }
+
   /// Get the store with the given id.
   /// Returns the store.
   /// Returns a store when succeeded.
@@ -109,5 +115,11 @@ class StoreRepository implements IStoreRepository {
     } on Exception {
       return Left(UnknownDatabaseFailure());
     }
+  }
+
+  @override
+  Stream<FailureOr<Store>> watchById(String id) {
+    // TODO: implement watchById
+    throw UnimplementedError();
   }
 }

@@ -51,6 +51,12 @@ class PaymentMethodRepository implements IPaymentMethodRepository {
   }
 
   @override
+  Stream<FailureOr<List<PaymentMethod>>> watchAll() {
+    // TODO: implement watchAll
+    throw UnimplementedError();
+  }
+
+  @override
   Future<FailureOr<PaymentMethod>> getById(String id) async {
     try {
       final query = db.select(db.paymentMethods)..where((s) => s.id.equals(id));
@@ -88,5 +94,11 @@ class PaymentMethodRepository implements IPaymentMethodRepository {
     } on Exception {
       return Left(UnknownDatabaseFailure());
     }
+  }
+
+  @override
+  Stream<FailureOr<PaymentMethod>> watchById(String id) {
+    // TODO: implement watchById
+    throw UnimplementedError();
   }
 }
