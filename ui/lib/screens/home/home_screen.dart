@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:ui/navigation/screen.dart';
-import 'package:ui/screens/category_form_screen.dart';
-import 'package:ui/screens/category_list_screen.dart';
+import 'package:ui/screens/category/category_list_screen.dart';
 import 'package:ui/screens/new_expense_screen.dart';
+import 'package:ui/screens/payment_method/payment_method_list_screen.dart';
 import 'package:ui/screens/settings_screen.dart';
-import 'package:ui/screens/store_form_screen.dart';
-import 'package:ui/screens/tag_form_screen.dart';
-import 'package:ui/screens/tag_list_screen.dart';
+import 'package:ui/screens/store/store_list_screen.dart';
+import 'package:ui/screens/tag/tag_list_screen.dart';
 
 class HomeScreen extends StatelessWidget implements Screen {
-  const HomeScreen({Key? key}) : super(key: key);
+  HomeScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,49 +33,30 @@ class HomeScreen extends StatelessWidget implements Screen {
           ],
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20),
-        child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).push(CategoryFormScreen.route());
-                },
-                child: Text("Adicionar Categoria"),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).push(CategoryListScreen.route());
-                },
-                child: Text("Ver Categorias"),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).push(TagFormScreen.route());
-                },
-                child: Text("Adicionar Tag"),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).push(TagListScreen.route());
-                },
-                child: Text("Ver Tags"),
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).push(StoreFormScreen.route());
-                  },
-                  child: Text('Adicionar Loja')),
-            ],
+      body: ListView(
+        children: [
+          ElevatedButton(
+            child: Text('Categorias'),
+            onPressed: () => Navigator.of(context).push(CategoryListScreen.route()),
           ),
-        ),
+          ElevatedButton(
+            child: Text('Tags'),
+            onPressed: () => Navigator.of(context).push(TagListScreen.route()),
+          ),
+          ElevatedButton(
+            child: Text('Lojas'),
+            onPressed: () => Navigator.of(context).push(StoreListScreen.route()),
+          ),
+          ElevatedButton(
+            child: Text('Métodos de Pagamento'),
+            onPressed: () => Navigator.of(context).push(PaymentMethodListScreen.route()),
+          ),
+        ]
+            .map((e) => Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  child: e,
+                ))
+            .toList(),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

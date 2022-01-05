@@ -59,6 +59,7 @@ List<Provider> _createProviders(AppDatabase db) {
   final subcategoryRepo = SubcategoryRepository(db);
   final storeRepo = StoreRepository(db);
   final tagRepo = TagRepository(db);
+  final pmRepo = PaymentMethodRepository(db);
 
   return [
     // category use cases
@@ -81,11 +82,19 @@ List<Provider> _createProviders(AppDatabase db) {
     // store use cases
     Provider<InsertStoreUseCase>(create: (_) => InsertStoreUseCase(storeRepo)),
     Provider<UpdateStoreUseCase>(create: (_) => UpdateStoreUseCase(storeRepo)),
+    Provider<WatchStoreByIdUseCase>(create: (_) => WatchStoreByIdUseCase(storeRepo)),
+    Provider<WatchStoresUseCase>(create: (_) => WatchStoresUseCase(storeRepo)),
 
     // tag use cases
     Provider<InsertTagUseCase>(create: (_) => InsertTagUseCase(tagRepo)),
     Provider<UpdateTagUseCase>(create: (_) => UpdateTagUseCase(tagRepo)),
     Provider<WatchTagsUseCase>(create: (_) => WatchTagsUseCase(tagRepo)),
     Provider<WatchTagByIdUseCase>(create: (_) => WatchTagByIdUseCase(tagRepo)),
+
+    // payment method use cases
+    Provider<InsertPaymentMethodUseCase>(create: (_) => InsertPaymentMethodUseCase(pmRepo)),
+    Provider<UpdatePaymentMethodUseCase>(create: (_) => UpdatePaymentMethodUseCase(pmRepo)),
+    Provider<WatchPaymentMethodsUseCase>(create: (_) => WatchPaymentMethodsUseCase(pmRepo)),
+    Provider<WatchPaymentMethodByIdUseCase>(create: (_) => WatchPaymentMethodByIdUseCase(pmRepo)),
   ];
 }

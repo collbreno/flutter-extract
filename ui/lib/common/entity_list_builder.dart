@@ -9,10 +9,12 @@ class EntityListBuilder<T> extends StatefulWidget {
   final VoidCallback? onAddPressed;
   final ValueSetter<T>? onOpenItem;
   final ValueSetter<T>? onEditItem;
+  final String appBarTitle;
 
   const EntityListBuilder({
     Key? key,
     required this.itemBuilder,
+    required this.appBarTitle,
     this.onAddPressed,
     this.onOpenItem,
     this.onEditItem,
@@ -37,7 +39,7 @@ class _EntityListBuilderState<T> extends State<EntityListBuilder<T>> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MultiSelectAppBar<T>(
-        defaultAppBar: AppBar(title: Text("Resultados")),
+        defaultAppBar: AppBar(title: Text(widget.appBarTitle)),
         selectedItems: _selectedItems.toList(),
         onClear: () => setState(() {
           _selectedItems.clear();

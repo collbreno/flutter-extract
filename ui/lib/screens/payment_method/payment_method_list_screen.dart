@@ -3,32 +3,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ui/bloc/entity_list_cubit.dart';
 import 'package:ui/common/entity_list_builder.dart';
-import 'package:ui/common/tag_chip.dart';
 import 'package:ui/navigation/page_transitions.dart';
-import 'package:ui/screens/tag_form_screen.dart';
+import 'package:ui/screens/payment_method/payment_method_form_screen.dart';
 
-class TagListScreen extends StatelessWidget {
-  const TagListScreen._({Key? key}) : super(key: key);
+class PaymentMethodListScreen extends StatelessWidget {
+  const PaymentMethodListScreen._({Key? key}) : super(key: key);
 
   static Route route() {
-    return AndroidTransition(TagListScreen._());
+    return AndroidTransition(PaymentMethodListScreen._());
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => EntityListCubit(context.read<WatchTagsUseCase>()),
-      child: EntityListBuilder<Tag>(
-        onEditItem: (item) => Navigator.of(context).push(TagFormScreen.route(item)),
+      create: (context) => EntityListCubit(context.read<WatchPaymentMethodsUseCase>()),
+      child: EntityListBuilder<PaymentMethod>(
+        appBarTitle: 'Métodos de Pagamento',
+        onEditItem: (item) => Navigator.of(context).push(PaymentMethodFormScreen.route(item)),
         // TODO: implement on open
         onOpenItem: (item) {},
-        onAddPressed: () => Navigator.of(context).push(TagFormScreen.route()),
+        onAddPressed: () => Navigator.of(context).push(PaymentMethodFormScreen.route()),
         itemBuilder: (context, item, selected) {
           return ListTile(
-            title: Align(
-              alignment: Alignment.centerLeft,
-              child: TagChip.fromTag(item),
-            ),
+            title: Text(item.name),
+            leading: Icon(item.icon, color: item.color),
             selected: selected,
             trailing: AnimatedScale(
               duration: Duration(milliseconds: 100),

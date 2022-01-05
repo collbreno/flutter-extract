@@ -1,26 +1,40 @@
-import 'package:bloc/bloc.dart';
+import 'package:built_collection/src/list.dart';
 import 'package:business/business.dart';
-import 'package:equatable/equatable.dart';
-import 'package:formz/formz.dart';
+import 'package:ui/bloc/entity_form_cubit.dart';
 import 'package:ui/models/_models.dart';
-import 'package:uuid/uuid.dart';
 
-part 'payment_method_form_state.dart';
-
-class PaymentMethodFormCubit extends Cubit<PaymentMethodFormState> {
-  final _uid = Uuid();
-  final FutureUseCase<void, PaymentMethod> _insertPaymentMethod;
-  final FutureUseCase<void, PaymentMethod> _updatePaymentMethod;
-
+class PaymentMethodFormCubit extends EntityFormCubit<PaymentMethod> {
   PaymentMethodFormCubit({
-    required FutureUseCase<void, PaymentMethod> insertPaymentMethod,
-    required FutureUseCase<void, PaymentMethod> updatePaymentMethod,
+    required FutureUseCase<void, PaymentMethod> insertUseCase,
+    required FutureUseCase<void, PaymentMethod> updateUseCase,
     PaymentMethod? paymentMethod,
-  })  : _insertPaymentMethod = insertPaymentMethod,
-        _updatePaymentMethod = updatePaymentMethod,
-        super(
-          paymentMethod == null
-              ? PaymentMethodFormState()
-              : PaymentMethodFormState.fromPaymentMethod(paymentMethod),
+  }) : super(
+          id: paymentMethod?.id ?? '',
+          insertUseCase: insertUseCase,
+          updateUseCase: updateUseCase,
+          inputs: _getDefaultInputs(paymentMethod),
         );
+
+  static BuiltList<FormzInputSuper> _getDefaultInputs(PaymentMethod? pm) {
+    return BuiltList([
+      PaymentMethodNameFormzInput.pure(pm?.name ?? ''),
+      ColorFormzInput.pure(pm?.color),
+      IconFormzInput.pure(pm?.icon),
+    ]);
+  }
+
+  @override
+  BuiltList<FormzInputSuper> getDefaultInputs() {
+    return _getDefaultInputs(null);
+  }
+
+  @override
+  PaymentMethod mapInputsToEntity(String id) {
+    return PaymentMethod(
+      id: id,
+      name: state.inputs.singleWithType<PaymentMethodNameFormzInput>().value,
+      color: state.inputs.singleWithType<ColorFormzInput>().value!,
+      icon: state.inputs.singleWithType<IconFormzInput>().value!,
+    );
+  }
 }

@@ -6,7 +6,7 @@ import 'package:ui/bloc/category_form_cubit.dart';
 import 'package:ui/common/form/entity_form_builder.dart';
 import 'package:ui/navigation/page_transitions.dart';
 import 'package:ui/navigation/screen.dart';
-import 'package:ui/screens/category_view/category_view_screen.dart';
+import 'package:ui/screens/category/category_view_screen.dart';
 
 class CategoryFormScreen extends StatelessWidget implements Screen {
   const CategoryFormScreen({Key? key, this.category}) : super(key: key);

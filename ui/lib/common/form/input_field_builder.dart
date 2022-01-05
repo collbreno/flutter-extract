@@ -31,6 +31,8 @@ class InputFieldBuilder<T extends EntityFormCubit> extends StatelessWidget {
       return TextInputBuilder<T, StoreNameFormzInput>(inputKey: inputKey);
     } else if (type == TagNameFormzInput) {
       return TextInputBuilder<T, TagNameFormzInput>(inputKey: inputKey);
+    } else if (type == PaymentMethodNameFormzInput) {
+      return TextInputBuilder<T, PaymentMethodNameFormzInput>(inputKey: inputKey);
     }
 
     throw Exception('InputBuilder not defined for input of type $type');

@@ -5,8 +5,8 @@ import 'package:ui/bloc/entity_list_cubit.dart';
 import 'package:ui/common/entity_list_builder.dart';
 import 'package:ui/navigation/page_transitions.dart';
 import 'package:ui/navigation/screen.dart';
-import 'package:ui/screens/category_form_screen.dart';
-import 'package:ui/screens/category_view/category_view_screen.dart';
+import 'package:ui/screens/category/category_form_screen.dart';
+import 'package:ui/screens/category/category_view_screen.dart';
 
 class CategoryListScreen extends StatelessWidget implements Screen {
   static Route route() {
@@ -22,6 +22,7 @@ class CategoryListScreen extends StatelessWidget implements Screen {
         context.read<WatchCategoriesUseCase>(),
       ),
       child: EntityListBuilder<Category>(
+        appBarTitle: 'Categorias',
         onAddPressed: () => Navigator.of(context).push((CategoryFormScreen.route())),
         onOpenItem: (item) => Navigator.of(context).push(CategoryViewScreen.route(item.id)),
         onEditItem: (item) => Navigator.of(context).push((CategoryFormScreen.route(item))),
