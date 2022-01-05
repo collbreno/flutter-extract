@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:business/business.dart';
 import 'package:dartz/dartz.dart';
 import 'package:infrastructure/infrastructure.dart';
@@ -52,8 +54,19 @@ class PaymentMethodRepository implements IPaymentMethodRepository {
 
   @override
   Stream<FailureOr<List<PaymentMethod>>> watchAll() {
-    // TODO: implement watchAll
-    throw UnimplementedError();
+    final query = db.select(db.paymentMethods);
+    return query.watch().transform(StreamTransformer.fromHandlers(
+          handleData: (data, sink) {
+            if (data.isEmpty) {
+              return sink.add(Left(NotFoundFailure()));
+            } else {
+              sink.add(Right(data.map((e) => e.toModel()).toList()));
+            }
+          },
+          handleError: (error, stackTrace, sink) {
+            sink.add(Left(UnknownDatabaseFailure()));
+          },
+        ));
   }
 
   @override
@@ -98,7 +111,18 @@ class PaymentMethodRepository implements IPaymentMethodRepository {
 
   @override
   Stream<FailureOr<PaymentMethod>> watchById(String id) {
-    // TODO: implement watchById
-    throw UnimplementedError();
+    final query = db.select(db.paymentMethods)..where((s) => s.id.equals(id));
+    return query.watchSingleOrNull().transform(StreamTransformer.fromHandlers(
+          handleData: (data, sink) {
+            if (data == null) {
+              sink.add(Left(NotFoundFailure()));
+            } else {
+              sink.add(Right(data.toModel()));
+            }
+          },
+          handleError: (error, stackTrace, sink) {
+            sink.add(Left(UnknownDatabaseFailure()));
+          },
+        ));
   }
 }

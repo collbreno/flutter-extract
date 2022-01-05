@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:business/business.dart';
 import 'package:business/src/core/typedefs.dart';
 import 'package:dartz/dartz.dart';
@@ -50,8 +52,16 @@ class StoreRepository implements IStoreRepository {
 
   @override
   Stream<FailureOr<List<Store>>> watchAll() {
-    // TODO: implement watchAll
-    throw UnimplementedError();
+    final query = db.select(db.stores);
+    return query.watch().transform(StreamTransformer.fromHandlers(handleData: (data, sink) {
+          if (data.isEmpty) {
+            return sink.add(Left(NotFoundFailure()));
+          } else {
+            sink.add(Right(data.map((e) => e.toModel()).toList()));
+          }
+        }, handleError: (error, stackTrace, sink) {
+          sink.add(Left(UnknownDatabaseFailure()));
+        }));
   }
 
   /// Get the store with the given id.
@@ -119,7 +129,18 @@ class StoreRepository implements IStoreRepository {
 
   @override
   Stream<FailureOr<Store>> watchById(String id) {
-    // TODO: implement watchById
-    throw UnimplementedError();
+    final query = db.select(db.stores)..where((t) => t.id.equals(id));
+    return query.watchSingleOrNull().transform(StreamTransformer.fromHandlers(
+          handleData: (data, sink) {
+            if (data == null) {
+              sink.add(Left(NotFoundFailure()));
+            } else {
+              sink.add(Right(data.toModel()));
+            }
+          },
+          handleError: (error, stackTrace, sink) {
+            sink.add(Left(UnknownDatabaseFailure()));
+          },
+        ));
   }
 }

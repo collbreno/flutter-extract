@@ -116,6 +116,169 @@ void main() {
     });
   });
 
+  group('Watch by id', () {
+    test('Simple case', () async {
+      final paymentMethod = fix.paymentMethod1;
+
+      await repository.insert(paymentMethod);
+
+      final result = await repository.watchById(paymentMethod.id).first;
+
+      expect(result, Right(paymentMethod));
+    });
+
+    test('Query by id of an item that does not exist must return $NotFoundFailure', () async {
+      final result = await repository.watchById(uid.v4()).first;
+      expect(result, Left(NotFoundFailure()));
+    });
+
+    test('Updation must emit a new paymentMethod', () async {
+      final paymentMethod1 = fix.paymentMethod1;
+      final paymentMethod2 = paymentMethod1.rebuild((p0) => p0.name = 'New paymentMethod');
+
+      await repository.insert(paymentMethod1);
+
+      final expectation = expectLater(
+        repository.watchById(paymentMethod1.id),
+        emitsInOrder([
+          Right(paymentMethod1),
+          Right(paymentMethod2),
+        ]),
+      );
+
+      await repository.update(paymentMethod2);
+
+      await expectation;
+    });
+
+    test('Deletion must emit a new failure', () async {
+      final paymentMethod = fix.paymentMethod1;
+
+      await repository.insert(paymentMethod);
+
+      final expectation = expectLater(
+        repository.watchById(paymentMethod.id),
+        emitsInOrder([
+          Right(paymentMethod),
+          Left(NotFoundFailure()),
+        ]),
+      );
+
+      await repository.delete(paymentMethod.id);
+
+      await expectation;
+    });
+  });
+
+  group('Watch all', () {
+    test('Simple case', () async {
+      final paymentMethod = fix.paymentMethod1;
+
+      await repository.insert(paymentMethod);
+
+      final result = await repository.watchAll().first;
+
+      expect(result, orderedRightEquals([paymentMethod]));
+    });
+
+    test('Must return $NotFoundFailure when there is no paymentMethods', () async {
+      final result = await repository.watchAll().first;
+      expect(result, Left(NotFoundFailure()));
+    });
+
+    test('First insertion must emit a new list', () async {
+      final paymentMethod = fix.paymentMethod1;
+
+      final expectation = expectLater(
+        repository.watchAll(),
+        emitsInOrder([
+          Left(NotFoundFailure()),
+          orderedRightEquals([paymentMethod]),
+        ]),
+      );
+
+      await repository.insert(paymentMethod);
+
+      await expectation;
+    });
+
+    test('Updation must emit a new list', () async {
+      final paymentMethod = fix.paymentMethod1;
+      final newPaymentMethod = paymentMethod.rebuild((p0) => p0.name = 'New Payment Method');
+
+      await repository.insert(paymentMethod);
+
+      final expectation = expectLater(
+        repository.watchAll(),
+        emitsInOrder([
+          orderedRightEquals([paymentMethod]),
+          orderedRightEquals([newPaymentMethod]),
+        ]),
+      );
+
+      await repository.update(newPaymentMethod);
+
+      await expectation;
+    });
+
+    test('Insertion must emit a new list', () async {
+      final paymentMethod1 = fix.paymentMethod1;
+      final paymentMethod2 = fix.paymentMethod2;
+
+      await repository.insert(paymentMethod1);
+
+      final expectation = expectLater(
+        repository.watchAll(),
+        emitsInOrder([
+          orderedRightEquals([paymentMethod1]),
+          orderedRightEquals([paymentMethod1, paymentMethod2]),
+        ]),
+      );
+
+      await repository.insert(paymentMethod2);
+
+      await expectation;
+    });
+
+    test('Deletion must emit a new list', () async {
+      final paymentMethod1 = fix.paymentMethod1;
+      final paymentMethod2 = fix.paymentMethod2;
+
+      await repository.insert(paymentMethod1);
+      await repository.insert(paymentMethod2);
+
+      final expectation = expectLater(
+        repository.watchAll(),
+        emitsInOrder([
+          orderedRightEquals([paymentMethod1, paymentMethod2]),
+          orderedRightEquals([paymentMethod1]),
+        ]),
+      );
+
+      await repository.delete(paymentMethod2.id);
+
+      await expectation;
+    });
+
+    test('Deletion of the last item must emit $NotFoundFailure', () async {
+      final paymentMethod1 = fix.paymentMethod1;
+
+      await repository.insert(paymentMethod1);
+
+      final expectation = expectLater(
+        repository.watchAll(),
+        emitsInOrder([
+          orderedRightEquals([paymentMethod1]),
+          Left(NotFoundFailure()),
+        ]),
+      );
+
+      await repository.delete(paymentMethod1.id);
+
+      await expectation;
+    });
+  });
+
   group('Update', () {
     final paymentMethod1 = fix.paymentMethod1;
     final paymentMethod2 = fix.paymentMethod2;

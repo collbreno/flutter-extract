@@ -116,6 +116,169 @@ void main() {
     });
   });
 
+  group('Watch by id', () {
+    test('Simple case', () async {
+      final store = fix.store1;
+
+      await repository.insert(store);
+
+      final result = await repository.watchById(store.id).first;
+
+      expect(result, Right(store));
+    });
+
+    test('Query by id of an item that does not exist must return $NotFoundFailure', () async {
+      final result = await repository.watchById(uid.v4()).first;
+      expect(result, Left(NotFoundFailure()));
+    });
+
+    test('Updation must emit a new store', () async {
+      final store1 = fix.store1;
+      final store2 = store1.rebuild((p0) => p0.name = 'New store');
+
+      await repository.insert(store1);
+
+      final expectation = expectLater(
+        repository.watchById(store1.id),
+        emitsInOrder([
+          Right(store1),
+          Right(store2),
+        ]),
+      );
+
+      await repository.update(store2);
+
+      await expectation;
+    });
+
+    test('Deletion must emit a new failure', () async {
+      final store = fix.store1;
+
+      await repository.insert(store);
+
+      final expectation = expectLater(
+        repository.watchById(store.id),
+        emitsInOrder([
+          Right(store),
+          Left(NotFoundFailure()),
+        ]),
+      );
+
+      await repository.delete(store.id);
+
+      await expectation;
+    });
+  });
+
+  group('Watch all', () {
+    test('Simple case', () async {
+      final store = fix.store1;
+
+      await repository.insert(store);
+
+      final result = await repository.watchAll().first;
+
+      expect(result, orderedRightEquals([store]));
+    });
+
+    test('Must return $NotFoundFailure when there is no stores', () async {
+      final result = await repository.watchAll().first;
+      expect(result, Left(NotFoundFailure()));
+    });
+
+    test('First insertion must emit a new list', () async {
+      final store = fix.store1;
+
+      final expectation = expectLater(
+        repository.watchAll(),
+        emitsInOrder([
+          Left(NotFoundFailure()),
+          orderedRightEquals([store]),
+        ]),
+      );
+
+      await repository.insert(store);
+
+      await expectation;
+    });
+
+    test('Updation must emit a new list', () async {
+      final store = fix.store1;
+      final newStore = store.rebuild((p0) => p0.name = 'New Store');
+
+      await repository.insert(store);
+
+      final expectation = expectLater(
+        repository.watchAll(),
+        emitsInOrder([
+          orderedRightEquals([store]),
+          orderedRightEquals([newStore]),
+        ]),
+      );
+
+      await repository.update(newStore);
+
+      await expectation;
+    });
+
+    test('Insertion must emit a new list', () async {
+      final store1 = fix.store1;
+      final store2 = fix.store2;
+
+      await repository.insert(store1);
+
+      final expectation = expectLater(
+        repository.watchAll(),
+        emitsInOrder([
+          orderedRightEquals([store1]),
+          orderedRightEquals([store1, store2]),
+        ]),
+      );
+
+      await repository.insert(store2);
+
+      await expectation;
+    });
+
+    test('Deletion must emit a new list', () async {
+      final store1 = fix.store1;
+      final store2 = fix.store2;
+
+      await repository.insert(store1);
+      await repository.insert(store2);
+
+      final expectation = expectLater(
+        repository.watchAll(),
+        emitsInOrder([
+          orderedRightEquals([store1, store2]),
+          orderedRightEquals([store1]),
+        ]),
+      );
+
+      await repository.delete(store2.id);
+
+      await expectation;
+    });
+
+    test('Deletion of the last item must emit $NotFoundFailure', () async {
+      final store1 = fix.store1;
+
+      await repository.insert(store1);
+
+      final expectation = expectLater(
+        repository.watchAll(),
+        emitsInOrder([
+          orderedRightEquals([store1]),
+          Left(NotFoundFailure()),
+        ]),
+      );
+
+      await repository.delete(store1.id);
+
+      await expectation;
+    });
+  });
+
   group('Update', () {
     final store1 = fix.store1;
     final store2 = fix.store2;
