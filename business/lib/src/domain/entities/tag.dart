@@ -1,12 +1,17 @@
 import 'package:built_value/built_value.dart';
+import 'package:business/src/core/_core.dart';
 import 'package:flutter/material.dart' hide Builder;
 
 part 'tag.g.dart';
 
-abstract class Tag implements Built<Tag, TagBuilder> {
+abstract class Tag implements Built<Tag, TagBuilder>, Entity {
+  @override
   String get id;
+
   String get name;
+
   Color get color;
+
   IconData? get icon;
 
   Tag._();

@@ -1,20 +1,32 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
+import 'package:business/src/core/_core.dart';
 import 'package:business/src/domain/_domain.dart';
 
 part 'expense.g.dart';
 
-abstract class Expense implements Built<Expense, ExpenseBuilder> {
+abstract class Expense implements Built<Expense, ExpenseBuilder>, Entity {
+  @override
   String get id;
+
   String get description;
+
   int get value;
+
   DateTime get date;
+
   DateTime get createdAt;
+
   DateTime get updatedAt;
+
   PaymentMethod get paymentMethod;
+
   Subcategory get subcategory;
+
   Store? get store;
+
   BuiltSet<Tag> get tags;
+
   BuiltSet<String> get files;
 
   Expense._();

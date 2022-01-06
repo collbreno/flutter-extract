@@ -1,12 +1,17 @@
 import 'package:built_value/built_value.dart';
+import 'package:business/src/core/entity.dart';
 import 'package:flutter/material.dart' hide Builder;
 
 part 'category.g.dart';
 
-abstract class Category implements Built<Category, CategoryBuilder> {
+abstract class Category implements Built<Category, CategoryBuilder>, Entity {
+  @override
   String get id;
+
   String get name;
+
   Color get color;
+
   IconData get icon;
 
   Category._();
