@@ -16,12 +16,16 @@ class PaymentMethodListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => EntityListCubit(context.read<WatchPaymentMethodsUseCase>()),
+      create: (context) => EntityListCubit<PaymentMethod>(
+        watchAllUseCase: context.read<WatchPaymentMethodsUseCase>(),
+        editItemCallback: (item) => Navigator.of(context).push(PaymentMethodFormScreen.route(item)),
+        openItemCallback: (item) {
+          // TODO: implement
+          print('open item');
+        },
+      ),
       child: EntityListBuilder<PaymentMethod>(
         appBarTitle: 'Métodos de Pagamento',
-        onEditItem: (item) => Navigator.of(context).push(PaymentMethodFormScreen.route(item)),
-        // TODO: implement on open
-        onOpenItem: (item) {},
         onAddPressed: () => Navigator.of(context).push(PaymentMethodFormScreen.route()),
         itemBuilder: (context, item, selected) {
           return ListTile(

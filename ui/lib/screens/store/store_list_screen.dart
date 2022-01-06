@@ -17,12 +17,16 @@ class StoreListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => EntityListCubit(context.read<WatchStoresUseCase>()),
+      create: (context) => EntityListCubit<Store>(
+        watchAllUseCase: context.read<WatchStoresUseCase>(),
+        editItemCallback: (item) => Navigator.of(context).push(StoreFormScreen.route(item)),
+        openItemCallback: (item) {
+          // TODO: implement
+          print('open item');
+        },
+      ),
       child: EntityListBuilder<Store>(
         appBarTitle: 'Lojas',
-        onEditItem: (item) => Navigator.of(context).push(StoreFormScreen.route(item)),
-        // TODO: implement on open
-        onOpenItem: (item) {},
         onAddPressed: () => Navigator.of(context).push(StoreFormScreen.route()),
         itemBuilder: (context, item, selected) {
           return ListTile(

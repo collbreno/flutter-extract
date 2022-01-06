@@ -19,13 +19,13 @@ class CategoryListScreen extends StatelessWidget implements Screen {
   Widget build(BuildContext context) {
     return BlocProvider<EntityListCubit<Category>>(
       create: (context) => EntityListCubit<Category>(
-        context.read<WatchCategoriesUseCase>(),
+        watchAllUseCase: context.read<WatchCategoriesUseCase>(),
+        editItemCallback: (item) => Navigator.of(context).push(CategoryFormScreen.route(item)),
+        openItemCallback: (item) => Navigator.of(context).push(CategoryViewScreen.route(item.id)),
       ),
       child: EntityListBuilder<Category>(
         appBarTitle: 'Categorias',
         onAddPressed: () => Navigator.of(context).push((CategoryFormScreen.route())),
-        onOpenItem: (item) => Navigator.of(context).push(CategoryViewScreen.route(item.id)),
-        onEditItem: (item) => Navigator.of(context).push((CategoryFormScreen.route(item))),
         itemBuilder: (context, item, selected) {
           return ListTile(
               title: Text(item.name),

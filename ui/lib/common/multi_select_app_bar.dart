@@ -6,7 +6,7 @@ class MultiSelectAppBar<T> extends MutableAppBar {
     Key? key,
     required AppBar defaultAppBar,
     required VoidCallback onClear,
-    required List<T> selectedItems,
+    required Iterable<T> selectedItems,
     List<Widget> actions = const [],
     Color? backgroundColorWhenSelected,
     Icon clearIcon = const Icon(Icons.clear),

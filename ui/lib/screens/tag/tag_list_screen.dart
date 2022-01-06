@@ -17,12 +17,16 @@ class TagListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => EntityListCubit(context.read<WatchTagsUseCase>()),
+      create: (context) => EntityListCubit<Tag>(
+        watchAllUseCase: context.read<WatchTagsUseCase>(),
+        editItemCallback: (item) => Navigator.of(context).push(TagFormScreen.route(item)),
+        openItemCallback: (item) {
+          // TODO: implement
+          print('open item');
+        },
+      ),
       child: EntityListBuilder<Tag>(
         appBarTitle: 'Tags',
-        onEditItem: (item) => Navigator.of(context).push(TagFormScreen.route(item)),
-        // TODO: implement on open
-        onOpenItem: (item) {},
         onAddPressed: () => Navigator.of(context).push(TagFormScreen.route()),
         itemBuilder: (context, item, selected) {
           return ListTile(
