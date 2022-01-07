@@ -2,16 +2,16 @@ part of 'category_view_cubit.dart';
 
 class CategoryViewState extends Equatable {
   final String id;
-  final AsyncSnapshot<Category> category;
+  final AsyncData<Category> category;
 
-  CategoryViewState.initial(this.id) : category = AsyncSnapshot.nothing();
+  CategoryViewState.initial(this.id) : category = AsyncData.nothing();
 
   CategoryViewState({
     required this.id,
     required this.category,
   });
 
-  CategoryViewState copyWith({AsyncSnapshot<Category>? category}) {
+  CategoryViewState copyWith({AsyncData<Category>? category}) {
     return CategoryViewState(
       id: id,
       category: category ?? this.category,

@@ -1,11 +1,10 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:business/business.dart';
 import 'package:business/fixtures.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:ui/bloc/category_view_cubit.dart';
-import 'package:dartz/dartz.dart';
 
 import '_mock.mocks.dart';
 
@@ -27,7 +26,7 @@ void main() {
   test('initial state', () {
     expect(
       cubit.state,
-      CategoryViewState(id: id, category: AsyncSnapshot.nothing()),
+      CategoryViewState(id: id, category: AsyncData.nothing()),
     );
   });
 
@@ -47,19 +46,19 @@ void main() {
     expect: () => [
       CategoryViewState(
         id: id,
-        category: AsyncSnapshot.waiting(),
+        category: AsyncData.loading(),
       ),
       CategoryViewState(
         id: id,
-        category: AsyncSnapshot.withData(ConnectionState.done, category),
+        category: AsyncData.withData(category),
       ),
       CategoryViewState(
         id: id,
-        category: AsyncSnapshot.withData(ConnectionState.done, newCategory),
+        category: AsyncData.withData(newCategory),
       ),
       CategoryViewState(
         id: id,
-        category: AsyncSnapshot.withError(ConnectionState.done, NotFoundFailure()),
+        category: AsyncData.withError(NotFoundFailure()),
       ),
     ],
   );

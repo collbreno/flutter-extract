@@ -8,6 +8,7 @@ part 'entity_list_state.dart';
 
 class EntityListCubit<T extends Entity> extends Cubit<EntityListState<T>> {
   final NoParamStreamUseCase<List<T>> _watchAllUseCase;
+  final FutureUseCase<void, String> _deleteUseCase;
   final ValueSetter<T> _openItemCallback;
   final ValueSetter<T> _editItemCallBack;
 
@@ -15,21 +16,22 @@ class EntityListCubit<T extends Entity> extends Cubit<EntityListState<T>> {
     required NoParamStreamUseCase<List<T>> watchAllUseCase,
     required ValueSetter<T> openItemCallback,
     required ValueSetter<T> editItemCallback,
+    required FutureUseCase<void, String> deleteUseCase,
   })  : _watchAllUseCase = watchAllUseCase,
         _openItemCallback = openItemCallback,
         _editItemCallBack = editItemCallback,
+        _deleteUseCase = deleteUseCase,
         super(EntityListState<T>.initial()) {
     _startWatching();
   }
 
   void _startWatching() {
-    emit(state.copyWith(items: AsyncSnapshot.waiting()));
+    emit(state.copyWith(items: AsyncData.loading()));
 
     _watchAllUseCase().listen((result) {
       result.fold(
-        (error) =>
-            emit(state.copyWith(items: AsyncSnapshot.withError(ConnectionState.done, error))),
-        (items) => emit(state.copyWith(items: AsyncSnapshot.withData(ConnectionState.done, items))),
+        (error) => emit(state.copyWith(items: AsyncData.withError(error))),
+        (items) => emit(state.copyWith(items: AsyncData.withData(items))),
       );
     });
   }
@@ -63,5 +65,24 @@ class EntityListCubit<T extends Entity> extends Cubit<EntityListState<T>> {
       (element) => element.id == state.selectedItems.single,
     );
     _editItemCallBack(item);
+  }
+
+  void onDeletePressed() async {
+    emit(state.copyWith(deletionState: DeletionInProgress()));
+
+    final errors = <IdWithFailure>[];
+    var selectedItems = state.selectedItems;
+
+    await Future.forEach<String>(state.selectedItems, (id) async {
+      final result = await _deleteUseCase(id);
+      result.fold(
+        (error) => errors.add(IdWithFailure(id, error)),
+        (r) => selectedItems = selectedItems.rebuild((p0) => p0.remove(id)),
+      );
+    });
+
+    final deletionState = errors.isEmpty ? DeletionNone() : DeletionWithError(errors);
+
+    emit(state.copyWith(deletionState: deletionState, selectedItems: selectedItems));
   }
 }

@@ -31,7 +31,10 @@ class EntityListBuilder<T extends Entity> extends StatelessWidget {
                   onPressed: () => context.read<EntityListCubit<T>>().onEditPressed(),
                   icon: Icon(Icons.edit),
                 ),
-              IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
+              IconButton(
+                onPressed: () => context.read<EntityListCubit<T>>().onDeletePressed(),
+                icon: Icon(Icons.delete),
+              ),
             ],
           ),
           body: _buildBody(state),
@@ -55,11 +58,11 @@ class EntityListBuilder<T extends Entity> extends StatelessWidget {
       return Center(child: CircularProgressIndicator());
   }
 
-  Widget _buildList(List<T> items, Iterable<String> selectedItems) {
+  Widget _buildList(Iterable<T> items, Iterable<String> selectedItems) {
     return ListView.builder(
       itemCount: items.length,
       itemBuilder: (context, index) {
-        final item = items[index];
+        final item = items.toList()[index];
 
         return InkWell(
           onTap: () => context.read<EntityListCubit<T>>().onPressed(item),

@@ -20,6 +20,7 @@ class CategoryListScreen extends StatelessWidget implements Screen {
     return BlocProvider<EntityListCubit<Category>>(
       create: (context) => EntityListCubit<Category>(
         watchAllUseCase: context.read<WatchCategoriesUseCase>(),
+        deleteUseCase: context.read<DeleteCategoryUseCase>(),
         editItemCallback: (item) => Navigator.of(context).push(CategoryFormScreen.route(item)),
         openItemCallback: (item) => Navigator.of(context).push(CategoryViewScreen.route(item.id)),
       ),

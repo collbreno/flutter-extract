@@ -64,6 +64,7 @@ List<Provider> _createProviders(AppDatabase db) {
   return [
     // category use cases
     Provider<InsertCategoryUseCase>(create: (_) => InsertCategoryUseCase(categoryRepo)),
+    Provider<DeleteCategoryUseCase>(create: (_) => DeleteCategoryUseCase(categoryRepo)),
     Provider<UpdateCategoryUseCase>(create: (_) => UpdateCategoryUseCase(categoryRepo)),
     Provider<GetCategoriesUseCase>(create: (_) => GetCategoriesUseCase(categoryRepo)),
     Provider<GetCategoryByIdUseCase>(create: (_) => GetCategoryByIdUseCase(categoryRepo)),
@@ -72,6 +73,7 @@ List<Provider> _createProviders(AppDatabase db) {
 
     // subcategory use cases
     Provider<InsertSubcategoryUseCase>(create: (_) => InsertSubcategoryUseCase(subcategoryRepo)),
+    Provider<DeleteSubcategoryUseCase>(create: (_) => DeleteSubcategoryUseCase(subcategoryRepo)),
     Provider<UpdateSubcategoryUseCase>(create: (_) => UpdateSubcategoryUseCase(subcategoryRepo)),
     Provider<DeleteSubcategoryUseCase>(create: (_) => DeleteSubcategoryUseCase(subcategoryRepo)),
     Provider<GetSubcategoryByIdUseCase>(create: (_) => GetSubcategoryByIdUseCase(subcategoryRepo)),
@@ -81,18 +83,21 @@ List<Provider> _createProviders(AppDatabase db) {
 
     // store use cases
     Provider<InsertStoreUseCase>(create: (_) => InsertStoreUseCase(storeRepo)),
+    Provider<SafeDeleteStoreUseCase>(create: (_) => SafeDeleteStoreUseCase(storeRepo)),
     Provider<UpdateStoreUseCase>(create: (_) => UpdateStoreUseCase(storeRepo)),
     Provider<WatchStoreByIdUseCase>(create: (_) => WatchStoreByIdUseCase(storeRepo)),
     Provider<WatchStoresUseCase>(create: (_) => WatchStoresUseCase(storeRepo)),
 
     // tag use cases
     Provider<InsertTagUseCase>(create: (_) => InsertTagUseCase(tagRepo)),
+    Provider<SafeDeleteTagUseCase>(create: (_) => SafeDeleteTagUseCase(tagRepo)),
     Provider<UpdateTagUseCase>(create: (_) => UpdateTagUseCase(tagRepo)),
     Provider<WatchTagsUseCase>(create: (_) => WatchTagsUseCase(tagRepo)),
     Provider<WatchTagByIdUseCase>(create: (_) => WatchTagByIdUseCase(tagRepo)),
 
     // payment method use cases
     Provider<InsertPaymentMethodUseCase>(create: (_) => InsertPaymentMethodUseCase(pmRepo)),
+    Provider<SafeDeletePaymentMethodUseCase>(create: (_) => SafeDeletePaymentMethodUseCase(pmRepo)),
     Provider<UpdatePaymentMethodUseCase>(create: (_) => UpdatePaymentMethodUseCase(pmRepo)),
     Provider<WatchPaymentMethodsUseCase>(create: (_) => WatchPaymentMethodsUseCase(pmRepo)),
     Provider<WatchPaymentMethodByIdUseCase>(create: (_) => WatchPaymentMethodByIdUseCase(pmRepo)),

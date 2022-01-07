@@ -18,6 +18,7 @@ class PaymentMethodListScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => EntityListCubit<PaymentMethod>(
         watchAllUseCase: context.read<WatchPaymentMethodsUseCase>(),
+        deleteUseCase: context.read<SafeDeletePaymentMethodUseCase>(),
         editItemCallback: (item) => Navigator.of(context).push(PaymentMethodFormScreen.route(item)),
         openItemCallback: (item) {
           // TODO: implement

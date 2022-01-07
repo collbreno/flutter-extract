@@ -69,7 +69,7 @@ class _CategoryListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<CategoryViewCubit, CategoryViewState>(
       builder: (context, state) {
-        if (state.category.connectionState == ConnectionState.waiting) {
+        if (state.category.isLoading) {
           return Center(
             child: Padding(
               padding: const EdgeInsets.all(8.0),

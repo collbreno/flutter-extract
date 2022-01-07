@@ -23,3 +23,13 @@ class EntityBeingUsedFailure extends DatabaseFailure {
 class EntityDependencyFailure extends DatabaseFailure {}
 
 class NothingToDeleteFailure extends DatabaseFailure {}
+
+class IdWithFailure extends Equatable {
+  final String id;
+  final Failure error;
+
+  IdWithFailure(this.id, this.error);
+
+  @override
+  List<Object> get props => [id, error];
+}

@@ -1,8 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:business/business.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 part 'category_view_state.dart';
 
@@ -18,14 +16,12 @@ class CategoryViewCubit extends Cubit<CategoryViewState> {
   }
 
   void loadCategory() async {
-    emit(state.copyWith(category: AsyncSnapshot.waiting()));
+    emit(state.copyWith(category: AsyncData.loading()));
 
     _watchCategoryById(state.id).listen((result) {
       result.fold(
-        (error) =>
-            emit(state.copyWith(category: AsyncSnapshot.withError(ConnectionState.done, error))),
-        (category) =>
-            emit(state.copyWith(category: AsyncSnapshot.withData(ConnectionState.done, category))),
+        (error) => emit(state.copyWith(category: AsyncData.withError(error))),
+        (category) => emit(state.copyWith(category: AsyncData.withData(category))),
       );
     });
   }

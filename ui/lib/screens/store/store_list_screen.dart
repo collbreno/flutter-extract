@@ -19,6 +19,7 @@ class StoreListScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => EntityListCubit<Store>(
         watchAllUseCase: context.read<WatchStoresUseCase>(),
+        deleteUseCase: context.read<SafeDeleteStoreUseCase>(),
         editItemCallback: (item) => Navigator.of(context).push(StoreFormScreen.route(item)),
         openItemCallback: (item) {
           // TODO: implement

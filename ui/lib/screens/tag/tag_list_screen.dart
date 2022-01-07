@@ -19,6 +19,7 @@ class TagListScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => EntityListCubit<Tag>(
         watchAllUseCase: context.read<WatchTagsUseCase>(),
+        deleteUseCase: context.read<SafeDeleteTagUseCase>(),
         editItemCallback: (item) => Navigator.of(context).push(TagFormScreen.route(item)),
         openItemCallback: (item) {
           // TODO: implement
