@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ui/common/app_theme.dart';
-import 'package:ui/demo/expense_items_demo.dart';
+import 'package:ui/demo/searchable_app_bar_demo.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,8 +11,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: AppTheme.initTheme,
-      home: ExpenseItemsDemo(),
+      theme: ThemeData(
+        brightness: Brightness.dark,
+      ),
+      home: SearchableAppBarDemo(),
     );
   }
 }
