@@ -19,31 +19,51 @@ class EntityListBuilder<T extends Entity> extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<EntityListCubit<T>, EntityListState<T>>(
       builder: (context, state) {
-        return Scaffold(
-          appBar: MultiSelectAppBar(
-            defaultAppBar: AppBar(title: Text(appBarTitle)),
-            selectedItems: state.selectedItems,
-            onClear: () => context.read<EntityListCubit<T>>().onClearSelection(),
-            backgroundColorWhenSelected: Theme.of(context).toggleableActiveColor,
-            actions: [
-              if (state.selectedItems.length == 1)
-                IconButton(
-                  onPressed: () => context.read<EntityListCubit<T>>().onEditPressed(),
-                  icon: Icon(Icons.edit),
-                ),
-              IconButton(
-                onPressed: () => context.read<EntityListCubit<T>>().onDeletePressed(),
-                icon: Icon(Icons.delete),
+        return Stack(
+          children: [
+            Scaffold(
+              appBar: MultiSelectAppBar(
+                defaultAppBar: AppBar(title: Text(appBarTitle)),
+                selectedItems: state.selectedItems,
+                onClear: () => context.read<EntityListCubit<T>>().onClearSelection(),
+                backgroundColorWhenSelected: Theme.of(context).toggleableActiveColor,
+                actions: [
+                  if (state.selectedItems.length == 1)
+                    IconButton(
+                      onPressed: () => context.read<EntityListCubit<T>>().onEditPressed(),
+                      icon: Icon(Icons.edit),
+                    ),
+                  IconButton(
+                    onPressed: () => context.read<EntityListCubit<T>>().onDeletePressed(),
+                    icon: Icon(Icons.delete),
+                  ),
+                ],
               ),
-            ],
-          ),
-          body: _buildBody(state),
-          floatingActionButton: onAddPressed == null
-              ? null
-              : FloatingActionButton(
-                  onPressed: onAddPressed,
-                  child: Icon(Icons.add),
+              body: _buildBody(state),
+              floatingActionButton: onAddPressed == null
+                  ? null
+                  : FloatingActionButton(
+                      onPressed: onAddPressed,
+                      child: Icon(Icons.add),
+                    ),
+            ),
+            if (state.deletionState is DeletionInProgress) ...[
+              ModalBarrier(
+                dismissible: false,
+                color: Colors.black54,
+              ),
+              AlertDialog(
+                title: Text("Aguarde"),
+                content: Row(
+                  children: [
+                    CircularProgressIndicator(),
+                    SizedBox(width: 24),
+                    Text("Deletando itens"),
+                  ],
                 ),
+              ),
+            ]
+          ],
         );
       },
     );
