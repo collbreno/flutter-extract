@@ -7,7 +7,11 @@ class SearchableAppBarDemo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: SearchableAppBar(),
+      appBar: SearchableAppBar(
+        onChanged: (value) {
+          print('Novo valor: $value');
+        },
+      ),
       body: Center(child: Text("Just a demo")),
     );
   }
