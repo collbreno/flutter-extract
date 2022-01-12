@@ -26,6 +26,7 @@ class CategoryListScreen extends StatelessWidget implements Screen {
       ),
       child: EntityListBuilder<Category>(
         appBarTitle: 'Categorias',
+        filterItem: (item, text) => item.name.matches(text),
         onAddPressed: () => Navigator.of(context).push((CategoryFormScreen.route())),
         itemBuilder: (context, item, selected) {
           return ListTile(

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:business/business.dart';
@@ -12,11 +14,13 @@ class EntityListCubit<T extends Entity> extends Cubit<EntityListState<T>> {
   final ValueSetter<T> _openItemCallback;
   final ValueSetter<T> _editItemCallBack;
 
+  late final StreamSubscription<FailureOr<List<T>>> _streamSubscription;
+
   EntityListCubit({
     required NoParamStreamUseCase<List<T>> watchAllUseCase,
+    required FutureUseCase<void, String> deleteUseCase,
     required ValueSetter<T> openItemCallback,
     required ValueSetter<T> editItemCallback,
-    required FutureUseCase<void, String> deleteUseCase,
   })  : _watchAllUseCase = watchAllUseCase,
         _openItemCallback = openItemCallback,
         _editItemCallBack = editItemCallback,
@@ -28,7 +32,7 @@ class EntityListCubit<T extends Entity> extends Cubit<EntityListState<T>> {
   void _startWatching() {
     emit(state.copyWith(items: AsyncData.loading()));
 
-    _watchAllUseCase().listen((result) {
+    _streamSubscription = _watchAllUseCase().listen((result) {
       result.fold(
         (error) => emit(state.copyWith(items: AsyncData.withError(error))),
         (items) => emit(state.copyWith(items: AsyncData.withData(items))),
@@ -84,5 +88,11 @@ class EntityListCubit<T extends Entity> extends Cubit<EntityListState<T>> {
     final deletionState = errors.isEmpty ? DeletionNone() : DeletionWithError(errors);
 
     emit(state.copyWith(deletionState: deletionState, selectedItems: selectedItems));
+  }
+
+  @override
+  Future<void> close() {
+    _streamSubscription.cancel();
+    return super.close();
   }
 }

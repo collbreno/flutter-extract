@@ -28,6 +28,7 @@ class TagListScreen extends StatelessWidget {
       ),
       child: EntityListBuilder<Tag>(
         appBarTitle: 'Tags',
+        filterItem: (item, text) => item.name.matches(text),
         onAddPressed: () => Navigator.of(context).push(TagFormScreen.route()),
         itemBuilder: (context, item, selected) {
           return ListTile(

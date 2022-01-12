@@ -3,19 +3,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ui/bloc/entity_list_cubit.dart';
 import 'package:ui/common/multi_select_app_bar.dart';
+import 'package:ui/common/searchable_app_bar.dart';
 
-class EntityListBuilder<T extends Entity> extends StatelessWidget {
+class EntityListBuilder<T extends Entity> extends StatefulWidget {
   final Widget Function(BuildContext context, T item, bool selected) itemBuilder;
   final VoidCallback? onAddPressed;
   final String appBarTitle;
+  final bool Function(T, String) filterItem;
 
   const EntityListBuilder({
     Key? key,
     required this.itemBuilder,
     required this.appBarTitle,
+    required this.filterItem,
     this.onAddPressed,
   }) : super(key: key);
 
+  @override
+  State<EntityListBuilder<T>> createState() => _EntityListBuilderState<T>();
+}
+
+class _EntityListBuilderState<T extends Entity> extends State<EntityListBuilder<T>> {
+  late String _query;
+
+  @override
+  void initState() {
+    _query = '';
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<EntityListCubit<T>, EntityListState<T>>(
       builder: (context, state) {
@@ -23,7 +40,14 @@ class EntityListBuilder<T extends Entity> extends StatelessWidget {
           children: [
             Scaffold(
               appBar: MultiSelectAppBar(
-                defaultAppBar: AppBar(title: Text(appBarTitle)),
+                defaultAppBar: SearchableAppBar(
+                  onChanged: (value) {
+                    setState(() {
+                      _query = value;
+                    });
+                  },
+                  title: Text(widget.appBarTitle),
+                ),
                 selectedItems: state.selectedItems,
                 onClear: () => context.read<EntityListCubit<T>>().onClearSelection(),
                 backgroundColorWhenSelected: Theme.of(context).toggleableActiveColor,
@@ -40,10 +64,10 @@ class EntityListBuilder<T extends Entity> extends StatelessWidget {
                 ],
               ),
               body: _buildBody(state),
-              floatingActionButton: onAddPressed == null
+              floatingActionButton: widget.onAddPressed == null
                   ? null
                   : FloatingActionButton(
-                      onPressed: onAddPressed,
+                      onPressed: widget.onAddPressed,
                       child: Icon(Icons.add),
                     ),
             ),
@@ -70,10 +94,13 @@ class EntityListBuilder<T extends Entity> extends StatelessWidget {
   }
 
   Widget _buildBody(EntityListState<T> state) {
-    if (state.items.hasError)
+    if (state.items.hasData) {
+      final filteredItems = state.items.data!.where((item) => widget.filterItem(item, _query));
+      return filteredItems.isEmpty
+          ? _Error(NotFoundFailure())
+          : _buildList(filteredItems, state.selectedItems);
+    } else if (state.items.hasError)
       return _Error(state.items.error!);
-    else if (state.items.hasData)
-      return _buildList(state.items.data!, state.selectedItems);
     else
       return Center(child: CircularProgressIndicator());
   }
@@ -87,7 +114,7 @@ class EntityListBuilder<T extends Entity> extends StatelessWidget {
         return InkWell(
           onTap: () => context.read<EntityListCubit<T>>().onPressed(item),
           onLongPress: () => context.read<EntityListCubit<T>>().onLongPressed(item),
-          child: itemBuilder(context, item, selectedItems.contains(item.id)),
+          child: widget.itemBuilder(context, item, selectedItems.contains(item.id)),
         );
       },
     );

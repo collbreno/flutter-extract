@@ -28,6 +28,7 @@ class StoreListScreen extends StatelessWidget {
       ),
       child: EntityListBuilder<Store>(
         appBarTitle: 'Lojas',
+        filterItem: (item, text) => item.name.matches(text),
         onAddPressed: () => Navigator.of(context).push(StoreFormScreen.route()),
         itemBuilder: (context, item, selected) {
           return ListTile(

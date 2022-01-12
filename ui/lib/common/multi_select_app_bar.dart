@@ -4,7 +4,7 @@ import 'package:ui/common/mutable_app_bar.dart';
 class MultiSelectAppBar<T> extends MutableAppBar {
   MultiSelectAppBar({
     Key? key,
-    required AppBar defaultAppBar,
+    required PreferredSizeWidget defaultAppBar,
     required VoidCallback onClear,
     required Iterable<T> selectedItems,
     List<Widget> actions = const [],

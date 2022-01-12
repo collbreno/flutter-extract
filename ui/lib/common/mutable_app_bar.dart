@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class MutableAppBar extends StatefulWidget implements PreferredSizeWidget {
-  final AppBar primaryAppBar;
-  final AppBar secondaryAppBar;
+  final PreferredSizeWidget primaryAppBar;
+  final PreferredSizeWidget secondaryAppBar;
   final bool isMutated;
 
   MutableAppBar({

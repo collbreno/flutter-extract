@@ -27,6 +27,7 @@ class PaymentMethodListScreen extends StatelessWidget {
       ),
       child: EntityListBuilder<PaymentMethod>(
         appBarTitle: 'Métodos de Pagamento',
+        filterItem: (item, text) => item.name.matches(text),
         onAddPressed: () => Navigator.of(context).push(PaymentMethodFormScreen.route()),
         itemBuilder: (context, item, selected) {
           return ListTile(
