@@ -48,71 +48,84 @@ class _SearchableAppBarState extends State<SearchableAppBar> {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
-    return Stack(
-      children: [
-        AppBar(
-          title: widget.title,
-          actions: [
-            IconButton(
-              onPressed: () {
-                setState(() {
-                  _isSearching = true;
-                  _focusNode.requestFocus();
-                });
-              },
-              icon: Icon(Icons.search),
-            )
-          ],
-        ),
-        Align(
-          alignment: Alignment.centerRight,
-          child: AnimatedContainer(
-            alignment: Alignment.center,
-            duration: Duration(milliseconds: 150),
-            width: _isSearching ? mediaQuery.size.width : 0,
-            decoration: ShapeDecoration(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(_isSearching ? 0 : 48),
-              ),
-            ),
-            clipBehavior: Clip.antiAlias,
-            child: AppBar(
-              actions: [
-                if (_showClearButton)
-                  IconButton(
-                    color: Theme.of(context).colorScheme.onSurface,
-                    icon: Icon(Icons.close),
-                    onPressed: () {
-                      setState(() {
-                        _controller.clear();
-                      });
-                    },
-                  ),
-              ],
-              leading: IconButton(
-                color: Theme.of(context).colorScheme.onSurface,
-                icon: Icon(Icons.arrow_back),
+    return WillPopScope(
+      onWillPop: () async {
+        if (_isSearching) {
+          setState(() {
+            _isSearching = false;
+            _controller.clear();
+          });
+          return false;
+        }
+        return true;
+      },
+      child: Stack(
+        children: [
+          AppBar(
+            title: widget.title,
+            actions: [
+              IconButton(
                 onPressed: () {
                   setState(() {
-                    _controller.clear();
-                    _focusNode.unfocus();
-                    _isSearching = false;
+                    _isSearching = true;
+                    _focusNode.requestFocus();
                   });
                 },
+                icon: Icon(Icons.search),
+              )
+            ],
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: AnimatedContainer(
+              alignment: Alignment.center,
+              duration: Duration(milliseconds: 150),
+              width: _isSearching ? mediaQuery.size.width : 0,
+              decoration: ShapeDecoration(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(_isSearching ? 0 : 48),
+                ),
               ),
-              backgroundColor: Theme.of(context).colorScheme.surface,
-              title: TextField(
-                focusNode: _focusNode,
-                controller: _controller,
-                textInputAction: TextInputAction.search,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
+              clipBehavior: Clip.antiAlias,
+              child: AppBar(
+                actions: [
+                  if (_showClearButton)
+                    IconButton(
+                      color: Theme.of(context).colorScheme.onSurface,
+                      icon: Icon(Icons.close),
+                      onPressed: () {
+                        setState(() {
+                          _controller.clear();
+                          _focusNode.requestFocus();
+                        });
+                      },
+                    ),
+                ],
+                leading: IconButton(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    setState(() {
+                      _controller.clear();
+                      _focusNode.unfocus();
+                      _isSearching = false;
+                    });
+                  },
+                ),
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                title: TextField(
+                  focusNode: _focusNode,
+                  controller: _controller,
+                  textInputAction: TextInputAction.search,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
