@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ui/common/searchable_app_bar.dart';
+import 'package:ui/common/search_app_bar.dart';
 
 class SearchableAppBarDemo extends StatelessWidget {
   const SearchableAppBarDemo({Key? key}) : super(key: key);
@@ -7,7 +7,7 @@ class SearchableAppBarDemo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: SearchableAppBar(
+      appBar: SearchAppBar(
         onChanged: (value) {
           print('Novo valor: $value');
         },

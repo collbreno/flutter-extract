@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ui/bloc/entity_list_cubit.dart';
 import 'package:ui/common/multi_select_app_bar.dart';
-import 'package:ui/common/searchable_app_bar.dart';
+import 'package:ui/common/search_app_bar.dart';
 
 class EntityListBuilder<T extends Entity> extends StatefulWidget {
   final Widget Function(BuildContext context, T item, bool selected) itemBuilder;
@@ -40,7 +40,7 @@ class _EntityListBuilderState<T extends Entity> extends State<EntityListBuilder<
           children: [
             Scaffold(
               appBar: MultiSelectAppBar(
-                defaultAppBar: SearchableAppBar(
+                defaultAppBar: SearchAppBar(
                   onChanged: (value) {
                     setState(() {
                       _query = value;

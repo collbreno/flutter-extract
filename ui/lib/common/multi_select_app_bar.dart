@@ -13,6 +13,7 @@ class MultiSelectAppBar<T> extends MutableAppBar {
   }) : super(
           key: key,
           isMutated: selectedItems.isNotEmpty,
+          onBackPressed: onClear,
           primaryAppBar: defaultAppBar,
           secondaryAppBar: AppBar(
             title: Text(selectedItems.length.toString()),
