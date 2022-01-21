@@ -19,7 +19,7 @@ class TextInputBuilder<T extends EntityFormCubit, E extends FormzInputSuper<Stri
         final input = state.inputs.singleWithType<E>();
         return TextInputField(
           key: inputKey,
-          onChanged: (value) => context.read<T>().onFieldChanged(E, value),
+          onChanged: (value) => context.read<T>().onFieldChanged<E>(value),
           initialValue: input.value,
           leading: Icon(Icons.edit),
           hintText: "Insira o nome",

@@ -67,7 +67,7 @@ class PickerInputFieldState<T> extends InputFieldState<T?, PickerInputField<T>> 
 
   @override
   Widget build(BuildContext context) {
-    return _OuterListTile(
+    return OuterListTile(
       errorText: widget.errorText,
       labelText: widget.labelText,
       suffixIcon: Icon(Icons.arrow_drop_down),
@@ -164,7 +164,7 @@ class TextInputFieldState extends InputFieldState<String, TextInputField> {
   }
 }
 
-class _OuterListTile extends StatelessWidget {
+class OuterListTile extends StatelessWidget {
   final Widget? leading;
   final bool enabled;
   final VoidCallback? onTap;
@@ -175,7 +175,7 @@ class _OuterListTile extends StatelessWidget {
   final String? errorText;
   final String? labelText;
 
-  _OuterListTile({
+  OuterListTile({
     Key? key,
     this.leading,
     this.enabled = true,

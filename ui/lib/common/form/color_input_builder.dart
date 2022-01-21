@@ -17,7 +17,7 @@ class ColorInputBuilder<T extends EntityFormCubit> extends StatelessWidget {
         final input = state.inputs.singleWithType<ColorFormzInput>();
         return PickerInputField<Color>(
           key: inputKey,
-          onChanged: (value) => context.read<T>().onFieldChanged(ColorFormzInput, value),
+          onChanged: (value) => context.read<T>().onFieldChanged<ColorFormzInput>(value),
           items: ColorService.colors.keys,
           initialValue: input.value,
           errorText: input.invalid ? "Inválido" : null,

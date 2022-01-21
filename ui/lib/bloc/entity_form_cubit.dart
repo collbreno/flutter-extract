@@ -25,12 +25,12 @@ abstract class EntityFormCubit<T> extends Cubit<EntityFormState> {
           ),
         );
 
-  void onFieldChanged(Type type, dynamic value) {
-    if (!state.inputs.any((e) => e.runtimeType == type)) {
-      throw Exception('${this.runtimeType} does not have a field of type $type');
+  void onFieldChanged<E extends FormzInputSuper>(dynamic value) {
+    if (!state.inputs.any((e) => e.runtimeType == E)) {
+      throw Exception('${this.runtimeType} does not have a field of type $E');
     }
 
-    final index = state.inputs.indexWhere((p0) => p0.runtimeType == type);
+    final index = state.inputs.indexWhere((p0) => p0.runtimeType == E);
     final dirty = state.inputs.elementAt(index).dirtyConstructor(value);
 
     emit(
