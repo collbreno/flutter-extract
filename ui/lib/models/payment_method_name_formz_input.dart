@@ -1,5 +1,5 @@
+import 'package:formz/formz.dart';
 import 'package:infrastructure/infrastructure.dart';
-import 'package:ui/bloc/entity_form_cubit.dart';
 
 enum PaymentMethodNameFormzInputValidationError {
   empty,
@@ -8,7 +8,7 @@ enum PaymentMethodNameFormzInputValidationError {
 }
 
 class PaymentMethodNameFormzInput
-    extends FormzInputSuper<String, PaymentMethodNameFormzInputValidationError> {
+    extends FormzInput<String, PaymentMethodNameFormzInputValidationError> {
   const PaymentMethodNameFormzInput.pure([String value = '']) : super.pure(value);
 
   const PaymentMethodNameFormzInput.dirty([String value = '']) : super.dirty(value);
@@ -21,15 +21,5 @@ class PaymentMethodNameFormzInput
     if (value.length > PAYMENT_METHOD_NAME_MAX)
       return PaymentMethodNameFormzInputValidationError.tooLong;
     return null;
-  }
-
-  @override
-  FormzInputSuper<String, PaymentMethodNameFormzInputValidationError> dirtyConstructor(value) {
-    return PaymentMethodNameFormzInput.dirty(value);
-  }
-
-  @override
-  FormzInputSuper<String, PaymentMethodNameFormzInputValidationError> pureConstructor(value) {
-    return PaymentMethodNameFormzInput.pure(value);
   }
 }

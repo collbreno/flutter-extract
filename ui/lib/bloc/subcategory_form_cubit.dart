@@ -1,5 +1,6 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:business/business.dart';
+import 'package:formz/formz.dart';
 import 'package:ui/bloc/entity_form_cubit.dart';
 import 'package:ui/models/_models.dart';
 import 'package:ui/models/entity_formz_input.dart';
@@ -17,7 +18,7 @@ class SubcategoryFormCubit extends EntityFormCubit<Subcategory> {
           id: subcategory?.id ?? '',
         );
 
-  static BuiltList<FormzInputSuper> _getDefaultInputs(Subcategory? subcategory) {
+  static BuiltList<FormzInput> _getDefaultInputs(Subcategory? subcategory) {
     return BuiltList([
       CategoryFormzInput.pure(subcategory?.parent),
       SubcategoryNameFormzInput.pure(subcategory?.name ?? ''),
@@ -27,7 +28,7 @@ class SubcategoryFormCubit extends EntityFormCubit<Subcategory> {
   }
 
   @override
-  BuiltList<FormzInputSuper> getDefaultInputs() {
+  BuiltList<FormzInput> getDefaultInputs() {
     return _getDefaultInputs(null);
   }
 

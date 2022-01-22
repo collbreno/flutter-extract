@@ -1,5 +1,5 @@
+import 'package:formz/formz.dart';
 import 'package:infrastructure/infrastructure.dart';
-import 'package:ui/bloc/entity_form_cubit.dart';
 
 enum TagNameFormzInputValidationError {
   empty,
@@ -7,7 +7,7 @@ enum TagNameFormzInputValidationError {
   tooShort,
 }
 
-class TagNameFormzInput extends FormzInputSuper<String, TagNameFormzInputValidationError> {
+class TagNameFormzInput extends FormzInput<String, TagNameFormzInputValidationError> {
   const TagNameFormzInput.pure([String value = '']) : super.pure(value);
 
   const TagNameFormzInput.dirty([String value = '']) : super.dirty(value);
@@ -19,10 +19,4 @@ class TagNameFormzInput extends FormzInputSuper<String, TagNameFormzInputValidat
     if (value.length > TAG_NAME_MAX) return TagNameFormzInputValidationError.tooLong;
     return null;
   }
-
-  @override
-  TagNameFormzInput dirtyConstructor(value) => TagNameFormzInput.dirty(value ?? '');
-
-  @override
-  TagNameFormzInput pureConstructor(value) => TagNameFormzInput.pure(value ?? '');
 }

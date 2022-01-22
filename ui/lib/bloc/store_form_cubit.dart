@@ -1,6 +1,7 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_collection/src/list.dart';
 import 'package:business/business.dart';
+import 'package:formz/formz.dart';
 import 'package:ui/bloc/entity_form_cubit.dart';
 import 'package:ui/models/_models.dart';
 
@@ -16,14 +17,14 @@ class StoreFormCubit extends EntityFormCubit<Store> {
           inputs: _getDefaultInputs(store),
         );
 
-  static BuiltList<FormzInputSuper> _getDefaultInputs(Store? store) {
+  static BuiltList<FormzInput> _getDefaultInputs(Store? store) {
     return BuiltList([
       StoreNameFormzInput.pure(store?.name ?? ''),
     ]);
   }
 
   @override
-  BuiltList<FormzInputSuper> getDefaultInputs() {
+  BuiltList<FormzInput> getDefaultInputs() {
     return _getDefaultInputs(null);
   }
 

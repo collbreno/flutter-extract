@@ -1,6 +1,7 @@
 import 'package:business/business.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:formz/formz.dart';
 import 'package:ui/bloc/entity_form_cubit.dart';
 import 'package:ui/bloc/entity_list_cubit.dart';
 import 'package:ui/common/form/category_input_builder.dart';
@@ -12,7 +13,7 @@ import 'package:ui/models/entity_formz_input.dart';
 import 'package:ui/models/subcategory_name_formz_input.dart';
 
 class InputFieldBuilder<T extends EntityFormCubit> extends StatelessWidget {
-  final FormzInputSuper input;
+  final FormzInput input;
   final GlobalObjectKey inputKey;
 
   InputFieldBuilder({

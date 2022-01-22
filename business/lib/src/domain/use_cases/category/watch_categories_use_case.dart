@@ -6,8 +6,7 @@ class WatchCategoriesUseCase extends NoParamStreamUseCase<List<Category>> {
   WatchCategoriesUseCase(this.repository);
 
   @override
-  Stream<FailureOr<List<Category>>> call() async* {
-    await Future.delayed(Duration(seconds: 2));
-    yield* repository.watchAll();
+  Stream<FailureOr<List<Category>>> call() {
+    return repository.watchAll();
   }
 }

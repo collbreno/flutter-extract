@@ -3,6 +3,7 @@ import 'package:business/business.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:ui/services/formz_input_builder.dart';
 import 'package:uuid/uuid.dart';
 
 part 'entity_form_state.dart';
@@ -15,7 +16,7 @@ abstract class EntityFormCubit<T> extends Cubit<EntityFormState> {
   EntityFormCubit({
     required this.insertUseCase,
     required this.updateUseCase,
-    required BuiltList<FormzInputSuper> inputs,
+    required BuiltList<FormzInput> inputs,
     String id = '',
   }) : super(
           EntityFormState(
@@ -25,13 +26,13 @@ abstract class EntityFormCubit<T> extends Cubit<EntityFormState> {
           ),
         );
 
-  void onFieldChanged<E extends FormzInputSuper>(dynamic value) {
+  void onFieldChanged<E extends FormzInput<Y, Object>, Y>(Y value) {
     if (!state.inputs.any((e) => e.runtimeType == E)) {
-      throw Exception('${this.runtimeType} does not have a field of type $E');
+      throw Exception('$runtimeType does not have a field of type $E');
     }
 
     final index = state.inputs.indexWhere((p0) => p0.runtimeType == E);
-    final dirty = state.inputs.elementAt(index).dirtyConstructor(value);
+    final dirty = FormzInputBuilder.dirtyBuilder(state.inputs.elementAt(index), value);
 
     emit(
       state.copyWith(
@@ -39,7 +40,7 @@ abstract class EntityFormCubit<T> extends Cubit<EntityFormState> {
           (e) => e.replaceRange(
             index,
             index + 1,
-            [dirty.valid ? dirty : (dirty).pureConstructor(value)],
+            [dirty.valid ? dirty : FormzInputBuilder.pureBuilder(dirty, value)],
           ),
         ),
         status: Formz.validate(
@@ -50,7 +51,7 @@ abstract class EntityFormCubit<T> extends Cubit<EntityFormState> {
   }
 
   void onSubmitted() {
-    final all = state.inputs.map((p0) => p0.dirtyConstructor(p0.value));
+    final all = state.inputs.map((p0) => FormzInputBuilder.dirtyBuilder(p0, p0.value));
 
     emit(state.copyWith(
       inputs: all.toBuiltList(),
@@ -92,17 +93,7 @@ abstract class EntityFormCubit<T> extends Cubit<EntityFormState> {
 
   T mapInputsToEntity(String id);
 
-  BuiltList<FormzInputSuper> getDefaultInputs();
-}
-
-abstract class FormzInputSuper<T, E> extends FormzInput<T, E> {
-  const FormzInputSuper.pure(T value) : super.pure(value);
-
-  const FormzInputSuper.dirty(T value) : super.dirty(value);
-
-  FormzInputSuper<T, E> pureConstructor(dynamic value);
-
-  FormzInputSuper<T, E> dirtyConstructor(dynamic value);
+  BuiltList<FormzInput> getDefaultInputs();
 }
 
 extension BuiltListFormz<T> on BuiltList<T> {

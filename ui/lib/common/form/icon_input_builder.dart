@@ -1,10 +1,11 @@
 import 'package:business/business.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:formz/formz.dart';
 import 'package:ui/bloc/entity_form_cubit.dart';
 import 'package:ui/common/list_tile_input_fields.dart';
 
-class IconInputBuilder<T extends EntityFormCubit, E extends FormzInputSuper>
+class IconInputBuilder<T extends EntityFormCubit, E extends FormzInput<IconData?, Object>>
     extends StatelessWidget {
   final Key inputKey;
 
@@ -17,7 +18,7 @@ class IconInputBuilder<T extends EntityFormCubit, E extends FormzInputSuper>
         final input = state.inputs.singleWithType<E>();
         return PickerInputField<IconData>(
           key: inputKey,
-          onChanged: (value) => context.read<T>().onFieldChanged<E>(value),
+          onChanged: (value) => context.read<T>().onFieldChanged<E, IconData?>(value),
           items: IconMapper.getAll().toList(),
           initialValue: input.value,
           errorText: input.invalid ? "Inválido" : null,

@@ -1,5 +1,5 @@
+import 'package:formz/formz.dart';
 import 'package:infrastructure/infrastructure.dart';
-import 'package:ui/bloc/entity_form_cubit.dart';
 
 enum SubcategoryNameFormzInputValidationError {
   empty,
@@ -8,7 +8,7 @@ enum SubcategoryNameFormzInputValidationError {
 }
 
 class SubcategoryNameFormzInput
-    extends FormzInputSuper<String, SubcategoryNameFormzInputValidationError> {
+    extends FormzInput<String, SubcategoryNameFormzInputValidationError> {
   const SubcategoryNameFormzInput.pure([String value = '']) : super.pure(value);
 
   const SubcategoryNameFormzInput.dirty([String value = '']) : super.dirty(value);
@@ -21,15 +21,5 @@ class SubcategoryNameFormzInput
     if (value.length > SUBCATEGORY_NAME_MAX)
       return SubcategoryNameFormzInputValidationError.tooLong;
     return null;
-  }
-
-  @override
-  FormzInputSuper<String, SubcategoryNameFormzInputValidationError> dirtyConstructor(value) {
-    return SubcategoryNameFormzInput.dirty(value);
-  }
-
-  @override
-  FormzInputSuper<String, SubcategoryNameFormzInputValidationError> pureConstructor(value) {
-    return SubcategoryNameFormzInput.pure(value);
   }
 }

@@ -3,7 +3,7 @@ part of 'entity_form_cubit.dart';
 class EntityFormState<E> extends Equatable {
   final String id;
   final FormzStatus status;
-  final BuiltList<FormzInputSuper> inputs;
+  final BuiltList<FormzInput> inputs;
 
   EntityFormState({
     this.id = '',
@@ -14,7 +14,7 @@ class EntityFormState<E> extends Equatable {
   EntityFormState<E> copyWith({
     String? id,
     FormzStatus? status,
-    BuiltList<FormzInputSuper>? inputs,
+    BuiltList<FormzInput>? inputs,
   }) {
     return EntityFormState(
       id: id ?? this.id,

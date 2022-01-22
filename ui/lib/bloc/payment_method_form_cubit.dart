@@ -1,5 +1,6 @@
 import 'package:built_collection/src/list.dart';
 import 'package:business/business.dart';
+import 'package:formz/formz.dart';
 import 'package:ui/bloc/entity_form_cubit.dart';
 import 'package:ui/models/_models.dart';
 
@@ -15,7 +16,7 @@ class PaymentMethodFormCubit extends EntityFormCubit<PaymentMethod> {
           inputs: _getDefaultInputs(paymentMethod),
         );
 
-  static BuiltList<FormzInputSuper> _getDefaultInputs(PaymentMethod? pm) {
+  static BuiltList<FormzInput> _getDefaultInputs(PaymentMethod? pm) {
     return BuiltList([
       PaymentMethodNameFormzInput.pure(pm?.name ?? ''),
       ColorFormzInput.pure(pm?.color),
@@ -24,7 +25,7 @@ class PaymentMethodFormCubit extends EntityFormCubit<PaymentMethod> {
   }
 
   @override
-  BuiltList<FormzInputSuper> getDefaultInputs() {
+  BuiltList<FormzInput> getDefaultInputs() {
     return _getDefaultInputs(null);
   }
 

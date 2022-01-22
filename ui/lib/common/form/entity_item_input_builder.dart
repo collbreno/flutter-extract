@@ -34,7 +34,8 @@ class EntityItemInputBuilder<E extends Entity, T extends EntityFormCubit> extend
 
               return PickerInputField<E>(
                 key: inputKey,
-                onChanged: (value) => context.read<T>().onFieldChanged<EntityFormzInput<E>>(value),
+                onChanged: (value) =>
+                    context.read<T>().onFieldChanged<EntityFormzInput<E>, E?>(value),
                 items: listState.items.data!,
                 dialogItemBuilder: dialogItemBuilder,
                 inputFieldWidgetBuilder: inputFieldWidgetBuilder,

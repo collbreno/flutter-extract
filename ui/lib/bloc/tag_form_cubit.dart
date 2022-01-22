@@ -1,5 +1,6 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:business/business.dart';
+import 'package:formz/formz.dart';
 import 'package:ui/bloc/entity_form_cubit.dart';
 import 'package:ui/models/_models.dart';
 
@@ -15,7 +16,7 @@ class TagFormCubit extends EntityFormCubit<Tag> {
           inputs: _getDefaultInputs(tag),
         );
 
-  static BuiltList<FormzInputSuper> _getDefaultInputs(Tag? tag) {
+  static BuiltList<FormzInput> _getDefaultInputs(Tag? tag) {
     return BuiltList([
       TagNameFormzInput.pure(tag?.name ?? ''),
       ColorFormzInput.pure(tag?.color),
@@ -24,7 +25,7 @@ class TagFormCubit extends EntityFormCubit<Tag> {
   }
 
   @override
-  BuiltList<FormzInputSuper> getDefaultInputs() {
+  BuiltList<FormzInput> getDefaultInputs() {
     return _getDefaultInputs(null);
   }
 
