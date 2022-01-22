@@ -126,6 +126,148 @@ void main() {
     });
   });
 
+  group('Watch all', () {
+    test('Simple case', () async {
+      final subcategory = fix.subcategory1;
+
+      await fkUtils.insertSubcategoryFKDependencies(subcategory);
+      await repository.insert(subcategory);
+
+      final result = await repository.watchAll().first;
+
+      expect(result, orderedRightEquals([subcategory]));
+    });
+
+    test('Must return $NotFoundFailure when there is no categories', () async {
+      final result = await repository.watchAll().first;
+      expect(result, Left(NotFoundFailure()));
+    });
+
+    test('First insertion must emit a new list', () async {
+      final subcategory = fix.subcategory1;
+      await fkUtils.insertSubcategoryFKDependencies(subcategory);
+
+      final expectation = expectLater(
+        repository.watchAll(),
+        emitsInOrder([
+          Left(NotFoundFailure()),
+          orderedRightEquals([subcategory]),
+        ]),
+      );
+
+      await repository.insert(subcategory);
+
+      await expectation;
+    });
+
+    test('Updation must emit a new list', () async {
+      final subcategory = fix.subcategory1;
+      final newSubcategory = subcategory.rebuild((p0) => p0.name = 'New Entity');
+
+      await fkUtils.insertSubcategoryFKDependencies(subcategory);
+      await repository.insert(subcategory);
+
+      final expectation = expectLater(
+        repository.watchAll(),
+        emitsInOrder([
+          orderedRightEquals([subcategory]),
+          orderedRightEquals([newSubcategory]),
+        ]),
+      );
+
+      await repository.update(newSubcategory);
+
+      await expectation;
+    });
+
+    test('Updation in related entity must emit a new list', () async {
+      final categoryRepository = CategoryRepository(database);
+
+      final subcategory = fix.subcategory1;
+
+      final newParent = subcategory.parent.rebuild((p0) => p0.name = 'New Parent');
+      final newSubcategory = subcategory.rebuild((p0) => p0.parent = newParent.toBuilder());
+
+      await fkUtils.insertSubcategoryFKDependencies(subcategory);
+      await repository.insert(subcategory);
+
+      final expectation = expectLater(
+        repository.watchAll(),
+        emitsInOrder([
+          orderedRightEquals([subcategory]),
+          orderedRightEquals([newSubcategory]),
+        ]),
+      );
+
+      await categoryRepository.update(newParent);
+
+      await expectation;
+    });
+
+    test('Insertion must emit a new list', () async {
+      final subcategory1 = fix.subcategory1;
+      final subcategory2 = fix.subcategory2;
+
+      await fkUtils.insertSubcategoryFKDependencies(subcategory1);
+      await fkUtils.insertSubcategoryFKDependencies(subcategory2);
+      await repository.insert(subcategory1);
+
+      final expectation = expectLater(
+        repository.watchAll(),
+        emitsInOrder([
+          orderedRightEquals([subcategory1]),
+          orderedRightEquals([subcategory1, subcategory2]),
+        ]),
+      );
+
+      await repository.insert(subcategory2);
+
+      await expectation;
+    });
+
+    test('Deletion must emit a new list', () async {
+      final subcategory1 = fix.subcategory1;
+      final subcategory2 = fix.subcategory2;
+
+      await fkUtils.insertSubcategoryFKDependencies(subcategory1);
+      await repository.insert(subcategory1);
+
+      await fkUtils.insertSubcategoryFKDependencies(subcategory2);
+      await repository.insert(subcategory2);
+
+      final expectation = expectLater(
+        repository.watchAll(),
+        emitsInOrder([
+          orderedRightEquals([subcategory1, subcategory2]),
+          orderedRightEquals([subcategory1]),
+        ]),
+      );
+
+      await repository.delete(subcategory2.id);
+
+      await expectation;
+    });
+
+    test('Deletion of the last item must emit $NotFoundFailure', () async {
+      final subcategory = fix.subcategory1;
+
+      await fkUtils.insertSubcategoryFKDependencies(subcategory);
+      await repository.insert(subcategory);
+
+      final expectation = expectLater(
+        repository.watchAll(),
+        emitsInOrder([
+          orderedRightEquals([subcategory]),
+          Left(NotFoundFailure()),
+        ]),
+      );
+
+      await repository.delete(subcategory.id);
+
+      await expectation;
+    });
+  });
+
   test('Query by parent id', () async {
     final category1 = fixCategory.category1;
     final subcategory1 = fix.subcategory1.rebuild((s) => s..parent = category1.toBuilder());

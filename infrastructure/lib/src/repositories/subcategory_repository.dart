@@ -1,7 +1,9 @@
+import 'dart:async';
+
 import 'package:business/business.dart';
 import 'package:dartz/dartz.dart';
-import 'package:infrastructure/infrastructure.dart';
 import 'package:drift/drift.dart';
+import 'package:infrastructure/infrastructure.dart';
 
 class SubcategoryRepository implements ISubcategoryRepository {
   final AppDatabase db;
@@ -46,11 +48,7 @@ class SubcategoryRepository implements ISubcategoryRepository {
       }
 
       return Right(
-        subcategories.map((row) {
-          return row.readTable(db.subcategories).toModel(
-                parent: row.readTable(db.categories).toModel(),
-              );
-        }).toList(),
+        subcategories.map(_readTables).toList(),
       );
     } on Exception {
       return Left(UnknownDatabaseFailure());
@@ -67,11 +65,7 @@ class SubcategoryRepository implements ISubcategoryRepository {
         return Left(NotFoundFailure());
       }
 
-      return Right(
-        result
-            .readTable(db.subcategories)
-            .toModel(parent: result.readTable(db.categories).toModel()),
-      );
+      return Right(_readTables(result));
     } on Exception {
       return Left(UnknownDatabaseFailure());
     }
@@ -88,11 +82,7 @@ class SubcategoryRepository implements ISubcategoryRepository {
       }
 
       return Right(
-        subcategories.map((row) {
-          return row.readTable(db.subcategories).toModel(
-                parent: row.readTable(db.categories).toModel(),
-              );
-        }).toList(),
+        subcategories.map(_readTables).toList(),
       );
     } on Exception {
       return Left(UnknownDatabaseFailure());
@@ -128,5 +118,32 @@ class SubcategoryRepository implements ISubcategoryRepository {
     return db.select(db.subcategories).join([
       innerJoin(db.categories, db.categories.id.equalsExp(db.subcategories.parentId)),
     ]);
+  }
+
+  Subcategory _readTables(TypedResult row) {
+    return row.readTable(db.subcategories).toModel(
+          parent: row.readTable(db.categories).toModel(),
+        );
+  }
+
+  @override
+  Stream<FailureOr<List<Subcategory>>> watchAll() {
+    final query = _mountSubcategoryQuery();
+
+    return query.watch().transform(StreamTransformer.fromHandlers(
+      handleData: (data, sink) {
+        if (data.isEmpty) {
+          sink.add(Left(NotFoundFailure()));
+        } else {
+          sink.add(Right(data.map(_readTables).toList()));
+        }
+      },
+    ));
+  }
+
+  @override
+  Stream<FailureOr<Subcategory>> watchById(String id) {
+    // TODO: implement watchById
+    throw UnimplementedError();
   }
 }
