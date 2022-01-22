@@ -1,7 +1,7 @@
 import 'package:business/business.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ui/bloc/entity_list_cubit.dart';
+import 'package:ui/bloc/entity_mutable_list_cubit.dart';
 import 'package:ui/common/entity_list_builder.dart';
 import 'package:ui/navigation/page_transitions.dart';
 import 'package:ui/navigation/screen.dart';
@@ -17,8 +17,8 @@ class CategoryListScreen extends StatelessWidget implements Screen {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<EntityListCubit<Category>>(
-      create: (context) => EntityListCubit<Category>(
+    return BlocProvider<EntityMutableListCubit<Category>>(
+      create: (context) => EntityMutableListCubit<Category>(
         watchAllUseCase: context.read<WatchCategoriesUseCase>(),
         deleteUseCase: context.read<DeleteCategoryUseCase>(),
         editItemCallback: (item) => Navigator.of(context).push(CategoryFormScreen.route(item)),

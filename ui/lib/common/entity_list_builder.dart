@@ -1,7 +1,7 @@
 import 'package:business/business.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ui/bloc/entity_list_cubit.dart';
+import 'package:ui/bloc/entity_mutable_list_cubit.dart';
 import 'package:ui/common/multi_select_app_bar.dart';
 import 'package:ui/common/search_app_bar.dart';
 
@@ -34,7 +34,7 @@ class _EntityListBuilderState<T extends Entity> extends State<EntityListBuilder<
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<EntityListCubit<T>, EntityListState<T>>(
+    return BlocBuilder<EntityMutableListCubit<T>, EntityMutableListState<T>>(
       builder: (context, state) {
         return Stack(
           children: [
@@ -49,16 +49,16 @@ class _EntityListBuilderState<T extends Entity> extends State<EntityListBuilder<
                   title: Text(widget.appBarTitle),
                 ),
                 selectedItems: state.selectedItems,
-                onClear: () => context.read<EntityListCubit<T>>().onClearSelection(),
+                onClear: () => context.read<EntityMutableListCubit<T>>().onClearSelection(),
                 backgroundColorWhenSelected: Theme.of(context).toggleableActiveColor,
                 actions: [
                   if (state.selectedItems.length == 1)
                     IconButton(
-                      onPressed: () => context.read<EntityListCubit<T>>().onEditPressed(),
+                      onPressed: () => context.read<EntityMutableListCubit<T>>().onEditPressed(),
                       icon: Icon(Icons.edit),
                     ),
                   IconButton(
-                    onPressed: () => context.read<EntityListCubit<T>>().onDeletePressed(),
+                    onPressed: () => context.read<EntityMutableListCubit<T>>().onDeletePressed(),
                     icon: Icon(Icons.delete),
                   ),
                 ],
@@ -93,7 +93,7 @@ class _EntityListBuilderState<T extends Entity> extends State<EntityListBuilder<
     );
   }
 
-  Widget _buildBody(EntityListState<T> state) {
+  Widget _buildBody(EntityMutableListState<T> state) {
     if (state.items.hasData) {
       final filteredItems = state.items.data!.where((item) => widget.filterItem(item, _query));
       return filteredItems.isEmpty
@@ -112,8 +112,8 @@ class _EntityListBuilderState<T extends Entity> extends State<EntityListBuilder<
         final item = items.toList()[index];
 
         return InkWell(
-          onTap: () => context.read<EntityListCubit<T>>().onPressed(item),
-          onLongPress: () => context.read<EntityListCubit<T>>().onLongPressed(item),
+          onTap: () => context.read<EntityMutableListCubit<T>>().onPressed(item),
+          onLongPress: () => context.read<EntityMutableListCubit<T>>().onLongPressed(item),
           child: widget.itemBuilder(context, item, selectedItems.contains(item.id)),
         );
       },

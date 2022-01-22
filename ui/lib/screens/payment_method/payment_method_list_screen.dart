@@ -1,7 +1,7 @@
 import 'package:business/business.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ui/bloc/entity_list_cubit.dart';
+import 'package:ui/bloc/entity_mutable_list_cubit.dart';
 import 'package:ui/common/entity_list_builder.dart';
 import 'package:ui/navigation/page_transitions.dart';
 import 'package:ui/screens/payment_method/payment_method_form_screen.dart';
@@ -16,7 +16,7 @@ class PaymentMethodListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => EntityListCubit<PaymentMethod>(
+      create: (context) => EntityMutableListCubit<PaymentMethod>(
         watchAllUseCase: context.read<WatchPaymentMethodsUseCase>(),
         deleteUseCase: context.read<SafeDeletePaymentMethodUseCase>(),
         editItemCallback: (item) => Navigator.of(context).push(PaymentMethodFormScreen.route(item)),

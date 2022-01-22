@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:ui/bloc/entity_form_cubit.dart';
-import 'package:ui/bloc/entity_list_cubit.dart';
+import 'package:ui/bloc/entity_mutable_list_cubit.dart';
 import 'package:ui/common/form/category_input_builder.dart';
 import 'package:ui/common/form/color_input_builder.dart';
 import 'package:ui/common/form/icon_input_builder.dart';
@@ -44,7 +44,7 @@ class InputFieldBuilder<T extends EntityFormCubit> extends StatelessWidget {
       return TextInputBuilder<T, PaymentMethodNameFormzInput>(inputKey: inputKey);
     } else if (type == EntityFormzInput<Category>) {
       return BlocProvider(
-        create: (context) => EntityListCubit<Category>(
+        create: (context) => EntityMutableListCubit<Category>(
           watchAllUseCase: context.read<WatchCategoriesUseCase>(),
           deleteUseCase: context.read<DeleteCategoryUseCase>(),
           openItemCallback: (value) {},

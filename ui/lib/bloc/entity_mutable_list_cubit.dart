@@ -6,9 +6,9 @@ import 'package:business/business.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 
-part 'entity_list_state.dart';
+part 'entity_mutable_list_state.dart';
 
-class EntityListCubit<T extends Entity> extends Cubit<EntityListState<T>> {
+class EntityMutableListCubit<T extends Entity> extends Cubit<EntityMutableListState<T>> {
   final NoParamStreamUseCase<List<T>> _watchAllUseCase;
   final FutureUseCase<void, String> _deleteUseCase;
   final ValueSetter<T> _openItemCallback;
@@ -16,7 +16,7 @@ class EntityListCubit<T extends Entity> extends Cubit<EntityListState<T>> {
 
   late final StreamSubscription<FailureOr<List<T>>> _streamSubscription;
 
-  EntityListCubit({
+  EntityMutableListCubit({
     required NoParamStreamUseCase<List<T>> watchAllUseCase,
     required FutureUseCase<void, String> deleteUseCase,
     required ValueSetter<T> openItemCallback,
@@ -25,7 +25,7 @@ class EntityListCubit<T extends Entity> extends Cubit<EntityListState<T>> {
         _openItemCallback = openItemCallback,
         _editItemCallBack = editItemCallback,
         _deleteUseCase = deleteUseCase,
-        super(EntityListState<T>.initial()) {
+        super(EntityMutableListState<T>.initial()) {
     _startWatching();
   }
 

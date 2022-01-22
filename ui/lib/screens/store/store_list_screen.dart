@@ -1,7 +1,7 @@
 import 'package:business/business.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ui/bloc/entity_list_cubit.dart';
+import 'package:ui/bloc/entity_mutable_list_cubit.dart';
 import 'package:ui/common/entity_list_builder.dart';
 import 'package:ui/navigation/page_transitions.dart';
 
@@ -17,7 +17,7 @@ class StoreListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => EntityListCubit<Store>(
+      create: (context) => EntityMutableListCubit<Store>(
         watchAllUseCase: context.read<WatchStoresUseCase>(),
         deleteUseCase: context.read<SafeDeleteStoreUseCase>(),
         editItemCallback: (item) => Navigator.of(context).push(StoreFormScreen.route(item)),

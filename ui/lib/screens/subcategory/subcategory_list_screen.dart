@@ -1,7 +1,7 @@
 // import 'package:business/business.dart';
 // import 'package:flutter/material.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:ui/bloc/entity_list_cubit.dart';
+// import 'package:ui/bloc/entity_mutable_list_cubit.dart';
 // import 'package:ui/navigation/page_transitions.dart';
 // import 'package:ui/navigation/screen.dart';
 //
