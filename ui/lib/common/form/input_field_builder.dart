@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:ui/bloc/entity_form_cubit.dart';
-import 'package:ui/bloc/entity_mutable_list_cubit.dart';
+import 'package:ui/bloc/entity_list_cubit.dart';
 import 'package:ui/common/form/category_input_builder.dart';
 import 'package:ui/common/form/color_input_builder.dart';
 import 'package:ui/common/form/icon_input_builder.dart';
 import 'package:ui/common/form/text_input_builder.dart';
 import 'package:ui/models/_models.dart';
 import 'package:ui/models/entity_formz_input.dart';
-import 'package:ui/models/subcategory_name_formz_input.dart';
 
 class InputFieldBuilder<T extends EntityFormCubit> extends StatelessWidget {
   final FormzInput input;
@@ -44,11 +43,8 @@ class InputFieldBuilder<T extends EntityFormCubit> extends StatelessWidget {
       return TextInputBuilder<T, PaymentMethodNameFormzInput>(inputKey: inputKey);
     } else if (type == EntityFormzInput<Category>) {
       return BlocProvider(
-        create: (context) => EntityMutableListCubit<Category>(
+        create: (context) => EntityListCubit<Category>(
           watchAllUseCase: context.read<WatchCategoriesUseCase>(),
-          deleteUseCase: context.read<DeleteCategoryUseCase>(),
-          openItemCallback: (value) {},
-          editItemCallback: (value) {},
         ),
         child: CategoryInputBuilder<T>(inputKey: inputKey),
       );

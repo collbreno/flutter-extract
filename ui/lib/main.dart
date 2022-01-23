@@ -78,6 +78,9 @@ List<Provider> _createProviders(AppDatabase db) {
     Provider<DeleteSubcategoryUseCase>(create: (_) => DeleteSubcategoryUseCase(subcategoryRepo)),
     Provider<GetSubcategoryByIdUseCase>(create: (_) => GetSubcategoryByIdUseCase(subcategoryRepo)),
     Provider<GetSubcategoriesUseCase>(create: (_) => GetSubcategoriesUseCase(subcategoryRepo)),
+    Provider<WatchSubcategoriesUseCase>(
+      create: (_) => WatchSubcategoriesUseCase(subcategoryRepo),
+    ),
     Provider<GetSubcategoriesFromParentUseCase>(
         create: (_) => GetSubcategoriesFromParentUseCase(subcategoryRepo)),
 

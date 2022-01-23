@@ -9,7 +9,7 @@ class EntityListBuilder<T extends Entity> extends StatefulWidget {
   final Widget Function(BuildContext context, T item, bool selected) itemBuilder;
   final VoidCallback? onAddPressed;
   final String appBarTitle;
-  final bool Function(T, String) filterItem;
+  final bool Function(T item, String text) filterItem;
 
   const EntityListBuilder({
     Key? key,
@@ -86,7 +86,21 @@ class _EntityListBuilderState<T extends Entity> extends State<EntityListBuilder<
                   ],
                 ),
               ),
-            ]
+            ],
+            if (state.deletionState is DeletionWithError) ...[
+              ModalBarrier(
+                dismissible: false,
+                color: Colors.black54,
+              ),
+              AlertDialog(
+                title: Text("Ops"),
+                content: Row(
+                  children: [
+                    Text("Algo deu errado"),
+                  ],
+                ),
+              ),
+            ],
           ],
         );
       },

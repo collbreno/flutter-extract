@@ -1,5 +1,5 @@
 extension StringUtils on String {
-  bool matches(String other) {
+  String _normalize() {
     return toLowerCase()
         .replaceAll('ã', 'a')
         .replaceAll('á', 'a')
@@ -22,7 +22,10 @@ extension StringUtils on String {
         .replaceAll('ú', 'u')
         .replaceAll('ù', 'u')
         .replaceAll('û', 'u')
-        .replaceAll('ç', 'c')
-        .contains(other.toLowerCase());
+        .replaceAll('ç', 'c');
+  }
+
+  bool matches(String other) {
+    return _normalize().contains(other._normalize());
   }
 }

@@ -5,7 +5,7 @@ import 'package:ui/screens/new_expense_screen.dart';
 import 'package:ui/screens/payment_method/payment_method_list_screen.dart';
 import 'package:ui/screens/settings_screen.dart';
 import 'package:ui/screens/store/store_list_screen.dart';
-import 'package:ui/screens/subcategory/subcategory_form_screen.dart';
+import 'package:ui/screens/subcategory/subcategory_list_screen.dart';
 import 'package:ui/screens/tag/tag_list_screen.dart';
 
 class HomeScreen extends StatelessWidget implements Screen {
@@ -41,6 +41,10 @@ class HomeScreen extends StatelessWidget implements Screen {
             onPressed: () => Navigator.of(context).push(CategoryListScreen.route()),
           ),
           ElevatedButton(
+            child: Text("Subcategorias"),
+            onPressed: () => Navigator.of(context).push(SubcategoryListScreen.route()),
+          ),
+          ElevatedButton(
             child: Text('Tags'),
             onPressed: () => Navigator.of(context).push(TagListScreen.route()),
           ),
@@ -51,10 +55,6 @@ class HomeScreen extends StatelessWidget implements Screen {
           ElevatedButton(
             child: Text('Métodos de Pagamento'),
             onPressed: () => Navigator.of(context).push(PaymentMethodListScreen.route()),
-          ),
-          ElevatedButton(
-            child: Text("Subcategoria"),
-            onPressed: () => Navigator.of(context).push(SubcategoryFormScreen.route()),
           ),
         ]
             .map((e) => Padding(
