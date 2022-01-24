@@ -1,6 +1,6 @@
 import 'package:built_collection/built_collection.dart';
-import 'package:business/src/domain/_domain.dart';
 import 'package:business/fixtures.dart';
+import 'package:business/src/domain/_domain.dart';
 import 'package:uuid/uuid.dart';
 
 class FixtureExpense {
@@ -21,7 +21,7 @@ class FixtureExpense {
       createdAt: DateTime(2021, 12, 14, 15, 22),
       updatedAt: DateTime(2021, 11, 1, 10, 15),
       tags: BuiltSet([_fixTag.tag1, _fixTag.tag2]),
-      files: BuiltSet(['file1.png']));
+      files: BuiltSet(['file1.png', 'file2.png']));
 
   late final expense2 = Expense(
       id: _uid.v4(),
@@ -34,7 +34,7 @@ class FixtureExpense {
       createdAt: DateTime(2021, 7, 12, 3, 20),
       updatedAt: DateTime(2021, 8, 2, 14, 50),
       tags: BuiltSet([_fixTag.tag2]),
-      files: BuiltSet(['file2.pdf', 'file3.png']));
+      files: BuiltSet(['file3.png']));
 
   late final expense3 = Expense(
     id: _uid.v4(),
