@@ -104,23 +104,59 @@ void main() {
   });
 
   group('Deletion', () {
+    final file1 = 'file1.png';
+    final file2 = 'file2.png';
+    final file3 = 'file3.png';
+    final tag1 = fixTags.tag1;
+    final tag2 = fixTags.tag2;
+    final tag3 = fixTags.tag3;
+
+    final expense = fix.expense1.rebuild(
+      (p0) => p0
+        ..updatedAt = p0.createdAt
+        ..tags = SetBuilder([tag1, tag2])
+        ..files = SetBuilder([file1, file2]),
+    );
+
+    final expectedTags = [
+      ExpenseTagEntity(expenseId: expense.id, tagId: tag1.id, createdAt: expense.createdAt),
+      ExpenseTagEntity(expenseId: expense.id, tagId: tag2.id, createdAt: expense.createdAt),
+    ];
+    final expectedFiles = [
+      ExpenseFileEntity(expenseId: expense.id, filePath: file1, createdAt: expense.createdAt),
+      ExpenseFileEntity(expenseId: expense.id, filePath: file2, createdAt: expense.createdAt),
+    ];
+
+    setUp(() async {
+      await fkUtils.insertExpenseFKDependencies(expense);
+      await repository.insert(expense);
+    });
+
+    test('Checking set up', () async {
+      final expectedExpense = expense.toEntity();
+
+      final expenseFromDb = await database.select(database.expenses).get();
+      final filesFromDb = await database.select(database.expenseFiles).get();
+      final tagsFromDb = await database.select(database.expenseTags).get();
+
+      expect(expenseFromDb, unorderedEquals([expectedExpense]));
+      expect(tagsFromDb, unorderedEquals(expectedTags));
+      expect(filesFromDb, unorderedEquals(expectedFiles));
+    });
+
     test('Simple deletion', () async {
-      final expense1 = fix.expense1;
       final expense2 = fix.expense2;
 
-      await fkUtils.insertExpenseFKDependencies(expense1);
       await fkUtils.insertExpenseFKDependencies(expense2);
 
-      final insert1 = await repository.insert(expense1);
       final insert2 = await repository.insert(expense2);
 
-      expect(insert1, Right(Null));
       expect(insert2, Right(Null));
 
       var fromDb = await repository.getAll();
-      expect(fromDb, orderedRightEquals([expense1, expense2]));
+      expect(fromDb, orderedRightEquals([expense, expense2]));
 
-      var result = await repository.delete(expense1.id);
+      var result = await repository.delete(expense.id);
       expect(result, Right(Null));
 
       fromDb = await repository.getAll();
@@ -128,21 +164,62 @@ void main() {
     });
 
     test('Deletion of an item that does not exist', () async {
-      final expense1 = fix.expense1;
-
-      await fkUtils.insertExpenseFKDependencies(expense1);
-      final insert = await repository.insert(expense1);
-      expect(insert, Right(Null));
-
-      var fromDb = await repository.getAll();
-      expect(fromDb, orderedRightEquals([expense1]));
-
       var result = await repository.delete(uid.v4());
       expect(result, Left(NothingToDeleteFailure()));
 
       // Database is not affected
-      fromDb = await repository.getAll();
-      expect(fromDb, orderedRightEquals([expense1]));
+      final fromDb = await repository.getAll();
+      expect(fromDb, orderedRightEquals([expense]));
+    });
+
+    test('Should delete the entries of tags table', () async {
+      await repository.delete(expense.id);
+
+      final tagsFromDb = await database.select(database.expenseTags).get();
+
+      expect(tagsFromDb, isEmpty);
+    });
+
+    test('Should not affect others expense tags', () async {
+      final expense2 = fix.expense2.rebuild((p0) => p0..tags = SetBuilder([tag1]));
+
+      await fkUtils.insertExpenseFKDependencies(expense2);
+      await repository.insert(expense2);
+
+      await repository.delete(expense.id);
+
+      final expectedTags = [
+        ExpenseTagEntity(expenseId: expense2.id, tagId: tag1.id, createdAt: expense2.createdAt),
+      ];
+
+      final tagsFromDb = await database.select(database.expenseTags).get();
+
+      expect(tagsFromDb, expectedTags);
+    });
+
+    test('Should delete the entries of files table', () async {
+      await repository.delete(expense.id);
+
+      final filesFromDb = await database.select(database.expenseFiles).get();
+
+      expect(filesFromDb, isEmpty);
+    });
+
+    test('Should not affect others expense files', () async {
+      final expense2 = fix.expense2.rebuild((p0) => p0..files = SetBuilder([file1]));
+
+      await fkUtils.insertExpenseFKDependencies(expense2);
+      await repository.insert(expense2);
+
+      await repository.delete(expense.id);
+
+      final expectedFiles = [
+        ExpenseFileEntity(expenseId: expense2.id, filePath: file1, createdAt: expense2.createdAt),
+      ];
+
+      final filesFromDb = await database.select(database.expenseFiles).get();
+
+      expect(filesFromDb, expectedFiles);
     });
   });
 
@@ -204,7 +281,7 @@ void main() {
       final filesFromDb = await database.select(database.expenseFiles).get();
       final tagsFromDb = await database.select(database.expenseTags).get();
 
-      expect(expenseFromDb, expectedExpense);
+      expect(expenseFromDb, unorderedEquals([expectedExpense]));
       expect(tagsFromDb, unorderedEquals(expectedTags));
       expect(filesFromDb, unorderedEquals(expectedFiles));
     });
@@ -225,7 +302,7 @@ void main() {
       final filesFromDb = await database.select(database.expenseFiles).get();
       final tagsFromDb = await database.select(database.expenseTags).get();
 
-      expect(expenseFromDb, expectedExpense);
+      expect(expenseFromDb, unorderedEquals([expectedExpense]));
       expect(tagsFromDb, unorderedEquals(expectedTags));
       expect(filesFromDb, unorderedEquals(expectedFiles));
     });
@@ -250,7 +327,7 @@ void main() {
       final filesFromDb = await database.select(database.expenseFiles).get();
       final tagsFromDb = await database.select(database.expenseTags).get();
 
-      expect(expenseFromDb, expectedExpense);
+      expect(expenseFromDb, unorderedEquals([expectedExpense]));
       expect(tagsFromDb, unorderedEquals(expectedTags));
       expect(filesFromDb, unorderedEquals(expectedFiles));
     });
@@ -316,7 +393,7 @@ void main() {
       final filesFromDb = await database.select(database.expenseFiles).get();
       final tagsFromDb = await database.select(database.expenseTags).get();
 
-      expect(expenseFromDb, expectedExpense);
+      expect(expenseFromDb, unorderedEquals([expectedExpense]));
       expect(tagsFromDb, unorderedEquals(expectedTags));
       expect(filesFromDb, unorderedEquals(expectedFiles));
     });
@@ -363,13 +440,13 @@ void main() {
     });
 
     test('Should return $NotFoundFailure when entity does not exist', () async {
-      final expense = fix.expense3;
-      final result = await repository.update(expense);
+      final expense2 = fix.expense2;
+      final result = await repository.update(expense2);
       expect(result, Left(NotFoundFailure()));
 
       final fromDb = await repository.getAll();
       // Database is not affected
-      expect(fromDb, orderedRightEquals([expense1, expense2]));
+      expect(fromDb, orderedRightEquals([expense]));
     });
   });
 }
