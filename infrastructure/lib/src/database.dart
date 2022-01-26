@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:infrastructure/infrastructure.dart';
 import 'package:infrastructure/src/tables/expense_draft_files.dart';
@@ -8,7 +9,6 @@ import 'package:infrastructure/src/tables/expense_drafts.dart';
 import 'package:infrastructure/src/tables/expense_files.dart';
 import 'package:infrastructure/src/triggers/expense_draft_trigger.dart';
 import 'package:infrastructure/src/triggers/expenses_triggers.dart';
-import 'package:drift/drift.dart';
 
 part 'database.g.dart';
 
@@ -30,6 +30,7 @@ part 'database.g.dart';
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(QueryExecutor e) : super(e);
+
   AppDatabase.fromFile(File file) : super(NativeDatabase(file));
 
   @override
@@ -38,9 +39,9 @@ class AppDatabase extends _$AppDatabase {
   @override
   MigrationStrategy get migration {
     return MigrationStrategy(
-      // beforeOpen: (details) async {
-      //   await customStatement('PRAGMA foreign_keys = ON');
-      // },
+      beforeOpen: (details) async {
+        await customStatement('PRAGMA foreign_keys = ON');
+      },
       onCreate: (m) async {
         await m.createAll();
         await m.createTrigger(Trigger(

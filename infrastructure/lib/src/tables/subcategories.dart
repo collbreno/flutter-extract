@@ -13,7 +13,7 @@ class Subcategories extends Table {
 
   TextColumn get iconFamily => text().withLength(min: 1, max: ICON_PACKAGE_MAX)();
 
-  TextColumn get parentId => text().customConstraint('REFERENCES categories(id)')();
+  TextColumn get parentId => text().references(Categories, #id)();
 
   @override
   Set<Column>? get primaryKey => {id};

@@ -1,10 +1,12 @@
 import 'package:drift/drift.dart';
+import 'package:infrastructure/infrastructure.dart';
 
 @DataClassName('ExpenseDraftTagEntity')
 class ExpenseDraftTags extends Table {
-  TextColumn get expenseId =>
-      text().customConstraint('REFERENCES expense_drafts(id) ON DELETE CASCADE')();
-  TextColumn get tagId => text().customConstraint('REFERENCES tags(id)')();
+  TextColumn get expenseId => text().references(ExpenseDrafts, #id, onDelete: KeyAction.cascade)();
+
+  TextColumn get tagId => text().references(Tags, #id)();
+
   DateTimeColumn get createdAt => dateTime()();
 
   @override

@@ -1,7 +1,7 @@
 import 'package:business/business.dart';
 import 'package:dartz/dartz.dart';
-import 'package:infrastructure/infrastructure.dart';
 import 'package:drift/drift.dart';
+import 'package:infrastructure/infrastructure.dart';
 
 class ExpenseRepository implements IExpenseRepository {
   final AppDatabase db;
