@@ -294,6 +294,14 @@ void main() {
       );
 
       final expectedExpense = newExpense.toEntity();
+      final expectedTags = [
+        ExpenseTagEntity(expenseId: expense.id, tagId: tag1.id, createdAt: newExpense.updatedAt),
+        ExpenseTagEntity(expenseId: expense.id, tagId: tag2.id, createdAt: newExpense.updatedAt),
+      ];
+      final expectedFiles = [
+        ExpenseFileEntity(expenseId: expense.id, filePath: file1, createdAt: newExpense.updatedAt),
+        ExpenseFileEntity(expenseId: expense.id, filePath: file2, createdAt: newExpense.updatedAt),
+      ];
 
       final result = await repository.update(newExpense);
       expect(result, Right(Null));
@@ -319,7 +327,12 @@ void main() {
         ExpenseTagEntity(expenseId: expense.id, tagId: tag1.id, createdAt: newExpense.updatedAt),
         ExpenseTagEntity(expenseId: expense.id, tagId: tag3.id, createdAt: newExpense.updatedAt),
       ];
+      final expectedFiles = [
+        ExpenseFileEntity(expenseId: expense.id, filePath: file1, createdAt: newExpense.updatedAt),
+        ExpenseFileEntity(expenseId: expense.id, filePath: file2, createdAt: newExpense.updatedAt),
+      ];
 
+      await fkUtils.insertExpenseFKDependencies(newExpense);
       final result = await repository.update(newExpense);
       expect(result, Right(Null));
 
@@ -361,8 +374,8 @@ void main() {
       await repository.update(newExpense);
 
       expectedTags = [
-        ExpenseTagEntity(expenseId: expense.id, tagId: tag1.id, createdAt: expense.updatedAt),
-        ExpenseTagEntity(expenseId: expense.id, tagId: tag3.id, createdAt: expense.updatedAt),
+        ExpenseTagEntity(expenseId: expense.id, tagId: tag1.id, createdAt: newExpense.updatedAt),
+        ExpenseTagEntity(expenseId: expense.id, tagId: tag3.id, createdAt: newExpense.updatedAt),
         ExpenseTagEntity(expenseId: expense2.id, tagId: tag1.id, createdAt: expense2.createdAt),
         ExpenseTagEntity(expenseId: expense2.id, tagId: tag2.id, createdAt: expense2.createdAt),
         ExpenseTagEntity(expenseId: expense2.id, tagId: tag3.id, createdAt: expense2.createdAt),
@@ -384,6 +397,10 @@ void main() {
       final expectedFiles = [
         ExpenseFileEntity(expenseId: expense.id, filePath: file1, createdAt: newExpense.updatedAt),
         ExpenseFileEntity(expenseId: expense.id, filePath: file3, createdAt: newExpense.updatedAt),
+      ];
+      final expectedTags = [
+        ExpenseTagEntity(expenseId: expense.id, tagId: tag1.id, createdAt: newExpense.updatedAt),
+        ExpenseTagEntity(expenseId: expense.id, tagId: tag2.id, createdAt: newExpense.updatedAt),
       ];
 
       final result = await repository.update(newExpense);
@@ -427,8 +444,8 @@ void main() {
       await repository.update(newExpense);
 
       expectedFiles = [
-        ExpenseFileEntity(expenseId: expense.id, filePath: file1, createdAt: expense.updatedAt),
-        ExpenseFileEntity(expenseId: expense.id, filePath: file3, createdAt: expense.updatedAt),
+        ExpenseFileEntity(expenseId: expense.id, filePath: file1, createdAt: newExpense.updatedAt),
+        ExpenseFileEntity(expenseId: expense.id, filePath: file3, createdAt: newExpense.updatedAt),
         ExpenseFileEntity(expenseId: expense2.id, filePath: file1, createdAt: expense2.createdAt),
         ExpenseFileEntity(expenseId: expense2.id, filePath: file2, createdAt: expense2.createdAt),
         ExpenseFileEntity(expenseId: expense2.id, filePath: file3, createdAt: expense2.createdAt),

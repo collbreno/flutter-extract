@@ -95,44 +95,59 @@ class ExpenseRepository implements IExpenseRepository {
   Future<FailureOr<void>> insert(Expense expense) async {
     try {
       await db.into(db.expenses).insert(expense.toEntity());
-      await Future.wait([
-        for (var file in expense.files)
-          db.into(db.expenseFiles).insert(
-                ExpenseFileEntity(
-                  expenseId: expense.id,
-                  filePath: file,
-                  createdAt: expense.createdAt,
-                ),
-              )
-      ]);
-      await Future.wait([
-        for (var tag in expense.tags)
-          db.into(db.expenseTags).insert(
-                ExpenseTagEntity(
-                  expenseId: expense.id,
-                  tagId: tag.id,
-                  createdAt: expense.createdAt,
-                ),
-              )
-      ]);
+      await _insertSecondaryTables(expense);
       return Right(Null);
     } on Exception {
       return Left(UnknownDatabaseFailure());
     }
   }
 
+  Future<void> _insertSecondaryTables(Expense expense) async {
+    await Future.wait([
+      for (var file in expense.files)
+        db.into(db.expenseFiles).insert(
+              ExpenseFileEntity(
+                expenseId: expense.id,
+                filePath: file,
+                createdAt: expense.updatedAt,
+              ),
+            )
+    ]);
+    await Future.wait([
+      for (var tag in expense.tags)
+        db.into(db.expenseTags).insert(
+              ExpenseTagEntity(
+                expenseId: expense.id,
+                tagId: tag.id,
+                createdAt: expense.updatedAt,
+              ),
+            )
+    ]);
+  }
+
   @override
   Future<FailureOr<void>> update(Expense expense) async {
     try {
       final result = await db.update(db.expenses).replace(expense.toEntity());
+      await _eraseSecondaryTables(expense);
+      await _insertSecondaryTables(expense);
       if (result) {
         return Right(Null);
       } else {
         return Left(NotFoundFailure());
       }
-    } on Exception {
+    } on Exception catch (e) {
+      e;
       return Left(UnknownDatabaseFailure());
     }
+  }
+
+  Future<void> _eraseSecondaryTables(Expense expense) async {
+    final deleteTags = db.delete(db.expenseTags)..where((e) => e.expenseId.equals(expense.id));
+    final deleteFiles = db.delete(db.expenseFiles)..where((e) => e.expenseId.equals(expense.id));
+
+    await deleteTags.go();
+    await deleteFiles.go();
   }
 
   JoinedSelectStatement _mountExpenseQuery() {

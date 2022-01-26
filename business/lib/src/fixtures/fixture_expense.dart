@@ -19,7 +19,7 @@ class FixtureExpense {
       subcategory: _fixSubcategory.subcategory1,
       store: _fixStore.store1,
       createdAt: DateTime(2021, 12, 14, 15, 22),
-      updatedAt: DateTime(2021, 11, 1, 10, 15),
+      updatedAt: DateTime(2021, 12, 14, 15, 22),
       tags: BuiltSet([_fixTag.tag1, _fixTag.tag2]),
       files: BuiltSet(['file1.png', 'file2.png']));
 
@@ -32,7 +32,7 @@ class FixtureExpense {
       subcategory: _fixSubcategory.subcategory3,
       store: _fixStore.store2,
       createdAt: DateTime(2021, 7, 12, 3, 20),
-      updatedAt: DateTime(2021, 8, 2, 14, 50),
+      updatedAt: DateTime(2021, 7, 12, 3, 20),
       tags: BuiltSet([_fixTag.tag2]),
       files: BuiltSet(['file3.png']));
 
@@ -45,7 +45,7 @@ class FixtureExpense {
     subcategory: _fixSubcategory.subcategory2,
     store: _fixStore.store3,
     createdAt: DateTime(2021, 12, 31, 23, 59),
-    updatedAt: DateTime(2021, 1, 1, 1, 1),
+    updatedAt: DateTime(2021, 12, 31, 23, 59),
     tags: BuiltSet([_fixTag.tag1, _fixTag.tag3]),
     files: BuiltSet(['file4.jpg']),
   );
