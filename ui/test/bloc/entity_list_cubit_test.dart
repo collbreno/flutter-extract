@@ -52,7 +52,6 @@ void main() {
       'when there are no erros on deletion, '
       'must emit a none deletion state and clear the selected items',
       build: () => cubit,
-      skip: 0,
       setUp: () {
         cubit.emit(cubit.state.copyWith(
           selectedItems: initialSelected,

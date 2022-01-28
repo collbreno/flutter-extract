@@ -66,14 +66,9 @@ abstract class EntityFormCubit<T> extends Cubit<EntityFormState> {
 
     late final FutureUseCase<void, T> useCase;
 
-    if (state.id.isEmpty) {
-      emit(state.copyWith(id: _uid.v4()));
-      useCase = insertUseCase;
-    } else {
-      useCase = updateUseCase;
-    }
+    useCase = state.id.isEmpty ? insertUseCase : updateUseCase;
 
-    final result = await useCase(mapInputsToEntity(state.id));
+    final result = await useCase(mapInputsToEntity(state.id.isEmpty ? _uid.v4() : state.id));
 
     result.fold(
       _onFailed,
