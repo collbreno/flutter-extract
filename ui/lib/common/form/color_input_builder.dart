@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ui/bloc/entity_form_cubit.dart';
-import 'package:ui/common/list_tile_input_fields.dart';
+import 'package:ui/common/form/input_fields/list_tile_input_fields.dart';
+import 'package:ui/common/form/input_fields/picker_input_field.dart';
 import 'package:ui/models/_models.dart';
 import 'package:ui/services/color_service.dart';
 

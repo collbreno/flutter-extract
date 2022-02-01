@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:ui/bloc/entity_form_cubit.dart';
-import 'package:ui/common/list_tile_input_fields.dart';
+import 'package:ui/common/form/input_fields/text_input_field.dart';
 
 class TextInputBuilder<T extends EntityFormCubit, E extends FormzInput<String, Object>>
     extends StatelessWidget {
