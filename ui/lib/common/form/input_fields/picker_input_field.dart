@@ -65,6 +65,7 @@ class _PickerInputFieldState<T> extends InputFieldState<T?, PickerInputField<T>>
       leading: widget.leading,
       onTap: () async {
         widget.onTap?.call();
+        FocusScope.of(context).unfocus();
         final result = await showPickerDialog(
           context: context,
           pickerDialog: PickerDialog.single(
