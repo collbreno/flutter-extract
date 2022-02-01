@@ -7,6 +7,7 @@ import 'package:ui/common/form/entity_form_builder.dart';
 import 'package:ui/navigation/page_transitions.dart';
 import 'package:ui/navigation/screen.dart';
 import 'package:ui/screens/category/category_view_screen.dart';
+import 'package:uuid/uuid.dart';
 
 class CategoryFormScreen extends StatelessWidget implements Screen {
   const CategoryFormScreen({Key? key, this.category}) : super(key: key);
@@ -23,6 +24,7 @@ class CategoryFormScreen extends StatelessWidget implements Screen {
       create: (context) => CategoryFormCubit(
         insertCategory: context.read<InsertCategoryUseCase>(),
         updateCategory: context.read<UpdateCategoryUseCase>(),
+        uid: Uuid(),
         category: category,
       ),
       child: EntityFormBuilder<CategoryFormCubit>(

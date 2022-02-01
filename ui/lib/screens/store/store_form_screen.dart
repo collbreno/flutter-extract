@@ -5,6 +5,7 @@ import 'package:ui/bloc/store_form_cubit.dart';
 import 'package:ui/common/form/entity_form_builder.dart';
 import 'package:ui/navigation/page_transitions.dart';
 import 'package:ui/navigation/screen.dart';
+import 'package:uuid/uuid.dart';
 
 class StoreFormScreen extends StatelessWidget implements Screen {
   final Store? store;
@@ -22,6 +23,7 @@ class StoreFormScreen extends StatelessWidget implements Screen {
         insertStore: context.read<InsertStoreUseCase>(),
         updateStore: context.read<UpdateStoreUseCase>(),
         store: store,
+        uid: Uuid(),
       ),
       child: EntityFormBuilder<StoreFormCubit>(
         onOpenEntity: (value) {},

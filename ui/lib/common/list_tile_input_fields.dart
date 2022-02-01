@@ -135,6 +135,7 @@ class TextInputFieldState extends InputFieldState<String, TextInputField> {
     _controller = TextEditingController(text: widget.initialValue);
   }
 
+  @override
   void didChange(String value) {
     setState(() {
       _controller.text = value;

@@ -3,17 +3,20 @@ import 'package:business/business.dart';
 import 'package:formz/formz.dart';
 import 'package:ui/bloc/entity_form_cubit.dart';
 import 'package:ui/models/_models.dart';
+import 'package:uuid/uuid.dart';
 
 class TagFormCubit extends EntityFormCubit<Tag> {
   TagFormCubit({
     required FutureUseCase<void, Tag> insertTag,
     required FutureUseCase<void, Tag> updateTag,
+    required Uuid uid,
     Tag? tag,
   }) : super(
           id: tag?.id ?? '',
           insertUseCase: insertTag,
           updateUseCase: updateTag,
           inputs: _getDefaultInputs(tag),
+          uid: uid,
         );
 
   static BuiltList<FormzInput> _getDefaultInputs(Tag? tag) {

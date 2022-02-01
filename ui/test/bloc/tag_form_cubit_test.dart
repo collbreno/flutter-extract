@@ -4,7 +4,6 @@ import 'package:business/business.dart';
 import 'package:business/fixtures.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:formz/formz.dart';
 import 'package:mockito/mockito.dart';
@@ -35,6 +34,7 @@ void main() {
       cubit = TagFormCubit(
         insertTag: insertUseCase,
         updateTag: updateUseCase,
+        uid: uid,
       );
 
       expect(
@@ -56,6 +56,7 @@ void main() {
         insertTag: insertUseCase,
         updateTag: updateUseCase,
         tag: tag,
+        uid: uid,
       );
 
       expect(
@@ -75,7 +76,7 @@ void main() {
 
   group('on field changed', () {
     setUp(() {
-      cubit = TagFormCubit(insertTag: insertUseCase, updateTag: updateUseCase);
+      cubit = TagFormCubit(insertTag: insertUseCase, updateTag: updateUseCase, uid: uid);
     });
 
     group('change with valid values', () {
@@ -88,7 +89,7 @@ void main() {
             id: '',
             status: FormzStatus.invalid,
             inputs: BuiltList([
-              TagNameFormzInput.dirty(tag.name),
+              TagNameFormzInput.pure(tag.name),
               ColorFormzInput.pure(),
               NullableIconFormzInput.pure(),
             ]),
@@ -106,7 +107,7 @@ void main() {
             status: FormzStatus.invalid,
             inputs: BuiltList([
               TagNameFormzInput.pure(''),
-              ColorFormzInput.dirty(tag.color),
+              ColorFormzInput.pure(tag.color),
               NullableIconFormzInput.pure(),
             ]),
           ),
@@ -124,7 +125,7 @@ void main() {
             inputs: BuiltList([
               TagNameFormzInput.pure(''),
               ColorFormzInput.pure(),
-              NullableIconFormzInput.dirty(tag.icon),
+              NullableIconFormzInput.pure(tag.icon),
             ]),
           ),
         ],
@@ -186,8 +187,13 @@ void main() {
   });
 
   group('insertion', () {
+    setUp(() {
+      cubit = TagFormCubit(insertTag: insertUseCase, updateTag: updateUseCase, uid: uid);
+    });
+
     blocTest<TagFormCubit, EntityFormState>(
-      'when tag name is changed, must emit a new state',
+      'after successful insert must emit a new pure form',
+      errors: () => [],
       build: () => cubit,
       setUp: () {
         final insertedTag = tag.rebuild((p0) => p0.id = generatedUid);
@@ -235,6 +241,30 @@ void main() {
             TagNameFormzInput.pure(''),
             ColorFormzInput.pure(),
             NullableIconFormzInput.pure(),
+          ]),
+        ),
+      ],
+    );
+
+    blocTest<TagFormCubit, EntityFormState>(
+      'when a field is invalid, must not insert',
+      errors: () => [],
+      build: () => cubit,
+      act: (cubit) {
+        cubit.onFieldChanged<TagNameFormzInput, String>(tag.name);
+        cubit.onFieldChanged<ColorFormzInput, Color?>(tag.color);
+        cubit.onFieldChanged<NullableIconFormzInput, IconData?>(CupertinoIcons.add);
+        cubit.onSubmitted();
+      },
+      skip: 3,
+      expect: () => [
+        EntityFormState(
+          id: '',
+          status: FormzStatus.invalid,
+          inputs: BuiltList([
+            TagNameFormzInput.dirty(tag.name),
+            ColorFormzInput.dirty(tag.color),
+            NullableIconFormzInput.dirty(CupertinoIcons.add),
           ]),
         ),
       ],

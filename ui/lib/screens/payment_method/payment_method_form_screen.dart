@@ -5,6 +5,7 @@ import 'package:ui/bloc/payment_method_form_cubit.dart';
 import 'package:ui/common/form/entity_form_builder.dart';
 import 'package:ui/navigation/page_transitions.dart';
 import 'package:ui/navigation/screen.dart';
+import 'package:uuid/uuid.dart';
 
 class PaymentMethodFormScreen extends StatelessWidget implements Screen {
   final PaymentMethod? paymentMethod;
@@ -22,6 +23,7 @@ class PaymentMethodFormScreen extends StatelessWidget implements Screen {
         insertUseCase: context.read<InsertPaymentMethodUseCase>(),
         updateUseCase: context.read<UpdatePaymentMethodUseCase>(),
         paymentMethod: paymentMethod,
+        uid: Uuid(),
       ),
       child: EntityFormBuilder<PaymentMethodFormCubit>(
         onOpenEntity: (value) {},

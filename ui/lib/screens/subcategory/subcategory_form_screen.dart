@@ -5,6 +5,7 @@ import 'package:ui/bloc/subcategory_form_cubit.dart';
 import 'package:ui/common/form/entity_form_builder.dart';
 import 'package:ui/navigation/page_transitions.dart';
 import 'package:ui/navigation/screen.dart';
+import 'package:uuid/uuid.dart';
 
 class SubcategoryFormScreen extends StatelessWidget implements Screen {
   static Route route([Subcategory? subcategory]) {
@@ -22,6 +23,7 @@ class SubcategoryFormScreen extends StatelessWidget implements Screen {
         insertSubcategory: context.read<InsertSubcategoryUseCase>(),
         updateSubcategory: context.read<UpdateSubcategoryUseCase>(),
         subcategory: subcategory,
+        uid: Uuid(),
       ),
       child: EntityFormBuilder<SubcategoryFormCubit>(
         titleWhenEditing: 'Editar Subcategoria',

@@ -4,17 +4,20 @@ import 'package:business/business.dart';
 import 'package:formz/formz.dart';
 import 'package:ui/bloc/entity_form_cubit.dart';
 import 'package:ui/models/_models.dart';
+import 'package:uuid/uuid.dart';
 
 class StoreFormCubit extends EntityFormCubit<Store> {
   StoreFormCubit({
     required FutureUseCase<void, Store> insertStore,
     required FutureUseCase<void, Store> updateStore,
+    required Uuid uid,
     Store? store,
   }) : super(
           insertUseCase: insertStore,
           updateUseCase: updateStore,
           id: store?.id ?? '',
           inputs: _getDefaultInputs(store),
+          uid: uid,
         );
 
   static BuiltList<FormzInput> _getDefaultInputs(Store? store) {

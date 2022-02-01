@@ -5,6 +5,7 @@ import 'package:ui/bloc/tag_form_cubit.dart';
 import 'package:ui/common/form/entity_form_builder.dart';
 import 'package:ui/navigation/page_transitions.dart';
 import 'package:ui/navigation/screen.dart';
+import 'package:uuid/uuid.dart';
 
 class TagFormScreen extends StatelessWidget implements Screen {
   final Tag? tag;
@@ -22,6 +23,7 @@ class TagFormScreen extends StatelessWidget implements Screen {
         insertTag: context.read<InsertTagUseCase>(),
         updateTag: context.read<UpdateTagUseCase>(),
         tag: tag,
+        uid: Uuid(),
       ),
       child: EntityFormBuilder<TagFormCubit>(
         onOpenEntity: (value) {},

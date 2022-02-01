@@ -11,14 +11,16 @@ part 'entity_form_state.dart';
 abstract class EntityFormCubit<T> extends Cubit<EntityFormState> {
   final FutureUseCase<void, T> insertUseCase;
   final FutureUseCase<void, T> updateUseCase;
-  final _uid = Uuid();
+  final Uuid _uid;
 
   EntityFormCubit({
     required this.insertUseCase,
     required this.updateUseCase,
+    required Uuid uid,
     required BuiltList<FormzInput> inputs,
     String id = '',
-  }) : super(
+  })  : _uid = uid,
+        super(
           EntityFormState(
             id: id,
             status: FormzStatus.pure,
@@ -33,6 +35,7 @@ abstract class EntityFormCubit<T> extends Cubit<EntityFormState> {
 
     final index = state.inputs.indexWhere((p0) => p0.runtimeType == E);
     final dirty = FormzInputBuilder.dirtyBuilder(state.inputs.elementAt(index), value);
+    final pure = FormzInputBuilder.pureBuilder(state.inputs.elementAt(index), value);
 
     emit(
       state.copyWith(
@@ -40,7 +43,7 @@ abstract class EntityFormCubit<T> extends Cubit<EntityFormState> {
           (e) => e.replaceRange(
             index,
             index + 1,
-            [dirty.valid ? dirty : FormzInputBuilder.pureBuilder(dirty, value)],
+            [pure],
           ),
         ),
         status: Formz.validate(
