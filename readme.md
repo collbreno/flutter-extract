@@ -2,7 +2,7 @@
 This is a flutter mobile app to help in personal financial control.
 
 ## Clean Architecture
-The project was divided in three layers, following the Clean Architecture purposed by Uncle Bob.
+The project was divided in three layers, following the Clean Architecture proposed by Uncle Bob.
 
 ### Business Layer
 This is the core of the application. It contains the business objects and the business logics. It should not depend on other layers and should not know about their inner implementation.
