@@ -9,6 +9,7 @@ This is the core of the application. It contains the business objects and the bu
 It's mainly divided in two things:
 - Use cases: All the actions that can be done in the app. It accesses the repository in the infrastructure layer by dependency inversion.
 - Entities: The representation of an object.
+
 The business layer also contains the repository interface.
 
 ### Insfrastructure Layer
